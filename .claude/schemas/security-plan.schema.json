@@ -1,0 +1,71 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://megacampus2.local/schemas/security-plan.schema.json",
+  "title": "Security Audit Plan Schema",
+  "description": "Schema for security scanning and remediation workflow plan files",
+  "allOf": [
+    {
+      "$ref": "./base-plan.schema.json"
+    }
+  ],
+  "properties": {
+    "workflow": {
+      "const": "security-audit"
+    },
+    "phase": {
+      "enum": ["scan", "remediation", "verification"]
+    },
+    "config": {
+      "type": "object",
+      "required": ["severity"],
+      "properties": {
+        "severity": {
+          "type": "string",
+          "enum": ["critical", "high", "medium", "low", "all"],
+          "description": "Vulnerability severity level to process"
+        },
+        "categories": {
+          "type": "array",
+          "description": "Specific vulnerability categories",
+          "items": {
+            "type": "string",
+            "enum": ["sql-injection", "xss", "auth-bypass", "rls-missing", "exposed-credentials", "dependency-vulns"]
+          }
+        },
+        "maxVulnsPerRun": {
+          "type": "integer",
+          "description": "Maximum vulnerabilities to fix in single run",
+          "minimum": 1,
+          "default": 25
+        },
+        "skipSupabaseRLS": {
+          "type": "boolean",
+          "description": "Skip RLS policy validation",
+          "default": false
+        }
+      }
+    },
+    "validation": {
+      "type": "object",
+      "properties": {
+        "required": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["report-exists", "type-check", "build", "validation-passed", "no-critical-vulns"]
+          }
+        },
+        "optional": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["tests", "lint", "rls-policies-valid"]
+          }
+        }
+      }
+    },
+    "nextAgent": {
+      "enum": ["security-scanner", "vulnerability-fixer"]
+    }
+  }
+}

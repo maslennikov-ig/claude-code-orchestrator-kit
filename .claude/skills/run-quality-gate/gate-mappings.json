@@ -1,0 +1,97 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Quality Gate Mappings",
+  "description": "Configuration for quality gate commands and behavior",
+  "gates": {
+    "type-check": {
+      "command": "pnpm type-check",
+      "description": "TypeScript type checking validation",
+      "typical_duration_ms": 2000,
+      "error_patterns": [
+        "error TS\\d+",
+        "Type '.+' is not assignable",
+        "Cannot find"
+      ]
+    },
+    "build": {
+      "command": "pnpm build",
+      "description": "Production build validation",
+      "typical_duration_ms": 10000,
+      "error_patterns": [
+        "ERROR in",
+        "Module not found",
+        "Build failed",
+        "Compilation error"
+      ]
+    },
+    "tests": {
+      "command": "pnpm test",
+      "description": "Test suite execution",
+      "typical_duration_ms": 30000,
+      "error_patterns": [
+        "FAIL",
+        "Tests failed",
+        "Expected:",
+        "Received:",
+        "● "
+      ]
+    },
+    "lint": {
+      "command": "pnpm lint",
+      "description": "Code linting validation",
+      "typical_duration_ms": 3000,
+      "error_patterns": [
+        "error -",
+        "warning -",
+        "✗ \\d+ problems"
+      ]
+    },
+    "custom": {
+      "command": null,
+      "description": "Custom validation command (user-provided)",
+      "typical_duration_ms": null,
+      "error_patterns": [
+        "error",
+        "failed",
+        "✗"
+      ]
+    }
+  },
+  "actions": {
+    "continue": {
+      "description": "Gate passed, continue workflow",
+      "recommendation": "Proceed to next phase"
+    },
+    "stop": {
+      "description": "Gate failed and is blocking, halt workflow",
+      "recommendation": "Fix errors before proceeding"
+    },
+    "warn": {
+      "description": "Gate failed but is non-blocking, log warning",
+      "recommendation": "Note warning and continue, address later"
+    }
+  },
+  "exit_codes": {
+    "0": {
+      "meaning": "Success",
+      "passed": true
+    },
+    "1": {
+      "meaning": "General error",
+      "passed": false
+    },
+    "127": {
+      "meaning": "Command not found",
+      "passed": false
+    },
+    "-1": {
+      "meaning": "Timeout or internal error",
+      "passed": false
+    }
+  },
+  "timeout": {
+    "milliseconds": 300000,
+    "description": "5 minutes maximum execution time",
+    "rationale": "Prevents indefinite hangs while allowing slow test suites"
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://megacampus2.local/schemas/dependency-plan.schema.json",
+  "title": "Dependency Management Plan Schema",
+  "description": "Schema for dependency audit and update workflow plan files",
+  "allOf": [
+    {
+      "$ref": "./base-plan.schema.json"
+    }
+  ],
+  "properties": {
+    "workflow": {
+      "const": "dependency-management"
+    },
+    "phase": {
+      "enum": ["audit", "update", "verification"]
+    },
+    "config": {
+      "type": "object",
+      "required": ["category"],
+      "properties": {
+        "category": {
+          "type": "string",
+          "enum": ["security", "unused", "outdated", "all"],
+          "description": "Dependency category to process"
+        },
+        "severity": {
+          "type": "string",
+          "enum": ["critical", "high", "medium", "low", "all"],
+          "description": "For security category: vulnerability severity"
+        },
+        "maxUpdatesPerRun": {
+          "type": "integer",
+          "description": "Maximum dependencies to update in single run",
+          "minimum": 1,
+          "default": 10
+        },
+        "updateStrategy": {
+          "type": "string",
+          "enum": ["one-at-a-time", "batch-compatible", "all"],
+          "description": "How to batch updates",
+          "default": "one-at-a-time"
+        },
+        "skipTests": {
+          "type": "boolean",
+          "description": "Skip test execution after updates (not recommended)",
+          "default": false
+        }
+      }
+    },
+    "validation": {
+      "type": "object",
+      "properties": {
+        "required": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["report-exists", "type-check", "build", "validation-passed", "lockfile-valid"]
+          }
+        },
+        "optional": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["tests", "lint", "no-security-vulns"]
+          }
+        }
+      }
+    },
+    "nextAgent": {
+      "enum": ["dependency-auditor", "dependency-updater"]
+    }
+  }
+}

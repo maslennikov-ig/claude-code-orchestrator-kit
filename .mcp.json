@@ -1,0 +1,22 @@
+{
+  "mcpServers": {
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp@latest"]
+    },
+    "sequential-thinking": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-sequential-thinking"
+      ]
+    },
+    "supabase": {
+      "command": "npx",
+      "args": ["-y", "@supabase/mcp-server-supabase@latest", "--project-ref=diqooqbuchsliypgwksu"],
+      "env": {
+        "SUPABASE_ACCESS_TOKEN": "sbp_208afabbd95f71342bbea09164a8cc388b9536e4"
+      }
+    }
+  }
+}

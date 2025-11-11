@@ -1,0 +1,26 @@
+{
+  "typescript": {
+    "error": "^(.+?)\\((\\d+),(\\d+)\\):\\s*(error|warning)\\s+(TS\\d+):\\s*(.+)$",
+    "simple": "^(error|warning)\\s+(TS\\d+):\\s*(.+)$"
+  },
+  "jest": {
+    "fail": "^FAIL\\s+(.+)$",
+    "testName": "^\\s*●\\s+(.+)$",
+    "expected": "Expected:\\s*(.+)",
+    "received": "Received:\\s*(.+)",
+    "location": "at\\s+.+?\\((.+?):(\\d+):(\\d+)\\)"
+  },
+  "npm": {
+    "error": "^npm\\s+ERR!\\s+(.+)$",
+    "code": "^npm\\s+ERR!\\s+code\\s+(.+)$",
+    "path": "^npm\\s+ERR!\\s+path\\s+(.+)$"
+  },
+  "build": {
+    "error": "^ERROR\\s+in\\s+(.+)$",
+    "moduleNotFound": "Module not found:\\s*Error:\\s*(.+)"
+  },
+  "generic": {
+    "error": "^(error|ERROR)[:s]+(.+)$",
+    "warning": "^(warning|WARNING|WARN)[:s]+(.+)$"
+  }
+}

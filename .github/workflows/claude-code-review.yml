@@ -1,0 +1,255 @@
+name: Claude Code Review
+
+# 🎯 UNIFIED CLAUDE CODE REVIEW WORKFLOW
+#
+# Features:
+# - Automatic PR reviews (on open/sync) + Manual trigger
+# - Sticky comments (updates same comment, no spam)
+# - Detailed markdown reports with artifacts
+# - CLAUDE.md convention compliance
+# - GitHub CI integration (reads test results)
+# - Safe, read-only analysis (writes only report file)
+#
+# Authentication:
+# - Uses CLAUDE_CODE_OAUTH_TOKEN (secure GitHub app)
+# - OIDC enabled (id-token: write required)
+#
+# Documentation:
+# - https://github.com/anthropics/claude-code-action
+# - https://docs.claude.com/en/docs/claude-code
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+    # Optional: Filter by file types
+    # paths:
+    #   - "src/**/*.ts"
+    #   - "packages/**/*.ts"
+    #   - "!**/*.md"
+
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: "PR number to review"
+        required: true
+        type: number
+      focus_area:
+        description: "Review focus (security/performance/quality/all)"
+        required: false
+        default: "all"
+        type: choice
+        options:
+          - all
+          - security
+          - performance
+          - quality
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: read
+  id-token: write      # Required for OIDC authentication
+  actions: read        # Allows Claude to read CI results
+
+jobs:
+  claude-review:
+    name: AI Code Review
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for better context
+
+      - name: Determine PR context
+        id: pr-context
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "number=${{ github.event.pull_request.number }}" >> $GITHUB_OUTPUT
+            echo "focus=all" >> $GITHUB_OUTPUT
+            echo "author=${{ github.event.pull_request.user.login }}" >> $GITHUB_OUTPUT
+            echo "association=${{ github.event.pull_request.author_association }}" >> $GITHUB_OUTPUT
+          else
+            echo "number=${{ inputs.pr_number }}" >> $GITHUB_OUTPUT
+            echo "focus=${{ inputs.focus_area }}" >> $GITHUB_OUTPUT
+            # For manual runs, fetch PR info
+            PR_DATA=$(gh pr view ${{ inputs.pr_number }} --json author,authorAssociation)
+            echo "author=$(echo $PR_DATA | jq -r '.author.login')" >> $GITHUB_OUTPUT
+            echo "association=$(echo $PR_DATA | jq -r '.authorAssociation')" >> $GITHUB_OUTPUT
+          fi
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Run Claude Code Review
+        id: claude-review
+        uses: anthropics/claude-code-action@v1
+        env:
+          GH_TOKEN: ${{ github.token }}
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          use_sticky_comment: true
+          track_progress: true
+
+          additional_permissions: |
+            actions: read
+
+          prompt: |
+            REPO: ${{ github.repository }}
+            PR NUMBER: ${{ steps.pr-context.outputs.number }}
+            AUTHOR: ${{ steps.pr-context.outputs.author }}
+            ASSOCIATION: ${{ steps.pr-context.outputs.association }}
+            FOCUS AREA: ${{ steps.pr-context.outputs.focus }}
+
+            You are an expert code reviewer following the repository's CLAUDE.md conventions.
+
+            ## Your Task
+
+            1. **Execution Plan** (post inline first):
+               - List checks you will perform
+               - Files you will analyze
+               - Tools you will use
+               - Expected duration
+
+            2. **Review Pull Request #${{ steps.pr-context.outputs.number }}**:
+               - Read PR description and changed files
+               - Analyze diff for the focus area: ${{ steps.pr-context.outputs.focus }}
+               - Check against CLAUDE.md standards if present
+               - Run lightweight static analysis (no builds/tests)
+
+            3. **Generate Report** at `reports/pr-${{ steps.pr-context.outputs.number }}-review.md`:
+
+            ### Required Report Structure:
+
+            ```markdown
+            # Code Review Report - PR #${{ steps.pr-context.outputs.number }}
+
+            **Author**: ${{ steps.pr-context.outputs.author }} (${{ steps.pr-context.outputs.association }})
+            **Focus**: ${{ steps.pr-context.outputs.focus }}
+            **Reviewed**: $(date -u +"%Y-%m-%d %H:%M UTC")
+
+            ## Executive Summary
+            [1-2 sentences: What this PR does and overall assessment]
+
+            ## Analysis Results
+
+            ### ✅ Strengths
+            - [What's well done]
+            - [Good practices observed]
+            - [Positive aspects]
+
+            ### ⚠️ Risks & Issues
+            [Use severity indicators]
+            - 🔴 **CRITICAL**: [Blocking issues]
+            - 🟡 **MEDIUM**: [Should fix before merge]
+            - 🟢 **LOW**: [Nice to have improvements]
+
+            ### 🔒 Security Review
+            - SQL injection risks: [analysis]
+            - XSS vulnerabilities: [analysis]
+            - Authentication/Authorization: [analysis]
+            - Secrets exposure: [analysis]
+            - Input validation: [analysis]
+
+            ### ⚡ Performance Considerations
+            - Database queries: [analysis]
+            - Algorithmic complexity: [analysis]
+            - Memory usage: [analysis]
+            - Network calls: [analysis]
+
+            ### 🧪 Test Coverage
+            - Unit tests: [coverage analysis]
+            - Integration tests: [coverage]
+            - Edge cases: [covered/missing]
+            - Test quality: [assessment]
+
+            ### 📚 Code Quality
+            - CLAUDE.md compliance: [yes/no/partial]
+            - DRY principle: [analysis]
+            - Naming conventions: [analysis]
+            - Code comments: [adequate/missing]
+            - Documentation updates: [needed/done]
+
+            ## Suggested Improvements
+
+            ### Patch (if applicable)
+            ```diff
+            [Unified diff format for minimal, safe changes]
+            ```
+
+            ### Code References
+            - `path/to/file.ts:42` - [specific issue]
+            - `path/to/file.ts:78` - [specific issue]
+
+            ## CI/CD Status
+            [If actions: read is available, check CI results]
+            - Build: [status]
+            - Tests: [status]
+            - Linting: [status]
+
+            ## Next Actions
+
+            For **Author**:
+            - [ ] [Action item 1]
+            - [ ] [Action item 2]
+
+            For **Reviewers**:
+            - [ ] [Verification item 1]
+            - [ ] [Verification item 2]
+
+            ## Conclusion
+            **Recommendation**: ✅ Approve | ⚠️ Request Changes | 🔴 Block
+
+            [Final assessment and reasoning]
+            ```
+
+            4. **Post Summary Comment**:
+               - Post a concise PR comment with:
+                 - Overall assessment (1-2 sentences)
+                 - Top 3 findings
+                 - Link to full report artifact
+                 - Recommendation
+
+            ## Rules & Constraints
+
+            - ✅ DO: Write only the report file in `reports/`
+            - ✅ DO: Use file:line references (e.g., `src/app.ts:42`)
+            - ✅ DO: Be constructive and specific
+            - ✅ DO: Follow CLAUDE.md conventions
+            - ✅ DO: Check CI results if available
+            - ✅ DO: Provide actionable feedback
+
+            - ❌ DON'T: Modify any code files
+            - ❌ DON'T: Run builds or tests
+            - ❌ DON'T: Assume project-specific build steps
+            - ❌ DON'T: Post multiple comments (use sticky comment)
+            - ❌ DON'T: Use emojis excessively (only for severity)
+
+            ## Focus Area Adjustments
+
+            ${{ steps.pr-context.outputs.focus == 'security' && 'PRIORITY: Security vulnerabilities, authentication, data validation, secrets exposure' || '' }}
+            ${{ steps.pr-context.outputs.focus == 'performance' && 'PRIORITY: Performance bottlenecks, algorithmic complexity, database queries, memory usage' || '' }}
+            ${{ steps.pr-context.outputs.focus == 'quality' && 'PRIORITY: Code quality, maintainability, testing, documentation' || '' }}
+
+          claude_args: |
+            --model claude-4-0-sonnet-20250805
+            --max-turns 10
+            --allowedTools Write,Read,Glob,Grep,Bash(gh pr view:*),Bash(gh pr diff:*),Bash(gh pr comment:*),Bash(gh run list:*),Bash(gh run view:*),Bash(mkdir -p reports),Bash(date:*)
+            --disallowedTools Edit,WebSearch,WebFetch
+
+      - name: Upload review report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: claude-review-pr-${{ steps.pr-context.outputs.number }}
+          path: reports/**
+          retention-days: 90
+          if-no-files-found: warn
+
+      - name: Check review success
+        if: steps.claude-review.outputs.conclusion != 'success'
+        run: |
+          echo "::warning::Claude Code review completed with status: ${{ steps.claude-review.outputs.conclusion }}"
+          echo "Check the execution log for details."
+          exit 1

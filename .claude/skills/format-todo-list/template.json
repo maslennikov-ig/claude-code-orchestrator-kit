@@ -1,0 +1,30 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "TodoWrite Format",
+  "type": "object",
+  "required": ["todos"],
+  "properties": {
+    "todos": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["content", "status", "activeForm"],
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "Imperative form: 'Run tests', 'Create plan', 'Fix bugs'"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["pending", "in_progress", "completed"],
+            "description": "Current status of the todo item"
+          },
+          "activeForm": {
+            "type": "string",
+            "description": "Present continuous form: 'Running tests', 'Creating plan', 'Fixing bugs'"
+          }
+        }
+      }
+    }
+  }
+}

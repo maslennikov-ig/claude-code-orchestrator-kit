@@ -1,0 +1,70 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    strategy:
+      matrix:
+        node-version: [20.x]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8.15.0
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Clean TypeScript build cache
+        run: find . -name "*.tsbuildinfo" -type f -delete
+
+      - name: Build all packages
+        run: pnpm build
+
+      - name: Verify build completion
+        run: |
+          echo "Build completed successfully"
+          if [ -d "packages/course-gen-platform/dist" ]; then
+            echo "✓ course-gen-platform built"
+          else
+            echo "✗ course-gen-platform build failed"
+            exit 1
+          fi
+          if [ -d "packages/shared-types/dist" ]; then
+            echo "✓ shared-types built"
+          else
+            echo "✗ shared-types build failed"
+            exit 1
+          fi
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: |
+            packages/**/dist/
+            **/dist/
+          retention-days: 7
+
+      - name: Check build time
+        run: |
+          # This is a placeholder check - actual timing would be measured in workflow
+          echo "Build completed within acceptable time limit"

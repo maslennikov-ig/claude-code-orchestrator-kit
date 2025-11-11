@@ -1,0 +1,7 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "description": "Local MCP configuration template - copy to .mcp.local.json and configure in .env.local",
+  "github_token": "${GITHUB_TOKEN}",
+  "n8n_api_key": "${N8N_API_KEY}",
+  "github_pat": "${GITHUB_PAT}"
+}

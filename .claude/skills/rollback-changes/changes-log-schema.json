@@ -1,0 +1,101 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Changes Log Schema",
+  "description": "Schema for tracking changes during workflow phases to enable automatic rollback",
+  "type": "object",
+  "required": ["phase", "timestamp", "files_modified", "files_created", "commands_executed", "git_commits"],
+  "properties": {
+    "phase": {
+      "type": "string",
+      "description": "Workflow phase that made the changes (e.g., 'bug-fixing', 'security-remediation')",
+      "examples": ["bug-fixing", "security-remediation", "refactoring", "dependency-update"]
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO-8601 timestamp when changes were started"
+    },
+    "files_modified": {
+      "type": "array",
+      "description": "Files that were modified with their backup locations",
+      "items": {
+        "type": "object",
+        "required": ["path", "backup"],
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Original file path (e.g., 'src/app.ts')"
+          },
+          "backup": {
+            "type": "string",
+            "description": "Backup file path (e.g., '.rollback/src-app.ts.backup')"
+          }
+        }
+      }
+    },
+    "files_created": {
+      "type": "array",
+      "description": "New files or directories created during the phase",
+      "items": {
+        "type": "string",
+        "description": "Path to created file or directory"
+      }
+    },
+    "commands_executed": {
+      "type": "array",
+      "description": "Shell commands that were executed",
+      "items": {
+        "type": "string",
+        "description": "Full command string (e.g., 'pnpm install', 'git add .')"
+      }
+    },
+    "git_commits": {
+      "type": "array",
+      "description": "Git commit SHAs created during the phase",
+      "items": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{7,40}$",
+        "description": "Git commit SHA (short or full)"
+      }
+    },
+    "artifacts": {
+      "type": "array",
+      "description": "Temporary files to remove during rollback (optional)",
+      "items": {
+        "type": "string",
+        "description": "Path to artifact file"
+      }
+    },
+    "plan_files": {
+      "type": "array",
+      "description": "Plan files created during the workflow (optional)",
+      "items": {
+        "type": "string",
+        "pattern": "^\\..*-plan\\.json$",
+        "description": "Plan file path (e.g., '.bug-fixing-plan.json')"
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Additional context about the changes",
+      "properties": {
+        "workflow": {
+          "type": "string",
+          "description": "Parent workflow name"
+        },
+        "agent": {
+          "type": "string",
+          "description": "Agent that made the changes"
+        },
+        "iteration": {
+          "type": "integer",
+          "description": "Iteration number if part of retry loop"
+        },
+        "reason": {
+          "type": "string",
+          "description": "Reason for the changes"
+        }
+      }
+    }
+  }
+}

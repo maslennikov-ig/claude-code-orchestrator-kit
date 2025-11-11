@@ -1,0 +1,67 @@
+{
+  "mcpServers": {
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp@latest"]
+    },
+    "server-sequential-thinking": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@smithery/cli@latest",
+        "run",
+        "@smithery-ai/server-sequential-thinking"
+      ],
+      "env": {
+        "SMITHERY_API_KEY": "${SEQUENTIAL_THINKING_KEY}",
+        "SMITHERY_PROFILE": "${SEQUENTIAL_THINKING_PROFILE}"
+      }
+    },
+    "supabase": {
+      "command": "npx",
+      "args": ["-y", "@supabase/mcp-server-supabase@latest", "--project-ref=${SUPABASE_PROJECT_REF}"],
+      "env": {
+        "SUPABASE_ACCESS_TOKEN": "${SUPABASE_ACCESS_TOKEN}"
+      }
+    },
+    "supabase-legacy": {
+      "command": "npx",
+      "args": ["-y", "@supabase/mcp-server-supabase@latest", "--project-ref=${SUPABASE_LEGACY_PROJECT_REF}"],
+      "env": {
+        "SUPABASE_ACCESS_TOKEN": "${SUPABASE_ACCESS_TOKEN}"
+      }
+    },
+    "n8n-workflows": {
+      "command": "npx",
+      "args": ["mcp-remote", "https://gitmcp.io/Zie619/n8n-workflows"]
+    },
+    "n8n-mcp": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "--init",
+        "-e",
+        "MCP_MODE=stdio",
+        "-e",
+        "LOG_LEVEL=error",
+        "-e",
+        "DISABLE_CONSOLE_OUTPUT=true",
+        "-e",
+        "N8N_API_URL=${N8N_API_URL}",
+        "-e",
+        "N8N_API_KEY=${N8N_API_KEY}",
+        "ghcr.io/czlonkowski/n8n-mcp:latest"
+      ]
+    },
+    "playwright": {
+      "command": "npx",
+      "args": ["@playwright/mcp@latest"]
+    },
+    "shadcn": {
+      "command": "npx",
+      "args": ["shadcn@latest", "mcp"]
+    }
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Plan File Base Schema",
+  "type": "object",
+  "required": ["phase", "config"],
+  "properties": {
+    "phase": {
+      "type": "number",
+      "minimum": 0
+    },
+    "config": {
+      "type": "object"
+    },
+    "validation": {
+      "type": "object",
+      "properties": {
+        "required": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "optional": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "nextAgent": {
+      "type": "string"
+    },
+    "metadata": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": true
+}

@@ -1,0 +1,20 @@
+{
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "context7",
+    "server-sequential-thinking"
+  ],
+  "hooks": {
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '✅ Task completed!' && date '+%Y-%m-%d %H:%M:%S - Task completed' >> ~/claude-code-log.txt"
+          }
+        ]
+      }
+    ]
+  }
+}

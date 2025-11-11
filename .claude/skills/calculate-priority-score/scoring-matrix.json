@@ -1,0 +1,83 @@
+{
+  "severity": {
+    "critical": {
+      "score": 10,
+      "description": "System crash, data loss, security breach"
+    },
+    "high": {
+      "score": 7,
+      "description": "Major functionality broken, significant UX impact"
+    },
+    "medium": {
+      "score": 5,
+      "description": "Minor functionality affected, workaround exists"
+    },
+    "low": {
+      "score": 2,
+      "description": "Cosmetic issue, minimal impact"
+    }
+  },
+  "impact": {
+    "breaking": {
+      "score": 10,
+      "description": "Breaking change, API incompatibility, data corruption"
+    },
+    "major": {
+      "score": 7,
+      "description": "Major feature affected, multiple users impacted"
+    },
+    "minor": {
+      "score": 3,
+      "description": "Small feature affected, few users impacted"
+    },
+    "none": {
+      "score": 0,
+      "description": "No functional impact"
+    }
+  },
+  "likelihood": {
+    "certain": {
+      "score": 10,
+      "description": "Happens every time, 100% reproducible"
+    },
+    "likely": {
+      "score": 7,
+      "description": "Happens frequently, >50% of cases"
+    },
+    "possible": {
+      "score": 5,
+      "description": "Happens occasionally, 10-50% of cases"
+    },
+    "unlikely": {
+      "score": 2,
+      "description": "Rare occurrence, <10% of cases"
+    }
+  },
+  "priorities": {
+    "P0": {
+      "range": [25, 30],
+      "label": "Critical - Immediate Action Required",
+      "action": "Drop everything, fix now"
+    },
+    "P1": {
+      "range": [19, 24],
+      "label": "High - Fix This Sprint",
+      "action": "Prioritize in current sprint"
+    },
+    "P2": {
+      "range": [12, 18],
+      "label": "Medium - Schedule for Next Sprint",
+      "action": "Include in backlog, address soon"
+    },
+    "P3": {
+      "range": [5, 11],
+      "label": "Low - Schedule When Convenient",
+      "action": "Nice to have, low priority"
+    },
+    "P4": {
+      "range": [0, 4],
+      "label": "Minimal - Consider Closing",
+      "action": "May not be worth fixing"
+    }
+  }
+}

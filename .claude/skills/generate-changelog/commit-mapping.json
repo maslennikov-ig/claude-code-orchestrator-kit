@@ -1,0 +1,47 @@
+{
+  "feat": {
+    "category": "Added",
+    "description": "New features"
+  },
+  "fix": {
+    "category": "Fixed",
+    "description": "Bug fixes"
+  },
+  "security": {
+    "category": "Security",
+    "description": "Security fixes"
+  },
+  "perf": {
+    "category": "Changed",
+    "description": "Performance improvements"
+  },
+  "refactor": {
+    "category": "Changed",
+    "description": "Code refactoring"
+  },
+  "docs": {
+    "category": "Changed",
+    "description": "Documentation updates",
+    "skipIfMinor": true
+  },
+  "style": {
+    "category": null,
+    "description": "Code style changes",
+    "skip": true
+  },
+  "test": {
+    "category": null,
+    "description": "Test changes",
+    "skip": true
+  },
+  "chore": {
+    "category": null,
+    "description": "Maintenance",
+    "skip": true,
+    "includeIfBreaking": true
+  },
+  "revert": {
+    "category": "Fixed",
+    "description": "Reverted changes"
+  }
+}

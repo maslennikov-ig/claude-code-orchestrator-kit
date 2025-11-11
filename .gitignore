@@ -1,0 +1,115 @@
+# ===================================================================
+# Claude Code Orchestrator Kit - .gitignore
+# ===================================================================
+
+# ===================================================================
+# Sensitive Files - NEVER COMMIT THESE
+# ===================================================================
+# Environment files with credentials
+.env.local
+.env.*.local
+*.env.local
+
+# MCP local configuration (may contain secrets)
+.mcp.local.json
+
+# Local settings
+.claude/settings.local.json
+
+# ===================================================================
+# Temporary Files
+# ===================================================================
+# Claude Code temporary files
+.tmp/
+*.tmp
+.cache/
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ===================================================================
+# Dependencies
+# ===================================================================
+node_modules/
+.pnp
+.pnp.js
+
+# ===================================================================
+# Build & Distribution
+# ===================================================================
+dist/
+build/
+out/
+.next/
+.nuxt/
+.vercel/
+
+# ===================================================================
+# Testing
+# ===================================================================
+coverage/
+.nyc_output/
+*.lcov
+
+# ===================================================================
+# OS Files
+# ===================================================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+.directory
+.Trash-*
+
+# ===================================================================
+# IDE & Editors
+# ===================================================================
+# VSCode
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# JetBrains
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Vim
+*.swp
+*.swo
+*~
+
+# ===================================================================
+# Project Specific
+# ===================================================================
+# Git worktrees
+.worktrees/
+
+# Backup files
+*.backup
+*.bak
+*.old
+
+# Archive files
+*.archive
+
+# Lock files (optional - uncomment if needed)
+# package-lock.json
+# yarn.lock
+# pnpm-lock.yaml
