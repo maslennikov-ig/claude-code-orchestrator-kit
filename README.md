@@ -16,6 +16,7 @@ Complete toolkit with **33+ AI agents**, **quality gates**, **health monitoring*
 
 - [Overview](#overview)
 - [Features](#features)
+- [Key Innovations](#key-innovations)
 - [Quick Start](#quick-start)
 - [Installation](#installation)
 - [Documentation](#documentation)
@@ -92,6 +93,143 @@ Reusable utilities for:
 - Git operations, error parsing, template rendering
 - Quality gates execution, rollback management
 - Priority scoring, version extraction
+
+---
+
+## 🔑 Key Innovations
+
+### 🎯 **Orchestrator Pattern**
+
+**The Paradigm Shift**: Transform Claude Code from doing everything directly to acting as an orchestrator that delegates complex tasks to specialized sub-agents.
+
+**Why It Matters**:
+- **Context Preservation**: Main Claude Code stays lean (~10-15K tokens vs 50K+ in standard usage)
+- **Specialization**: Each sub-agent is expert in its domain (bug fixing, security scanning, database architecture)
+- **Quality Assurance**: Mandatory verification after every delegation (read files + run type-check)
+- **Indefinite Work**: Can work on project indefinitely without context exhaustion
+
+**Core Rules** (from `CLAUDE.md`):
+1. **GATHER FULL CONTEXT FIRST** - Read code, search patterns, check commits before delegation
+2. **DELEGATE TO SUBAGENTS** - Provide complete context + validation criteria
+3. **VERIFY RESULTS** - Never skip verification (read modified files, run type-check)
+4. **ACCEPT/REJECT LOOP** - Re-delegate with corrections if verification fails
+5. **PER-TASK COMMITS** - Run `/push patch` after each completed task
+
+### 📋 **SpecKit Enhancement: Phase 0 Planning**
+
+**SpecKit** (by GitHub) provides structured development workflow. We enhanced it with **Phase 0: Planning**.
+
+**Phase 0 Responsibilities**:
+1. **Executor Assignment**:
+   - `[EXECUTOR: MAIN]` - Only trivial tasks (1-2 line fixes, simple imports)
+   - `[EXECUTOR: existing-agent]` - If 100% match with existing sub-agent
+   - `[EXECUTOR: FUTURE-agent-name]` - If no match (agent needs creation)
+
+2. **Meta-Agent Creation**:
+   - Launch N `meta-agent-v3` calls in **single message** for parallel agent creation
+   - **Atomicity Rule**: 1 Task = 1 Agent Invocation
+   - After creation: Ask user to restart Claude Code
+
+3. **Research Resolution**:
+   - Simple research: Agent solves with available tools
+   - Complex research: Create prompt in `research/` directory
+
+**Why It Matters**: Ensures all necessary agents exist before implementation starts, enables parallel task execution, prevents context overflow.
+
+### 🤖 **Meta-Agent: The Agent Factory**
+
+**meta-agent-v3** creates new specialized agents in 2-3 minutes following project patterns:
+- **Workers** - Execute tasks from plan files (5-phase structure)
+- **Orchestrators** - Coordinate multi-phase workflows (return control pattern)
+- **Simple Agents** - Standalone tools
+
+**How It Works**:
+1. Loads architecture docs (`ARCHITECTURE.md` + `CLAUDE.md`)
+2. Determines agent type and requirements
+3. Generates YAML frontmatter + structure + validation + error handling
+4. Writes to appropriate location
+5. Validates against project patterns
+
+### 🔄 **Return Control Pattern**
+
+**Orchestrators** coordinate workflows without invoking workers directly:
+
+```
+Orchestrator → Create plan file → Signal readiness → EXIT
+↓
+Main Session → Invoke worker via Task tool
+↓
+Worker → Execute → Validate → Report → EXIT
+↓
+Orchestrator → Resume → Verify → Next phase
+```
+
+**Why Not Task Tool?**: Using Task tool would create nested contexts, defeating isolation purpose.
+
+### ⚙️ **MCP Dynamic Switching**
+
+**Problem**: Each MCP server consumes 500-1500 tokens from context budget.
+
+**Solution**: `switch-mcp.sh` script dynamically switches between 6 configurations:
+- **BASE** (~600 tokens): Context7 + Sequential Thinking (daily use)
+- **SUPABASE** (~2500): + Supabase (database work)
+- **FRONTEND** (~2000): + Playwright + ShadCN (UI work)
+- **FULL** (~5000): All servers (when needed)
+
+**Benefit**: Save 500-4500 context tokens by loading only what you need.
+
+### 🌳 **Worktree + VS Code Integration**
+
+**Parallel Feature Development**:
+1. Create worktrees for different features: `/worktree-create feature/new-auth`
+2. Add `.worktrees/*` to VS Code workspace folders (see `.claude/settings.local.json.example`)
+3. Switch between features via folder selector
+4. Run multiple Claude Code sessions in parallel
+
+**Benefit**: 3-5 features in parallel, no context pollution, isolated testing.
+
+### 🔔 **Webhook Integration**
+
+**Task Completion Notifications** (`.claude/settings.local.json.example`):
+```json
+{
+  "hooks": {
+    "Stop": [
+      {
+        "type": "command",
+        "command": "notify-send 'Claude Code' 'Task completed!'"
+      }
+    ]
+  }
+}
+```
+
+**Use Cases**: Slack notifications, system alerts, Telegram bots, log files.
+
+**Benefit**: Start task, switch to other project, get notified when done.
+
+### 🎯 **Skills vs Agents**
+
+**Skills** (15+): Reusable utilities (<100 lines), stateless, invoked via `Skill` tool
+- Examples: `run-quality-gate`, `validate-plan-file`, `generate-report-header`
+- No context isolation, runs in caller's context
+
+**Agents** (33+): Stateful workflows, context-isolated, invoked via `Task` tool
+- Examples: `bug-hunter`, `security-scanner`, `database-architect`
+- Full context isolation, multi-step processes
+
+### 📐 **Non-Traditional CLAUDE.md**
+
+**Standard Practice**: Store entire project history in `CLAUDE.md`
+- Problem: Wastes context tokens on historical data
+
+**Our Innovation**: `CLAUDE.md` as **Behavioral Operating System**
+- Contains ONLY orchestration rules (no project history)
+- Defines how to gather context BEFORE delegation
+- Specifies verification rules AFTER delegation
+- Forces context preservation
+
+**Result**: Main Claude Code stays lean, all context gathered on-demand.
 
 ---
 

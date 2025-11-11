@@ -114,3 +114,9 @@ $RECYCLE.BIN/
 # yarn.lock
 # pnpm-lock.yaml
 *.tgz
+
+# ===================================================================
+# Articles & Writing
+# ===================================================================
+# Article drafts and master prompts (not for publication)
+articles/
