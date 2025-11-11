@@ -120,3 +120,6 @@ $RECYCLE.BIN/
 # ===================================================================
 # Article drafts and master prompts (not for publication)
 articles/
+
+# Content agents (temporary/helper agents for writing)
+.claude/agents/content/
