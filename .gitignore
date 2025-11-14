@@ -10,8 +10,11 @@
 .env.*.local
 *.env.local
 
-# MCP local configuration (may contain secrets)
+# MCP configuration (may contain secrets)
+.mcp.json
 .mcp.local.json
+.mcp.*.json
+!.mcp.example.json
 
 # Local settings
 .claude/settings.local.json
