@@ -721,17 +721,6 @@ main() {
     update_changelog "$NEW_VERSION" "$DATE"
     execute_release
 
-    # Success! Restore stash if created
-    if [ -n "$STASH_CREATED" ]; then
-        log_info "Restoring stashed changes..."
-        if git stash list | grep -q "release.sh: temporary stash"; then
-            git stash pop >/dev/null 2>&1 || {
-                log_warning "Stash pop had conflicts. Check 'git stash list'"
-                log_info "Manually restore with: git stash pop"
-            }
-        fi
-    fi
-
     echo ""
     echo "╔═══════════════════════════════════════════════════════════╗"
     echo "║              RELEASE SUCCESSFUL! 🎉                       ║"
@@ -740,9 +729,6 @@ main() {
     log_success "Released v$NEW_VERSION"
     log_success "Tag: v$NEW_VERSION"
     log_success "Branch: $BRANCH"
-    if [ -n "$STASH_CREATED" ]; then
-        log_success "Stashed changes restored"
-    fi
     echo ""
     log_info "Next steps:"
     echo "  • Verify release on GitHub: git remote -v"
