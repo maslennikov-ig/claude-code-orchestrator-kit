@@ -30,7 +30,6 @@ readonly NC='\033[0m' # No Color
 # State tracking for rollback
 CREATED_COMMIT=""
 CREATED_TAG=""
-STASH_CREATED=""
 declare -a MODIFIED_FILES=()
 
 # Commit categorization arrays
@@ -90,16 +89,6 @@ cleanup() {
             log_success "Restored modified package.json files"
         fi
 
-        # Restore stash if we created one
-        if [ -n "$STASH_CREATED" ]; then
-            if git stash list | grep -q "release.sh: temporary stash"; then
-                git stash pop >/dev/null 2>&1 || {
-                    log_warning "Stash pop failed with conflicts. Use 'git stash list' to see stashes."
-                    log_info "Manually restore with: git stash pop"
-                }
-            fi
-            log_success "Stashed changes restored (or available in stash list)"
-        fi
 
         echo ""
         log_info "Rollback complete. Repository state restored."
@@ -132,15 +121,41 @@ run_preflight_checks() {
     fi
     log_success "On branch: $BRANCH"
 
-    # Stash uncommitted changes to preserve user work
+    # Auto-commit uncommitted changes before release
     if ! git diff-index --quiet HEAD -- 2>/dev/null; then
-        log_warning "Uncommitted changes detected. Stashing for safety..."
-        git stash push -m "release.sh: temporary stash $(date +%Y%m%d-%H%M%S)" >/dev/null 2>&1 || {
-            log_error "Failed to stash changes. Please commit or stash manually."
+        log_info "Uncommitted changes detected. Auto-committing before release..."
+
+        # Get file counts by status
+        MODIFIED_COUNT=$(git diff --name-only | wc -l)
+        STAGED_COUNT=$(git diff --cached --name-only | wc -l)
+        UNTRACKED_COUNT=$(git ls-files --others --exclude-standard | wc -l)
+        TOTAL_COUNT=$((MODIFIED_COUNT + STAGED_COUNT + UNTRACKED_COUNT))
+
+        # Stage ALL changes (modified, deleted, new files)
+        git add -A
+
+        # Get detailed file list for commit body
+        FILE_LIST=$(git diff --cached --name-status | sed 's/^/  /')
+
+        # Generate commit message
+        COMMIT_MSG="chore: auto-commit before release
+
+Auto-committed ${TOTAL_COUNT} file(s) before creating release.
+
+Files changed:
+${FILE_LIST}
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+Co-Authored-By: Claude <noreply@anthropic.com>"
+
+        # Create commit
+        git commit -m "$COMMIT_MSG" >/dev/null 2>&1 || {
+            log_error "Failed to auto-commit changes"
             exit 1
         }
-        STASH_CREATED="true"
-        log_success "Changes stashed (will be restored on exit)"
+
+        log_success "Changes committed (${TOTAL_COUNT} files)"
     fi
 
     # Check if remote is configured
