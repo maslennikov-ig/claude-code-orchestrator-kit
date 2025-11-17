@@ -58,16 +58,22 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 4. **PLANNING PHASE** (Execute Before Implementation):
    - Review all tasks and classify execution model (parallel vs sequential)
-   - **Subagent Assignment** (Phase 0):
-     * [EXECUTOR: MAIN] - ONLY for trivial tasks (1-2 line fixes, simple imports, single dependency install)
-     * For complex tasks: thoroughly examine existing subagents, assign only if 100% match
-     * If no 100% match: assign FUTURE agent name (to be created) - `[EXECUTOR: future-agent-name]`
-     * After all assignments: if FUTURE agents exist, launch N meta-agent-v3 calls in single message
+   - **Step 1: Task Analysis**:
+     * Analyze all tasks and identify required agent capabilities
+     * Determine which tasks need MAIN (trivial only), existing agents, or new agents
+     * Create list of missing agent types with specifications
+   - **Step 2: Agent Creation** (if needed):
+     * Launch N meta-agent-v3 calls in single message (1 call per missing agent)
      * After agent creation: ask user to restart claude-code
-   - Annotate tasks with `[EXECUTOR: name]` and `[SEQUENTIAL]`/`[PARALLEL-GROUP-X]`
-   - Handle research tasks:
-     * Simple: solve with agent tools (Grep, Read, WebSearch, Context7, Supabase docs)
-     * Complex: create research prompt in research/, wait for user deepresearch, then incorporate results
+     * After restart: verify new agents exist before proceeding
+   - **Step 3: Executor Assignment**:
+     * [EXECUTOR: MAIN] - ONLY for trivial tasks (1-2 line fixes, simple imports, single dependency install)
+     * [EXECUTOR: existing-agent] - ONLY if 100% capability match after thorough examination
+     * [EXECUTOR: specific-agent-name] - For all other tasks using existing or newly created agents
+     * Annotate all tasks with `[EXECUTOR: name]` and `[SEQUENTIAL]`/`[PARALLEL-GROUP-X]`
+   - **Step 4: Research Resolution**:
+     * Simple research: solve with agent tools (Grep, Read, WebSearch, Context7, Supabase docs)
+     * Complex research: create research prompt in research/, wait for user deepresearch, incorporate results
    - Output: Updated tasks.md with executor annotations
    - **Atomicity Rule (CRITICAL)**: 1 Task = 1 Agent Invocation
      * Never give multiple tasks to one agent in single run

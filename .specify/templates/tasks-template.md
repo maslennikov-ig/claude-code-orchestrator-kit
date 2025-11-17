@@ -46,37 +46,23 @@ description: "Task list template for feature implementation"
 
 ## Phase 0: Planning
 
-### P001: Task Analysis & Executor Assignment
-**Description**: Analyze tasks, assign executors (MAIN for trivial only, existing if 100% match, FUTURE otherwise)
-**Executor**: MAIN
-**Dependencies**: None
+**Purpose**: Prepare for implementation by analyzing requirements, creating necessary agents, and assigning executors.
+
+- [ ] P001 Analyze all tasks and identify required agent types and capabilities
+- [ ] P002 Create missing agents using meta-agent-v3 (launch N calls in single message, 1 per agent), then ask user restart
+- [ ] P003 Assign executors to all tasks: MAIN (trivial only), existing agents (100% match), or specific agent names
+- [ ] P004 Resolve research tasks: simple (solve with tools now), complex (create prompts in research/)
+
 **Rules**:
-- [EXECUTOR: MAIN] - ONLY trivial (1-2 line fixes, simple imports, single npm install)
-- Existing subagents - ONLY if 100% match (thorough examination)
-- [EXECUTOR: future-agent-name] - If no 100% match (preferred)
-**Output**:
-- All tasks annotated with [EXECUTOR: name] or [EXECUTOR: future-agent-name]
-- All tasks marked [SEQUENTIAL] or [PARALLEL-GROUP-X]
-- List of FUTURE agents to create
-**Artifacts**: Updated tasks.md
+- **MAIN executor**: ONLY for trivial tasks (1-2 line fixes, simple imports, single npm install)
+- **Existing agents**: ONLY if 100% capability match after thorough examination
+- **Agent creation**: Launch all meta-agent-v3 calls in single message for parallel execution
+- **After P002**: Must restart claude-code before proceeding to P003
 
-### P002: Research Task Resolution
-**Description**: Identify and resolve research questions (simple: solve now, complex: create prompts)
-**Executor**: MAIN
-**Dependencies**: P001
-**Output**:
-- Simple research: documented findings
-- Complex research: prompts in research/ directory
-**Artifacts**: research/*.md (if complex research needed)
-
-### P003: Meta-Agent Subagent Creation (if needed)
-**Description**: Create FUTURE agents using meta-agent-v3, then ask user to restart claude-code
-**Executor**: meta-agent-v3
-**Dependencies**: P001
-**Execution**: Launch N meta-agent-v3 calls in single message (1 FUTURE agent = 1 call)
-**Tasks**: [List FUTURE agents from P001]
-**Post-Creation**: Ask user to restart claude-code
-**Artifacts**: .claude/agents/{domain}/{type}/{name}.md
+**Artifacts**:
+- Updated tasks.md with [EXECUTOR: name], [SEQUENTIAL]/[PARALLEL-GROUP-X] annotations
+- .claude/agents/{domain}/{type}/{name}.md (if new agents created)
+- research/*.md (if complex research identified)
 
 ---
 

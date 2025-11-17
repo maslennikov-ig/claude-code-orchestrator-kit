@@ -60,9 +60,10 @@ The tasks.md should be immediately executable - each task must be specific enoug
 - **Complex**: Create research prompt in research/ → wait for deepresearch → incorporate
 
 **Planning Phase**: After generating tasks, Phase 0: Planning will be added automatically by the template. This phase includes:
-- **P001**: Executor assignment (MAIN for trivial only, existing if 100% match, FUTURE otherwise)
-- **P002**: Research resolution (simple vs complex)
-- **P003**: FUTURE agent creation via meta-agent-v3 in single message, then ask restart
+- **P001**: Task analysis (identify required agent types and capabilities)
+- **P002**: Agent creation via meta-agent-v3 in single message, then ask restart
+- **P003**: Executor assignment (MAIN for trivial only, existing if 100% match, specific agents otherwise)
+- **P004**: Research resolution (simple: solve now, complex: create prompts)
 
 ## Task Generation Rules
 
