@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.9] - 2025-11-19
+
+### Added
+- **release**: smart auto-commit type detection (49af988)
+
 ## [1.1.8] - 2025-11-19
 
 ### Fixed
