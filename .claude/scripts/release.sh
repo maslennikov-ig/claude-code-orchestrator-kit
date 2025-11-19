@@ -722,6 +722,9 @@ execute_release() {
     log_info "Executing release..."
     echo ""
 
+    # Clean up backup files BEFORE staging
+    cleanup_backups
+
     # Stage all changes
     log_info "Staging changes..."
     git add -A
