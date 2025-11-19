@@ -6,12 +6,24 @@
 # Features:
 # - Auto-syncs package.json versions with latest git tag (prevents version conflicts)
 # - Auto-detects version bump from conventional commits
-# - Generates CHANGELOG.md entries
+# - Generates CHANGELOG.md entries with Keep a Changelog format
+# - Supports security, deprecated, and removed categories
+# - Safe rollback with file backups (no data loss on errors)
 # - Rollback support for failed releases
 #
 # Usage: ./release.sh [patch|minor|major] [--yes]
 #        Leave empty for auto-detection from conventional commits
 #        --yes: Skip confirmation prompt (for automation)
+#
+# Supported conventional commit types:
+#   security:   → Security section (patch version)
+#   feat:       → Added section (minor version)
+#   fix:        → Fixed section (patch version)
+#   deprecate:  → Deprecated section
+#   remove:     → Removed section
+#   refactor:   → Changed section
+#   perf:       → Changed section
+#   type!:      → Breaking changes (major version)
 
 set -euo pipefail
 
@@ -31,6 +43,7 @@ readonly NC='\033[0m' # No Color
 CREATED_COMMIT=""
 CREATED_TAG=""
 declare -a MODIFIED_FILES=()
+declare -a BACKUP_FILES=()  # Track backup files for safe rollback
 
 # Commit categorization arrays
 declare -a ALL_COMMITS=()
@@ -39,6 +52,9 @@ declare -a FIXES=()
 declare -a BREAKING_CHANGES=()
 declare -a REFACTORS=()
 declare -a PERF=()
+declare -a SECURITY_FIXES=()      # Security vulnerability fixes
+declare -a DEPRECATIONS=()        # Deprecated features
+declare -a REMOVALS=()            # Removed features
 declare -a OTHER_CHANGES=()
 
 # === UTILITY FUNCTIONS ===
@@ -57,6 +73,53 @@ log_warning() {
 
 log_error() {
     echo -e "${RED}❌ $*${NC}" >&2
+}
+
+# === BACKUP AND RESTORE ===
+
+create_backup() {
+    local file="$1"
+
+    # Only create backup if file exists
+    if [ ! -f "$file" ]; then
+        return 0
+    fi
+
+    local backup="${file}.backup.$$"
+    cp "$file" "$backup" || {
+        log_error "Failed to create backup of $file"
+        exit 1
+    }
+
+    BACKUP_FILES+=("$backup")
+    log_info "Created backup: ${backup##*/}"
+}
+
+restore_from_backups() {
+    if [ ${#BACKUP_FILES[@]} -eq 0 ]; then
+        return 0
+    fi
+
+    log_info "Restoring files from backups..."
+
+    for backup in "${BACKUP_FILES[@]}"; do
+        # Extract original filename by removing .backup.$$ suffix
+        local original="${backup%.backup.*}"
+
+        if [ -f "$backup" ]; then
+            mv "$backup" "$original"
+            log_success "Restored: ${original##*/}"
+        fi
+    done
+}
+
+cleanup_backups() {
+    # Clean up backup files after successful release
+    for backup in "${BACKUP_FILES[@]}"; do
+        if [ -f "$backup" ]; then
+            rm -f "$backup"
+        fi
+    done
 }
 
 # === CLEANUP AND ROLLBACK ===
@@ -82,18 +145,17 @@ cleanup() {
             log_success "Rolled back commit (working directory preserved)"
         fi
 
-        # Restore modified files only (not untracked files)
-        if [ ${#MODIFIED_FILES[@]} -gt 0 ]; then
-            git restore --staged "${MODIFIED_FILES[@]}" 2>/dev/null || true
-            git restore "${MODIFIED_FILES[@]}" 2>/dev/null || true
-            log_success "Restored modified package.json files"
-        fi
-
+        # SAFE ROLLBACK: Restore from backups instead of git restore
+        # This preserves any manual edits made before running the script
+        restore_from_backups
 
         echo ""
-        log_info "Rollback complete. Repository state restored."
+        log_info "Rollback complete. Files restored from backups."
         echo ""
         exit $exit_code
+    else
+        # Success - clean up backup files
+        cleanup_backups
     fi
 }
 
@@ -241,6 +303,9 @@ parse_commits() {
     local fix_pattern='^fix(\([^)]+\))?:'
     local refactor_pattern='^refactor(\([^)]+\))?:'
     local perf_pattern='^perf(\([^)]+\))?:'
+    local security_pattern='^security(\([^)]+\))?:'
+    local deprecate_pattern='^deprecate(\([^)]+\))?:'
+    local remove_pattern='^remove(\([^)]+\))?:'
 
     for commit in "${ALL_COMMITS[@]}"; do
         local hash=$(echo "$commit" | awk '{print $1}')
@@ -249,12 +314,21 @@ parse_commits() {
         # Check for breaking changes
         if [[ "$message" =~ $breaking_pattern ]] || echo "$message" | grep -q "BREAKING CHANGE:"; then
             BREAKING_CHANGES+=("$commit")
+        # Check for security fixes (high priority!)
+        elif [[ "$message" =~ $security_pattern ]]; then
+            SECURITY_FIXES+=("$commit")
         # Check for features
         elif [[ "$message" =~ $feat_pattern ]]; then
             FEATURES+=("$commit")
         # Check for fixes
         elif [[ "$message" =~ $fix_pattern ]]; then
             FIXES+=("$commit")
+        # Check for deprecations
+        elif [[ "$message" =~ $deprecate_pattern ]]; then
+            DEPRECATIONS+=("$commit")
+        # Check for removals
+        elif [[ "$message" =~ $remove_pattern ]]; then
+            REMOVALS+=("$commit")
         # Check for refactors
         elif [[ "$message" =~ $refactor_pattern ]]; then
             REFACTORS+=("$commit")
@@ -270,8 +344,11 @@ parse_commits() {
     # Display commit summary
     log_info "Commit summary:"
     [ ${#BREAKING_CHANGES[@]} -gt 0 ] && echo "  🔥 ${#BREAKING_CHANGES[@]} breaking changes"
+    [ ${#SECURITY_FIXES[@]} -gt 0 ] && echo "  🔒 ${#SECURITY_FIXES[@]} security fixes"
     [ ${#FEATURES[@]} -gt 0 ] && echo "  ✨ ${#FEATURES[@]} features"
     [ ${#FIXES[@]} -gt 0 ] && echo "  🐛 ${#FIXES[@]} bug fixes"
+    [ ${#DEPRECATIONS[@]} -gt 0 ] && echo "  ⚠️  ${#DEPRECATIONS[@]} deprecations"
+    [ ${#REMOVALS[@]} -gt 0 ] && echo "  🗑️  ${#REMOVALS[@]} removals"
     [ ${#REFACTORS[@]} -gt 0 ] && echo "  ♻️  ${#REFACTORS[@]} refactors"
     [ ${#PERF[@]} -gt 0 ] && echo "  ⚡ ${#PERF[@]} performance improvements"
     [ ${#OTHER_CHANGES[@]} -gt 0 ] && echo "  📝 ${#OTHER_CHANGES[@]} other changes"
@@ -301,6 +378,9 @@ detect_version_bump() {
         elif [ ${#FEATURES[@]} -gt 0 ]; then
             BUMP_TYPE="minor"
             AUTO_DETECT_REASON="Found ${#FEATURES[@]} new feature(s)"
+        elif [ ${#SECURITY_FIXES[@]} -gt 0 ]; then
+            BUMP_TYPE="patch"
+            AUTO_DETECT_REASON="Found ${#SECURITY_FIXES[@]} security fix(es)"
         elif [ ${#FIXES[@]} -gt 0 ]; then
             BUMP_TYPE="patch"
             AUTO_DETECT_REASON="Found ${#FIXES[@]} bug fix(es)"
@@ -353,6 +433,15 @@ generate_changelog_entry() {
 
 EOF
 
+    # Security section (FIRST - highest priority!)
+    if [ ${#SECURITY_FIXES[@]} -gt 0 ]; then
+        echo "### Security"
+        for commit in "${SECURITY_FIXES[@]}"; do
+            format_changelog_line "$commit"
+        done
+        echo ""
+    fi
+
     # Added section (features)
     if [ ${#FEATURES[@]} -gt 0 ]; then
         echo "### Added"
@@ -372,6 +461,24 @@ EOF
             format_changelog_line "$commit"
         done
         for commit in "${PERF[@]}"; do
+            format_changelog_line "$commit"
+        done
+        echo ""
+    fi
+
+    # Deprecated section
+    if [ ${#DEPRECATIONS[@]} -gt 0 ]; then
+        echo "### Deprecated"
+        for commit in "${DEPRECATIONS[@]}"; do
+            format_changelog_line "$commit"
+        done
+        echo ""
+    fi
+
+    # Removed section
+    if [ ${#REMOVALS[@]} -gt 0 ]; then
+        echo "### Removed"
+        for commit in "${REMOVALS[@]}"; do
             format_changelog_line "$commit"
         done
         echo ""
@@ -429,6 +536,9 @@ update_package_files() {
 
     while IFS= read -r pkg; do
         if [ -n "$pkg" ]; then
+            # Create backup BEFORE modifying
+            create_backup "$pkg"
+
             # Track for rollback
             MODIFIED_FILES+=("$pkg")
 
@@ -462,6 +572,9 @@ update_changelog() {
     log_info "Updating CHANGELOG.md..."
 
     local changelog_file="$PROJECT_ROOT/CHANGELOG.md"
+
+    # Create backup BEFORE modifying
+    create_backup "$changelog_file"
 
     # Track for rollback
     MODIFIED_FILES+=("$changelog_file")
@@ -529,8 +642,11 @@ show_preview() {
 EOF
 
     [ ${#BREAKING_CHANGES[@]} -gt 0 ] && echo "   🔥 ${#BREAKING_CHANGES[@]} breaking changes"
+    [ ${#SECURITY_FIXES[@]} -gt 0 ] && echo "   🔒 ${#SECURITY_FIXES[@]} security fixes"
     [ ${#FEATURES[@]} -gt 0 ] && echo "   ✨ ${#FEATURES[@]} features"
     [ ${#FIXES[@]} -gt 0 ] && echo "   🐛 ${#FIXES[@]} bug fixes"
+    [ ${#DEPRECATIONS[@]} -gt 0 ] && echo "   ⚠️  ${#DEPRECATIONS[@]} deprecations"
+    [ ${#REMOVALS[@]} -gt 0 ] && echo "   🗑️  ${#REMOVALS[@]} removals"
     [ ${#REFACTORS[@]} -gt 0 ] && echo "   ♻️  ${#REFACTORS[@]} refactors"
     [ ${#PERF[@]} -gt 0 ] && echo "   ⚡ ${#PERF[@]} performance improvements"
     [ ${#OTHER_CHANGES[@]} -gt 0 ] && echo "   📝 ${#OTHER_CHANGES[@]} other changes"

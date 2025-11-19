@@ -84,6 +84,10 @@ When invoked, follow these steps:
    - Configure proper error boundaries and loading states
 
 5. **Client-Side Implementation:**
+   - **IMPORTANT**: Use `frontend-aesthetics` Skill BEFORE building UI components
+     - Get design guidance (typography, colors, animations, backgrounds)
+     - Validate against generic AI aesthetic anti-patterns
+     - Ensure distinctive, creative designs that match project character
    - Build responsive UI with Tailwind and shadcn/ui
    - Implement optimistic updates for better UX
    - Set up real-time subscriptions where needed
