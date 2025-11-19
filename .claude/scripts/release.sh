@@ -204,38 +204,89 @@ run_preflight_checks() {
         local commit_scope=""
         local commit_desc="update project files"
 
-        # Analyze changed files to determine type
-        local changed_files=$(git diff --cached --name-only)
-        local new_agents=$(echo "$changed_files" | grep -c "^\.claude/agents/.*\.md$" | grep "^A" || echo "0")
-        local new_skills=$(echo "$changed_files" | grep -c "^\.claude/skills/.*SKILL\.md$" | grep "^A" || echo "0")
-        local modified_agents=$(echo "$changed_files" | grep "^\.claude/agents/.*\.md$" | wc -l)
-        local modified_scripts=$(echo "$changed_files" | grep "^\.claude/scripts/.*\.sh$" | wc -l)
-        local modified_commands=$(echo "$changed_files" | grep "^\.claude/commands/.*\.md$" | wc -l)
-        local modified_docs=$(echo "$changed_files" | grep "\.md$" | grep -v "\.claude/" | wc -l)
+        # Get file changes with status (A=added, M=modified, D=deleted)
+        local file_status=$(git diff --cached --name-status)
 
-        # Determine commit type based on changes
-        if echo "$FILE_LIST" | grep -q "^A.*\.claude/agents/.*\.md"; then
+        # Count different types of changes
+        local new_agents=$(echo "$file_status" | grep "^A.*\.claude/agents/.*\.md$" | wc -l)
+        local new_skills=$(echo "$file_status" | grep "^A.*\.claude/skills/.*/SKILL\.md$" | wc -l)
+        local new_commands=$(echo "$file_status" | grep "^A.*\.claude/commands/.*\.md$" | wc -l)
+        local modified_agents=$(echo "$file_status" | grep "^M.*\.claude/agents/.*\.md$" | wc -l)
+        local modified_scripts=$(echo "$file_status" | grep "^M.*\.claude/scripts/.*\.sh$" | wc -l)
+        local modified_skills=$(echo "$file_status" | grep "^M.*\.claude/skills/.*/SKILL\.md$" | wc -l)
+        local modified_commands=$(echo "$file_status" | grep "^M.*\.claude/commands/.*\.md$" | wc -l)
+        local modified_docs=$(echo "$file_status" | grep "\.md$" | grep -v "\.claude/" | wc -l)
+        local modified_mcp=$(echo "$file_status" | grep "mcp/.*\.json$" | wc -l)
+
+        # Priority-based commit type detection (most specific first)
+
+        # 1. New agents (highest priority for features)
+        if [ "$new_agents" -gt 0 ]; then
             commit_type="feat"
             commit_scope="agents"
-            local agent_name=$(echo "$changed_files" | grep "^\.claude/agents/.*\.md$" | head -1 | xargs basename | sed 's/\.md$//')
-            commit_desc="add ${agent_name} agent"
-        elif echo "$FILE_LIST" | grep -q "^A.*\.claude/skills/.*SKILL\.md"; then
+            local agent_file=$(echo "$file_status" | grep "^A.*\.claude/agents/.*\.md$" | head -1 | awk '{print $2}')
+            local agent_name=$(basename "$agent_file" .md)
+            if [ "$new_agents" -eq 1 ]; then
+                commit_desc="add ${agent_name} agent"
+            else
+                commit_desc="add ${new_agents} new agents (${agent_name}, ...)"
+            fi
+
+        # 2. New skills
+        elif [ "$new_skills" -gt 0 ]; then
             commit_type="feat"
             commit_scope="skills"
-            local skill_name=$(echo "$changed_files" | grep "^\.claude/skills/.*/SKILL\.md$" | head -1 | cut -d'/' -f4)
-            commit_desc="add ${skill_name} skill"
-        elif [ "$modified_scripts" -gt 0 ]; then
-            commit_type="chore"
-            commit_scope="scripts"
-            commit_desc="update release automation scripts"
-        elif [ "$modified_agents" -gt 0 ]; then
-            commit_type="chore"
-            commit_scope="agents"
-            commit_desc="update agent configurations"
+            local skill_file=$(echo "$file_status" | grep "^A.*\.claude/skills/.*/SKILL\.md$" | head -1 | awk '{print $2}')
+            local skill_name=$(echo "$skill_file" | cut -d'/' -f4)
+            if [ "$new_skills" -eq 1 ]; then
+                commit_desc="add ${skill_name} skill"
+            else
+                commit_desc="add ${new_skills} new skills (${skill_name}, ...)"
+            fi
+
+        # 3. New commands
+        elif [ "$new_commands" -gt 0 ]; then
+            commit_type="feat"
+            commit_scope="commands"
+            local cmd_file=$(echo "$file_status" | grep "^A.*\.claude/commands/.*\.md$" | head -1 | awk '{print $2}')
+            local cmd_name=$(basename "$cmd_file" .md)
+            if [ "$new_commands" -eq 1 ]; then
+                commit_desc="add ${cmd_name} command"
+            else
+                commit_desc="add ${new_commands} new commands"
+            fi
+
+        # 4. Modified skills (features)
+        elif [ "$modified_skills" -gt 0 ]; then
+            commit_type="feat"
+            commit_scope="skills"
+            commit_desc="update skill implementations"
+
+        # 5. Modified commands (features)
         elif [ "$modified_commands" -gt 0 ]; then
             commit_type="feat"
             commit_scope="commands"
             commit_desc="update slash commands"
+
+        # 6. Modified scripts (chore)
+        elif [ "$modified_scripts" -gt 0 ]; then
+            commit_type="chore"
+            commit_scope="scripts"
+            commit_desc="update automation scripts"
+
+        # 7. Modified agents (chore)
+        elif [ "$modified_agents" -gt 0 ]; then
+            commit_type="chore"
+            commit_scope="agents"
+            commit_desc="update agent configurations"
+
+        # 8. Modified MCP configs (chore)
+        elif [ "$modified_mcp" -gt 0 ]; then
+            commit_type="chore"
+            commit_scope="mcp"
+            commit_desc="update MCP server configurations"
+
+        # 9. Documentation changes
         elif [ "$modified_docs" -gt 0 ]; then
             commit_type="docs"
             commit_desc="update documentation"
