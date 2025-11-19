@@ -199,8 +199,56 @@ run_preflight_checks() {
         # Get detailed file list for commit body
         FILE_LIST=$(git diff --cached --name-status | sed 's/^/  /')
 
-        # Generate commit message
-        COMMIT_MSG="chore: auto-commit before release
+        # Detect commit type based on changed files
+        local commit_type="chore"
+        local commit_scope=""
+        local commit_desc="update project files"
+
+        # Analyze changed files to determine type
+        local changed_files=$(git diff --cached --name-only)
+        local new_agents=$(echo "$changed_files" | grep -c "^\.claude/agents/.*\.md$" | grep "^A" || echo "0")
+        local new_skills=$(echo "$changed_files" | grep -c "^\.claude/skills/.*SKILL\.md$" | grep "^A" || echo "0")
+        local modified_agents=$(echo "$changed_files" | grep "^\.claude/agents/.*\.md$" | wc -l)
+        local modified_scripts=$(echo "$changed_files" | grep "^\.claude/scripts/.*\.sh$" | wc -l)
+        local modified_commands=$(echo "$changed_files" | grep "^\.claude/commands/.*\.md$" | wc -l)
+        local modified_docs=$(echo "$changed_files" | grep "\.md$" | grep -v "\.claude/" | wc -l)
+
+        # Determine commit type based on changes
+        if echo "$FILE_LIST" | grep -q "^A.*\.claude/agents/.*\.md"; then
+            commit_type="feat"
+            commit_scope="agents"
+            local agent_name=$(echo "$changed_files" | grep "^\.claude/agents/.*\.md$" | head -1 | xargs basename | sed 's/\.md$//')
+            commit_desc="add ${agent_name} agent"
+        elif echo "$FILE_LIST" | grep -q "^A.*\.claude/skills/.*SKILL\.md"; then
+            commit_type="feat"
+            commit_scope="skills"
+            local skill_name=$(echo "$changed_files" | grep "^\.claude/skills/.*/SKILL\.md$" | head -1 | cut -d'/' -f4)
+            commit_desc="add ${skill_name} skill"
+        elif [ "$modified_scripts" -gt 0 ]; then
+            commit_type="chore"
+            commit_scope="scripts"
+            commit_desc="update release automation scripts"
+        elif [ "$modified_agents" -gt 0 ]; then
+            commit_type="chore"
+            commit_scope="agents"
+            commit_desc="update agent configurations"
+        elif [ "$modified_commands" -gt 0 ]; then
+            commit_type="feat"
+            commit_scope="commands"
+            commit_desc="update slash commands"
+        elif [ "$modified_docs" -gt 0 ]; then
+            commit_type="docs"
+            commit_desc="update documentation"
+        fi
+
+        # Generate commit message with detected type
+        if [ -n "$commit_scope" ]; then
+            COMMIT_MSG="${commit_type}(${commit_scope}): ${commit_desc}"
+        else
+            COMMIT_MSG="${commit_type}: ${commit_desc}"
+        fi
+
+        COMMIT_MSG="${COMMIT_MSG}
 
 Auto-committed ${TOTAL_COUNT} file(s) before creating release.
 
@@ -218,6 +266,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>"
         }
 
         log_success "Changes committed (${TOTAL_COUNT} files)"
+        log_info "Commit type: ${commit_type}${commit_scope:+(${commit_scope})}: ${commit_desc}"
     fi
 
     # Check if remote is configured
