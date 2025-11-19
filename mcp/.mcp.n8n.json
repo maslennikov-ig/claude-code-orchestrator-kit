@@ -4,18 +4,12 @@
       "command": "npx",
       "args": ["-y", "@upstash/context7-mcp@latest"]
     },
-    "server-sequential-thinking": {
+    "sequential-thinking": {
       "command": "npx",
       "args": [
         "-y",
-        "@smithery/cli@latest",
-        "run",
-        "@smithery-ai/server-sequential-thinking"
-      ],
-      "env": {
-        "SMITHERY_API_KEY": "${SEQUENTIAL_THINKING_KEY}",
-        "SMITHERY_PROFILE": "${SEQUENTIAL_THINKING_PROFILE}"
-      }
+        "@modelcontextprotocol/server-sequential-thinking"
+      ]
     },
     "n8n-workflows": {
       "command": "npx",
