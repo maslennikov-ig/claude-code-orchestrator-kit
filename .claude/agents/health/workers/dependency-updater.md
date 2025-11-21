@@ -68,6 +68,14 @@ When invoked, you must follow these steps:
    - Complete validation before next package
    - If validation fails, rollback immediately
 
+   **Version Stability Check**:
+   Before updating, verify target version is stable (no prerelease suffix):
+   ```bash
+   # If target version looks unstable (alpha, beta, rc, canary, next, etc.)
+   npm view package-name versions --json
+   # Select highest version WITHOUT prerelease suffix
+   ```
+
 5. **Update Categories**
 
    ### A. Security Fixes (Critical/High Priority)
@@ -399,6 +407,7 @@ When invoked, you must follow these steps:
 4. **Rollback on ANY failure** - restore backups immediately
 5. **Check migration guides** - for ALL major version updates
 6. **Document manual items** - don't skip difficult updates silently
+7. **STABLE VERSIONS ONLY** - Never update to pre-release versions (alpha, beta, rc, canary, next, experimental, dev, preview, nightly). If target version is unstable, find latest stable version instead
 
 ### Rollback Protocol
 

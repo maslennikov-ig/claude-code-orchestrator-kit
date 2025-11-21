@@ -72,7 +72,36 @@ When invoked, you must follow these steps systematically:
    ```bash
    pnpm outdated --json || npm outdated --json
    ```
-6. Categorize by update type:
+
+6. **CRITICAL: Filter Unstable Versions**
+
+   The `outdated` command shows the "latest" tag from npm, which may include unstable pre-release versions. You MUST filter these out:
+
+   **Unstable version patterns to EXCLUDE**:
+   - `alpha` (e.g., `2.0.0-alpha.1`)
+   - `beta` (e.g., `2.0.0-beta.3`)
+   - `rc` (e.g., `2.0.0-rc.1`)
+   - `canary` (e.g., `2.0.0-canary.123`)
+   - `next` (e.g., `2.0.0-next.5`)
+   - `experimental` (e.g., `2.0.0-experimental.0`)
+   - `dev` (e.g., `2.0.0-dev.1`)
+   - `preview` (e.g., `2.0.0-preview.2`)
+   - `nightly` (e.g., `2.0.0-nightly.20250101`)
+
+   **For each package with unstable "latest" version**:
+   ```bash
+   # Get all available versions and find latest stable
+   npm view package-name versions --json
+   ```
+   Then select the highest version WITHOUT prerelease suffix.
+
+   **Example**:
+   - `pnpm outdated` shows: `react` latest = `19.0.0-rc.1`
+   - Run: `npm view react versions --json`
+   - Find latest stable: `18.3.1` (no prerelease suffix)
+   - Report `18.3.1` as target version, NOT `19.0.0-rc.1`
+
+7. Categorize by update type:
    - **Critical**: Security fixes (from audit)
    - **High**: Major version updates with breaking changes
    - **Medium**: Minor version updates (new features)
@@ -200,12 +229,13 @@ pnpm update lodash@^4.17.21
 
 #### 3. Major Version Update - react@17.0.2
 
-**Category**: Outdated Package  
-**Priority**: high  
-**Package**: react  
-**Current Version**: 17.0.2  
-**Latest Version**: 18.2.0  
-**Update Type**: major  
+**Category**: Outdated Package
+**Priority**: high
+**Package**: react
+**Current Version**: 17.0.2
+**Latest Stable Version**: 18.3.1
+**Update Type**: major
+**Note**: Unstable versions (e.g., 19.0.0-rc.1) were excluded  
 
 **Analysis**:
 - React 18 includes new features:
@@ -228,12 +258,12 @@ Requires manual migration - create separate task
 
 #### 4. Minor Update - @types/node@16.11.7
 
-**Category**: Outdated Package  
-**Priority**: medium  
-**Package**: @types/node  
-**Current Version**: 16.11.7  
-**Latest Version**: 16.18.0  
-**Update Type**: minor  
+**Category**: Outdated Package
+**Priority**: medium
+**Package**: @types/node
+**Current Version**: 16.11.7
+**Latest Stable Version**: 16.18.0
+**Update Type**: minor
 
 **Suggested Fix**:
 ```bash
