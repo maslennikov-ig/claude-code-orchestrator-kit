@@ -119,7 +119,6 @@ Follow command-specific instructions. See `docs/Agents Ecosystem/AGENT-ORCHESTRA
 
 **Supabase Operations**:
 - Use Supabase MCP when `.mcp.json` includes supabase server
-- Project: MegaCampusAI (ref: `diqooqbuchsliypgwksu`)
 - Migrations: `packages/course-gen-platform/supabase/migrations/`
 
 **MCP Configuration**:
