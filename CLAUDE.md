@@ -119,7 +119,6 @@ Follow command-specific instructions. See `docs/Agents Ecosystem/AGENT-ORCHESTRA
 
 **Supabase Operations**:
 - Use Supabase MCP when `.mcp.json` includes supabase server
-- Migrations: `packages/course-gen-platform/supabase/migrations/`
 
 **MCP Configuration**:
 - BASE (`.mcp.base.json`): context7 + sequential-thinking (~600 tokens)
