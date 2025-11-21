@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2025-11-21
+
+### Added
+- **ci**: add automatic npm publish on tag push (94cfc33)
+
 ## [1.1.11] - 2025-11-21
 
 ## [1.1.10] - 2025-11-19
