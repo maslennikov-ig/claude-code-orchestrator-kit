@@ -73,33 +73,69 @@ When invoked, you must follow these steps systematically:
    pnpm outdated --json || npm outdated --json
    ```
 
-6. **CRITICAL: Filter Unstable Versions**
+6. **CRITICAL: Verify Real Versions from npm Registry (MANDATORY)**
 
-   The `outdated` command shows the "latest" tag from npm, which may include unstable pre-release versions. You MUST filter these out:
+   ⚠️ **NEVER trust `outdated` command output blindly!** It may show:
+   - Pre-release versions as "latest"
+   - Versions that don't exist yet
+   - Incorrect version numbers
 
-   **Unstable version patterns to EXCLUDE**:
-   - `alpha` (e.g., `2.0.0-alpha.1`)
-   - `beta` (e.g., `2.0.0-beta.3`)
-   - `rc` (e.g., `2.0.0-rc.1`)
-   - `canary` (e.g., `2.0.0-canary.123`)
-   - `next` (e.g., `2.0.0-next.5`)
-   - `experimental` (e.g., `2.0.0-experimental.0`)
-   - `dev` (e.g., `2.0.0-dev.1`)
-   - `preview` (e.g., `2.0.0-preview.2`)
-   - `nightly` (e.g., `2.0.0-nightly.20250101`)
+   **For EVERY package you report as outdated, you MUST:**
 
-   **For each package with unstable "latest" version**:
+   **Step 1: Get dist-tags to check what "latest" really is**:
    ```bash
-   # Get all available versions and find latest stable
+   npm view package-name dist-tags --json
+   ```
+   This shows actual tags like `{"latest": "18.3.1", "next": "19.0.0-rc.1", "canary": "..."}`.
+
+   **Step 2: Verify the version exists**:
+   ```bash
+   npm view package-name@VERSION version
+   ```
+   If version doesn't exist, npm will return an error.
+
+   **Unstable version patterns to EXCLUDE from recommendations**:
+   - `alpha`, `beta`, `rc`, `canary`, `next`, `experimental`, `dev`, `preview`, `nightly`
+   - Any version with `-` followed by prerelease identifier
+
+   **Step 3: Find latest stable if "latest" tag points to unstable**:
+   ```bash
    npm view package-name versions --json
    ```
-   Then select the highest version WITHOUT prerelease suffix.
+   Then select the HIGHEST version WITHOUT prerelease suffix (no `-` after version number).
 
-   **Example**:
-   - `pnpm outdated` shows: `react` latest = `19.0.0-rc.1`
-   - Run: `npm view react versions --json`
-   - Find latest stable: `18.3.1` (no prerelease suffix)
-   - Report `18.3.1` as target version, NOT `19.0.0-rc.1`
+   **Example workflow**:
+   ```bash
+   # pnpm outdated shows: react latest = 19.0.0-rc.1
+
+   # Step 1: Check dist-tags
+   npm view react dist-tags --json
+   # → {"latest": "18.3.1", "next": "19.0.0-rc.1", "canary": "..."}
+   # ✅ Actual latest is 18.3.1, NOT 19.0.0-rc.1!
+
+   # Step 2: Verify version exists
+   npm view react@18.3.1 version
+   # → 18.3.1 ✅
+
+   # Report 18.3.1 as target version
+   ```
+
+   **Another example (when dist-tags shows unstable as latest)**:
+   ```bash
+   # npm view some-package dist-tags --json
+   # → {"latest": "5.0.0-beta.2", "stable": "4.2.1"}
+
+   # Step 3: Find latest stable manually
+   npm view some-package versions --json
+   # → [..., "4.2.0", "4.2.1", "5.0.0-alpha.1", "5.0.0-beta.1", "5.0.0-beta.2"]
+
+   # Report 4.2.1 as target (highest without prerelease suffix)
+   ```
+
+   **VALIDATION RULE**: Do NOT include any package in report unless you have:
+   1. ✅ Verified target version exists via `npm view package@version`
+   2. ✅ Confirmed it's a stable release (no prerelease suffix)
+   3. ✅ Noted if unstable versions were excluded in the report
 
 7. Categorize by update type:
    - **Critical**: Security fixes (from audit)
@@ -162,6 +198,19 @@ Generate `dependency-audit-report.md`:
 - Unused Dependencies: 6
 
 **Validation Status**: ✅ PASSED (audit completed successfully)
+
+---
+
+## Version Validation Methodology
+
+All recommended versions were verified against npm registry:
+
+1. **Dist-tags check**: `npm view {package} dist-tags --json` - get actual "latest" tag
+2. **Version existence**: `npm view {package}@{version} version` - confirm version exists
+3. **Stability filter**: Excluded all pre-release versions (alpha, beta, rc, canary, next, etc.)
+
+**Packages with unstable "latest" adjusted**: {count}
+**All versions verified**: ✅ Yes
 
 ---
 
@@ -233,9 +282,15 @@ pnpm update lodash@^4.17.21
 **Priority**: high
 **Package**: react
 **Current Version**: 17.0.2
-**Latest Stable Version**: 18.3.1
+**Latest Stable Version**: 18.3.1 ✅ (verified via `npm view react@18.3.1`)
 **Update Type**: major
-**Note**: Unstable versions (e.g., 19.0.0-rc.1) were excluded  
+
+**Version Verification**:
+```
+npm view react dist-tags --json → {"latest":"18.3.1","next":"19.1.0","canary":"..."}
+npm view react@18.3.1 version → 18.3.1 ✅
+```
+**Note**: Unstable versions excluded: 19.x (rc/canary/next)
 
 **Analysis**:
 - React 18 includes new features:
