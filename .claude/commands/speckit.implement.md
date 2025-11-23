@@ -145,6 +145,10 @@ You **MUST** consider the user input before proceeding (if not empty).
       - [EXECUTOR: MAIN]? → Execute directly if trivial, else delegate
       - [EXECUTOR: subagent-name]? → Delegate to specified subagent
    3. GATHER CONTEXT: Read existing code, search patterns, review docs, check commits
+   3.5. LIBRARY SEARCH: Before writing >20 lines of new code, search for existing npm/pypi packages
+      - Use WebSearch + Context7 to find and evaluate libraries
+      - If suitable library found: install and configure instead of implementing from scratch
+      - Check: weekly downloads >1000, recent commits, TypeScript support, no critical vulnerabilities
    4. EXECUTE:
       - Direct: Use Edit/Write tools for trivial tasks only
       - Delegated: Launch Task tool with complete context (code snippets, file paths, patterns, validation criteria)

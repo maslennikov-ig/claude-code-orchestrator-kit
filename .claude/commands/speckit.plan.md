@@ -56,7 +56,12 @@ You **MUST** consider the user input before proceeding (if not empty).
    - Rationale: [why chosen]
    - Alternatives considered: [what else evaluated]
 
-**Output**: research.md with all NEEDS CLARIFICATION resolved
+4. **Library discovery** for each planned component:
+   - Search npm/pypi for existing solutions (WebSearch + Context7)
+   - Evaluate: maintenance status (commits last 6 months), weekly downloads >1000, TypeScript support
+   - Document in research.md: chosen libraries with rationale, or justification for custom implementation
+
+**Output**: research.md with all NEEDS CLARIFICATION resolved and library decisions documented
 
 ### Phase 1: Design & Contracts
 

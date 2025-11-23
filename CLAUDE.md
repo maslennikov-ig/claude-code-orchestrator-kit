@@ -77,6 +77,23 @@ If contradictions occur:
 - If truly ambiguous: ask user with specific options
 - Only ask when unable to determine best practice (rare, ~10%)
 
+**8. LIBRARY-FIRST APPROACH (MANDATORY)**
+
+Before writing new code (>20 lines), ALWAYS search for existing libraries:
+- WebSearch: "npm {functionality} library 2024" or "python {functionality} package"
+- Context7: documentation for candidate libraries
+- Check: weekly downloads >1000, commits in last 6 months, TypeScript/types support
+
+**Use library when**:
+- Covers >70% of required functionality
+- Actively maintained, no critical vulnerabilities
+- Reasonable bundle size (check bundlephobia.com)
+
+**Write custom code when**:
+- <20 lines of simple logic
+- All libraries abandoned or insecure
+- Core business logic requiring full control
+
 ### Planning Phase (ALWAYS First)
 
 Before implementing tasks:

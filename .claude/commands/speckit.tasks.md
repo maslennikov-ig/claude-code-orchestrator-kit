@@ -71,6 +71,13 @@ The tasks.md should be immediately executable - each task must be specific enoug
 
 **Tests are OPTIONAL**: Only generate test tasks if explicitly requested in the feature specification or if user requests TDD approach.
 
+**Library Evaluation (BEFORE creating implementation tasks)**:
+- For each major component (>20 lines), check if suitable library exists
+- Use research.md library decisions from planning phase
+- If suitable library found: task becomes "Install and configure {library} for {functionality}"
+- If no suitable library: task becomes "Implement {component} in {file_path}"
+- Document library choice rationale in task description when relevant
+
 ### Checklist Format (REQUIRED)
 
 Every task MUST strictly follow this format:
