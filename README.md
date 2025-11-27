@@ -60,7 +60,7 @@ Complete toolkit with **33+ AI agents**, **quality gates**, **health monitoring*
 
 ### ⚙️ **MCP Server Configurations**
 
-Switch between 6 optimized MCP configurations based on your needs:
+Switch between 7 optimized MCP configurations based on your needs:
 
 | Configuration | Servers | Token Usage | Use Case |
 |---------------|---------|-------------|----------|
@@ -69,7 +69,8 @@ Switch between 6 optimized MCP configurations based on your needs:
 | **SUPABASE-FULL** | Base + Supabase (dual) | ~3000 | Multi-project database |
 | **N8N** | Base + n8n automation | ~2500 | Workflow automation |
 | **FRONTEND** | Base + Playwright + ShadCN | ~2000 | UI/UX development |
-| **FULL** | All servers enabled | ~5000 | Maximum capabilities |
+| **SERENA** | Base + Serena LSP | ~2500 | Semantic code search |
+| **FULL** | All servers + Serena | ~6500 | Maximum capabilities |
 
 ### 🚀 **Slash Commands**
 
@@ -231,6 +232,37 @@ Orchestrator → Resume → Verify → Next phase
 
 **Result**: Main Claude Code stays lean, all context gathered on-demand.
 
+### 🧠 **DeksdenFlow Integration (Lazy Knowledge Loading)**
+
+Inspired by [deksden-flow](https://github.com/deksden/deksden-flow), we implement **zero-overhead context management**:
+
+**Project Index** (`.claude/project-index.md`):
+- Compact project map with annotated links
+- Loaded on-demand via `load-project-context` skill
+- ~100-200 tokens when used, 0 at baseline
+
+**Session Context** (`.tmp/current/session/`):
+- `context.md`: Current workflow state for resumption
+- `log.md`: Decisions, issues, learnings (write-only)
+- Enables seamless session continuation
+
+**Why It Matters**:
+- Resume health workflows after session restart
+- Track decisions for debugging
+- Navigate codebase without full exploration
+
+**Token Impact**: Zero baseline overhead. Skills load context only when needed.
+
+### 🔬 **Serena LSP Integration**
+
+**Serena MCP** provides semantic code understanding via Language Server Protocol:
+- **Symbol Search**: Find functions, classes, types by name
+- **Reference Lookup**: "Find all usages of X"
+- **Intelligent Refactoring**: Rename with full reference awareness
+- **Context**: `ide-assistant` mode avoids tool duplication
+
+**When to Use**: Large codebases where Grep produces too many false positives.
+
 ---
 
 ## 🚀 Quick Start
@@ -246,7 +278,7 @@ cp .env.example .env.local
 
 # 3. Choose MCP configuration
 ./switch-mcp.sh
-# Select option 1-6 based on your needs
+# Select option 1-7 based on your needs
 
 # 4. Restart Claude Code
 # Your orchestration system is ready!
@@ -815,6 +847,14 @@ Reusable utilities accessible via `Skill` tool.
 | `render-template` | Variable substitution in templates |
 | `rollback-changes` | Restore files from changes log |
 
+### Context & Session Skills (DeksdenFlow)
+
+| Skill | Purpose |
+|-------|---------|
+| `load-project-context` | Load project index for navigation |
+| `save-session-context` | Save workflow state for resumption |
+| `resume-session` | Resume previously saved session |
+
 ---
 
 ## 💡 Usage Examples
@@ -1210,8 +1250,8 @@ Special thanks to the open-source community and all contributors!
 
 - **33+** AI Agents (Orchestrators + Workers)
 - **19+** Slash Commands
-- **15+** Reusable Skills
-- **6** MCP Configurations
+- **18+** Reusable Skills
+- **7** MCP Configurations (including Serena LSP)
 - **3** Quality Gate Scripts
 - **100%** Environment Variable Security
 

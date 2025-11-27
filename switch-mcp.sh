@@ -29,11 +29,12 @@ echo -e "${GREEN}2${NC} - SUPABASE         (Base + Supabase MegaCampusAI)       
 echo -e "${GREEN}3${NC} - SUPABASE + LEGACY (Base + Supabase + Legacy project)   ~3000 tokens"
 echo -e "${GREEN}4${NC} - N8N              (Base + n8n-workflows + n8n-mcp)      ~2500 tokens"
 echo -e "${GREEN}5${NC} - FRONTEND         (Base + Playwright + ShadCN)          ~2000 tokens"
-echo -e "${GREEN}6${NC} - FULL             (All servers)                         ~5000 tokens"
+echo -e "${GREEN}6${NC} - SERENA           (Base + Serena LSP semantic search)   ~2500 tokens"
+echo -e "${GREEN}7${NC} - FULL             (All servers including Serena)        ~6500 tokens"
 echo ""
 echo -e "${YELLOW}0${NC} - STATUS           (Show current configuration)"
 echo ""
-read -p "Your choice (0-6): " choice
+read -p "Your choice (0-7): " choice
 
 case "$choice" in
   1)
@@ -57,8 +58,12 @@ case "$choice" in
     desc="FRONTEND (Playwright + ShadCN)"
     ;;
   6)
+    config="serena"
+    desc="SERENA (Base + LSP semantic search)"
+    ;;
+  7)
     config="full"
-    desc="FULL (All servers)"
+    desc="FULL (All servers including Serena)"
     ;;
   0)
     echo ""
@@ -76,11 +81,12 @@ case "$choice" in
     [ -f "$MCP_DIR/.mcp.supabase-full.json" ] && echo -e "  ✓ $MCP_DIR/.mcp.supabase-full.json"
     [ -f "$MCP_DIR/.mcp.n8n.json" ] && echo -e "  ✓ $MCP_DIR/.mcp.n8n.json"
     [ -f "$MCP_DIR/.mcp.frontend.json" ] && echo -e "  ✓ $MCP_DIR/.mcp.frontend.json"
+    [ -f "$MCP_DIR/.mcp.serena.json" ] && echo -e "  ✓ $MCP_DIR/.mcp.serena.json"
     [ -f "$MCP_DIR/.mcp.full.json" ] && echo -e "  ✓ $MCP_DIR/.mcp.full.json"
     exit 0
     ;;
   *)
-    echo -e "${RED}Invalid choice. Use numbers 0-6.${NC}"
+    echo -e "${RED}Invalid choice. Use numbers 0-7.${NC}"
     exit 1
     ;;
 esac
