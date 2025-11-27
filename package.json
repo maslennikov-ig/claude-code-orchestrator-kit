@@ -1,6 +1,6 @@
 {
   "name": "claude-code-orchestrator-kit",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "description": "Complete automation and orchestration system for Claude Code with 33+ AI agents, quality gates, health monitoring, and workflow automation",
   "main": "index.js",
   "type": "module",

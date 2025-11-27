@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.5] - 2025-11-27
+
+### Added
+- add Serena MCP and DeksdenFlow integration (8bb40b2)
+- **rules**: add LIBRARY-FIRST approach to orchestration rules (cbafa9a)
+- **agents**: add reuse-hunting workflow agents (92e8a7a)
+
 ## [1.2.4] - 2025-11-22
 
 ## [1.2.3] - 2025-11-21
