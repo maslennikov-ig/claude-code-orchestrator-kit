@@ -5,9 +5,9 @@
 Complete toolkit with **33+ AI agents**, **quality gates**, **health monitoring**, and **workflow automation** for building robust, production-ready projects with Claude Code.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![MCP Servers](https://img.shields.io/badge/MCP-6%20Configs-blue.svg)](#mcp-configurations)
-[![Agents](https://img.shields.io/badge/Agents-33%2B-green.svg)](#agents-ecosystem)
-[![Commands](https://img.shields.io/badge/Commands-19%2B-orange.svg)](#slash-commands)
+[![MCP Servers](https://img.shields.io/badge/MCP-7%20Configs-blue.svg)](#mcp-configurations)
+[![Agents](https://img.shields.io/badge/Agents-36%2B-green.svg)](#agents-ecosystem)
+[![Commands](https://img.shields.io/badge/Commands-20%2B-orange.svg)](#slash-commands)
 [![Author](https://img.shields.io/badge/Author-maslennikov--ig-blue.svg)](https://github.com/maslennikov-ig)
 
 ---
@@ -38,8 +38,8 @@ Complete toolkit with **33+ AI agents**, **quality gates**, **health monitoring*
 
 **Claude Code Orchestrator Kit** is a comprehensive automation framework designed to supercharge your development workflow with Claude Code. It provides:
 
-- **🤖 33+ Specialized AI Agents** — Orchestrators and workers for bugs, security, dependencies, dead code cleanup, and more
-- **⚡ MCP Server Management** — 6 pre-configured MCP setups for different use cases (600-5000 tokens)
+- **🤖 36+ Specialized AI Agents** — Orchestrators and workers for bugs, security, dependencies, dead code, reuse, and more
+- **⚡ MCP Server Management** — 7 pre-configured MCP setups for different use cases (600-5000 tokens)
 - **🔧 20+ Slash Commands** — Health checks, SpecKit, worktree management, releases
 - **📊 Quality Gates** — Automated type-checking, builds, tests, coverage, security audits
 - **🎯 Skills Library** — 15+ reusable utilities for validation, reporting, and automation
@@ -620,6 +620,23 @@ Dead code detection and removal.
 
 ---
 
+#### `/health-reuse`
+Code duplication detection and consolidation.
+
+**Features:**
+- Detects duplicated types, interfaces, and schemas
+- Identifies repeated logic patterns
+- Consolidates duplicates into Single Source of Truth (SSOT)
+- Refactors consuming code to use shared definitions
+- Prevents technical debt accumulation
+
+**Usage:**
+```
+/health-reuse
+```
+
+---
+
 #### `/health-metrics`
 Monthly ecosystem health reports.
 
@@ -773,6 +790,18 @@ Dead code cleanup workflow.
 - Unreachable paths
 - Debug leftovers
 - Orphaned functions
+
+---
+
+#### `reuse-orchestrator`
+Code duplication elimination workflow.
+
+**Phases:**
+1. **Detection**: `reuse-hunter` scans for duplicated types/logic
+2. **Analysis**: Group duplicates and identify best SSOT location
+3. **Consolidation**: `reuse-fixer` merges duplicates into shared files
+4. **Refactoring**: Updates all references to point to SSOT
+5. **Validation**: Ensures no breaking changes via quality gates
 
 ---
 
@@ -1070,6 +1099,19 @@ echo ".env.local" >> .gitignore
 
 ---
 
+### 6. Adopt Library-First Approach
+
+Before writing new custom code (>20 lines), always search for existing solutions:
+
+1. **Search**: Check npm/PyPI for libraries with >1k weekly downloads
+2. **Evaluate**: Check maintenance status, types support, and bundle size
+3. **Adopt**: Use library if it covers >70% of functionality
+4. **Build**: Only write custom code for unique business logic or when no good library exists
+
+**Why?** Reduces maintenance burden, leverages community testing, and speeds up development.
+
+---
+
 ## 🔧 Troubleshooting
 
 ### MCP Server Not Working
@@ -1248,8 +1290,8 @@ Special thanks to the open-source community and all contributors!
 
 ## 📊 Project Stats
 
-- **33+** AI Agents (Orchestrators + Workers)
-- **19+** Slash Commands
+- **36+** AI Agents (Orchestrators + Workers)
+- **20+** Slash Commands
 - **18+** Reusable Skills
 - **7** MCP Configurations (including Serena LSP)
 - **3** Quality Gate Scripts
