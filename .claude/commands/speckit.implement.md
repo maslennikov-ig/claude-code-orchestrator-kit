@@ -55,6 +55,7 @@ You **MUST** consider the user input before proceeding (if not empty).
      - Automatically proceed to step 3
 
 3. Load and analyze the implementation context:
+   - **REQUIRED**: Read `.specify/memory/constitution.md` for project principles, security requirements, and quality gates
    - **REQUIRED**: Read tasks.md for the complete task list and execution plan
    - **REQUIRED**: Read plan.md for tech stack, architecture, and file structure
    - **IF EXISTS**: Read data-model.md for entities and relationships
@@ -156,6 +157,11 @@ You **MUST** consider the user input before proceeding (if not empty).
       - Use WebSearch + Context7 to find and evaluate libraries
       - If suitable library found: install and configure instead of implementing from scratch
       - Check: weekly downloads >1000, recent commits, TypeScript support, no critical vulnerabilities
+   3.6. FETCH LIBRARY DOCS (MANDATORY): Before writing code that uses ANY library:
+      - Call `mcp__context7__resolve-library-id` to get library ID
+      - Call `mcp__context7__get-library-docs` with relevant topic (e.g., "hooks", "routing", "auth")
+      - Use fetched docs to ensure correct API usage and avoid deprecated patterns
+      - This applies to React, Next.js, Supabase, Zod, tRPC, and ALL other libraries
    4. EXECUTE:
       - Direct: Use Edit/Write tools for trivial tasks only
       - Delegated: Launch Task tool with complete context (code snippets, file paths, patterns, validation criteria)

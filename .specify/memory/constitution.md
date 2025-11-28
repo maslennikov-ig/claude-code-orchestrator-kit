@@ -1,208 +1,193 @@
 <!--
 Sync Impact Report
 ==================
-Version Change: INITIAL → 1.0.0
-Modified Principles: N/A (Initial version)
-Added Sections: All core sections (initial creation)
-Removed Sections: None
+Version Change: 1.0.0 → 2.0.0
+Modified Principles: Restructured all principles for clarity and brevity
+Added Sections: Single Source of Truth, Library-First, Code Reuse, Accessibility, Error Handling, Observability
+Removed Sections: Detailed tech stack (now parameterized)
 
 Templates Requiring Updates:
-✅ plan-template.md - Constitution Check section already references constitution file
-✅ spec-template.md - Already aligned with user-centric requirements approach
-✅ tasks-template.md - Already organized by user stories and testability principles
-✅ CLAUDE.md - Root orchestration rules reference constitution principles
+- plan-template.md - Review Constitution Check section
+- spec-template.md - Aligned with new principles
+- tasks-template.md - No changes needed
+- CLAUDE.md - Operational procedures, not affected
 
-Follow-up TODOs: None - all placeholders resolved
+Follow-up TODOs: Replace {{PLACEHOLDER}} values for each project
 -->
 
-# Symancy Project Constitution
+# {{PROJECT_NAME}} Constitution
+
+> **Authority**: This constitution supersedes all other development practices. Runtime guidance in `CLAUDE.md` implements these principles operationally.
 
 ## Core Principles
 
-### I. Context-First Development
+### I. Context-First Development (NON-NEGOTIABLE)
 
-Every feature implementation MUST begin with comprehensive context gathering before any code is written or delegated. This principle is NON-NEGOTIABLE.
-
-**Requirements:**
+Before any implementation or delegation, gather comprehensive context:
 - Read existing code in related files
-- Search codebase for similar patterns and implementations
-- Review relevant documentation files (specs, design docs, ADRs)
-- Check recent commits that touched related areas
+- Search for similar patterns and implementations
+- Review specs, ADRs, and recent commits
 - Understand dependencies and integration points
 
-**Rationale:** Context-first prevents duplicate work, ensures consistency with existing patterns, and prevents conflicting approaches. Blind implementation or delegation leads to rework and technical debt.
+**Rationale**: Prevents duplicate work, ensures consistency, avoids conflicting approaches.
 
-### II. Agent-Based Orchestration
+### II. Single Source of Truth
 
-Complex tasks MUST be delegated to specialized subagents. The orchestrator coordinates but does not implement beyond minimal changes.
+Types, constants, enums, schemas, and shared logic MUST be defined in designated central locations (e.g., `{{SHARED_TYPES_PATH}}`). Duplication is forbidden — consumers must import from the source.
 
-**Requirements:**
-- Provide complete context to subagents (code snippets, file paths, patterns, documentation references)
-- Specify exact expected output and validation criteria
-- Verify results after subagent completes (read modified files, run type-check)
-- Re-delegate with corrections if results incorrect
-- Only execute directly for trivial tasks (single-line fixes, simple imports, minimal configuration)
+**Rationale**: Eliminates drift between duplicate definitions, simplifies refactoring.
 
-**Rationale:** Specialized agents produce higher quality results in their domain. Orchestrator maintains oversight while leveraging specialized expertise.
+### III. Library-First Development
 
-### III. Test-Driven Development (Conditional)
+Before implementing custom solutions (>20 lines):
+1. Search for existing libraries (npm, PyPI, etc.)
+2. Evaluate: maintenance status, security, bundle size, TypeScript support
+3. Use library if it covers >70% of requirements
 
-When tests are specified in feature requirements, Test-Driven Development (TDD) is MANDATORY. Tests MUST be written first, verified to fail, then implementation proceeds.
+**Context7 Rule**: Before writing code that uses ANY library, MUST fetch up-to-date documentation via `mcp__context7__get-library-docs`. This ensures correct API usage and avoids deprecated patterns.
 
-**Requirements:**
-- Write tests BEFORE implementation
-- Verify tests FAIL before implementing
-- Follow Red-Green-Refactor cycle
-- Tests MUST be independently verifiable for each user story
+**Rationale**: Reduces maintenance burden, leverages community standards and security fixes.
 
-**Rationale:** TDD ensures requirements are testable, prevents over-engineering, and provides immediate validation of implementation correctness.
+### IV. Code Reuse & DRY
 
-**Note:** Tests are OPTIONAL by default. Only when explicitly requested in feature specifications does this principle activate.
+Before creating new components, utilities, or logic:
+1. Search existing codebase for reusable implementations
+2. Prefer adapting and extending over duplicating
+3. Document why reuse was not possible if creating new
 
-### IV. Atomic Task Execution
+**Rationale**: Reduces codebase size, ensures consistent behavior, lowers cognitive load.
 
-Each task MUST be independently completable, testable, and committable. Tasks are completed one at a time with immediate validation.
+### V. Strict Type Safety (NON-NEGOTIABLE)
 
-**Requirements:**
-- Mark task in_progress BEFORE starting
-- Verify implementation (read files + run type-check)
-- Mark task completed IMMEDIATELY after validation
-- Update tasks.md with [X] and artifacts
-- Commit with `/push patch` after EACH task
-- Move to next task only after current task validated
+- TypeScript `strict` mode enforced
+- `any` is prohibited — use `unknown` or proper types
+- Explicit return types for exported functions
+- Type-check must pass before commit
 
-**Rationale:** Atomic commits provide detailed history, easy rollback, better code review, and clear progress tracking. Batching hides granularity and complicates debugging.
+**Rationale**: Catches errors at compile time, enables safe refactoring, improves IDE support.
 
-### V. User Story Independence
+### VI. Atomic Task Execution
 
-Features MUST be decomposed into independently testable user stories. Each user story delivers standalone value and can be deployed independently.
+Each task must be independently completable, testable, and committable:
+- Mark task `in_progress` before starting
+- Verify implementation (read files + run checks)
+- Mark `completed` after validation only
+- Commit after EACH task, not in batches
 
-**Requirements:**
-- Prioritize user stories (P1, P2, P3...)
-- Each story MUST be independently implementable
-- Each story MUST be independently testable
-- Each story MUST deliver measurable value
-- Foundation phase MUST complete before any user story work begins
+**Rationale**: Enables easy rollback, clear progress tracking, better code review.
 
-**Rationale:** Independent user stories enable incremental delivery, parallel development, and risk reduction. MVP can be delivered with just P1 story.
+### VII. Quality Gates (NON-NEGOTIABLE)
 
-### VI. Quality Gates (NON-NEGOTIABLE)
+Before any commit:
+- [ ] Type-check passes
+- [ ] Build succeeds
+- [ ] No hardcoded credentials
+- [ ] No `TODO` without issue reference
 
-Type-check and build MUST pass before any commit. No exceptions.
+**Rationale**: Prevents broken code in main branch, maintains codebase health.
 
-**Requirements:**
-- Run type-check after implementation
-- Run build verification
-- No hardcoded credentials
-- No TODO comments without issue references
+### VIII. Progressive Specification
 
-**Rationale:** Quality gates prevent broken code from entering main branch, reduce debugging time, and maintain codebase health.
+Features progress through mandatory phases:
+1. **Spec** → User stories and requirements
+2. **Plan** → Technical approach and decisions
+3. **Tasks** → Atomic, ordered implementation steps
+4. **Implement** → Execute with validation
 
-### VII. Progressive Specification
+No phase can be skipped. Each output validated before proceeding.
 
-Features progress through mandatory specification phases before implementation. Each phase builds upon previous validated artifacts.
+**Rationale**: Reduces rework, validates approach before expensive implementation.
 
-**Requirements:**
-- Phase 0: Specification (spec.md with user stories)
-- Phase 1: Planning (plan.md with technical approach)
-- Phase 2: Task Generation (tasks.md organized by user stories)
-- Phase 3: Implementation (execute tasks atomically)
-- No phase can be skipped
-- Each phase output MUST be validated before proceeding
+## Operational Excellence
 
-**Rationale:** Progressive specification reduces rework, ensures shared understanding, and validates approach before expensive implementation.
+### IX. Error Handling
+
+- All errors must be typed (custom Error classes or union types)
+- User-facing errors: localized, actionable, no stack traces
+- Internal errors: structured logging with context
+- Never swallow errors silently
+
+### X. Observability
+
+- Structured logging (JSON) in production
+- Correlation IDs for distributed operations
+- Performance metrics for critical paths
+- Audit logs for sensitive operations
+
+### XI. Accessibility ({{A11Y_LEVEL}})
+
+<!-- Set {{A11Y_LEVEL}} to: MANDATORY, RECOMMENDED, or N/A -->
+- WCAG 2.1 AA compliance minimum
+- Keyboard navigation support
+- Screen reader compatibility
+- Color contrast requirements met
+- Visual changes verified in Light and Dark themes
 
 ## Security Requirements
 
 ### Data Protection
 
-All user data MUST comply with 152-ФЗ (Russian data protection law) and GDPR where applicable.
-
-**Requirements:**
-- No hardcoded credentials in code
-- Use environment variables for secrets
-- Supabase RLS policies for data access
+- No hardcoded credentials — use environment variables
+- {{AUTH_PROVIDER}} for authentication
+- Row-Level Security (RLS) for data isolation
+- Input validation via Zod or equivalent
 - Audit logs for sensitive operations
 
-### Authentication & Authorization
+### Compliance
 
-All API endpoints MUST enforce authentication via Supabase Auth.
-
-**Requirements:**
-- Use Supabase MCP for auth operations when available
-- Implement RLS policies for data isolation
-- Session management via Supabase
-- No custom auth implementations without justification
+<!-- Specify applicable regulations -->
+- {{COMPLIANCE_REQUIREMENTS}}
 
 ## Technology Standards
 
 ### Core Stack
 
-**Frontend:**
-- React 19+ with TypeScript
-- Vite for build tooling
-- Tailwind CSS for styling
-- Supabase client for auth and data
-
-**Backend:**
-- Supabase PostgreSQL for primary database
-- Netlify Functions for serverless logic
-- n8n for workflow automation
-- Redis for caching (when needed)
-
-**AI/ML:**
-- Google Gemini API (primary)
-- OpenRouter for alternative models
-- pgvector for semantic search
+<!-- Replace placeholders with project-specific values -->
+| Layer | Technology |
+|-------|------------|
+| Language | {{LANGUAGE}} |
+| Framework | {{FRAMEWORK}} |
+| Database | {{DATABASE}} |
+| Auth | {{AUTH_PROVIDER}} |
+| Hosting | {{HOSTING}} |
 
 ### File Organization
 
-**Agents:** `.claude/agents/{domain}/{orchestrators|workers}/`
-**Commands:** `.claude/commands/`
-**Skills:** `.claude/skills/{skill-name}/SKILL.md`
-**Specifications:** `.specify/specs/{###-feature-name}/`
-**Templates:** `.specify/templates/`
-**Temporary Files:** `.tmp/current/` (git ignored)
-**Reports:** `docs/reports/{domain}/{YYYY-MM}/`
-
-### MCP Configuration
-
-**BASE Configuration** (`.mcp.base.json`): context7 + sequential-thinking (~600 tokens)
-**FULL Configuration** (`.mcp.full.json`): + supabase + playwright + n8n + shadcn (~5000 tokens)
-
-Switch configurations with `./switch-mcp.sh` based on task needs.
+```
+.claude/agents/       # Agent definitions
+.claude/commands/     # Slash commands
+.claude/skills/       # Reusable skills
+.specify/specs/       # Feature specifications
+.specify/templates/   # Spec templates
+.specify/memory/      # Constitution, context
+.tmp/current/         # Temporary files (git ignored)
+docs/reports/         # Generated reports
+```
 
 ## Governance
 
-### Constitution Authority
-
-This constitution supersedes all other development practices. When conflicts arise between this constitution and other guidance, the constitution takes precedence.
-
 ### Amendment Procedure
 
-Constitution amendments require:
-1. Documented rationale for change
-2. Impact analysis on existing templates and workflows
-3. Version bump according to semantic versioning:
-   - **MAJOR**: Backward incompatible governance or principle removals/redefinitions
-   - **MINOR**: New principle or section added, or materially expanded guidance
-   - **PATCH**: Clarifications, wording, typo fixes, non-semantic refinements
-4. Sync Impact Report identifying affected templates
-5. Update of all dependent templates and documentation
+Constitution changes require:
+1. Documented rationale
+2. Impact analysis on templates/workflows
+3. Version bump (MAJOR: breaking, MINOR: additive, PATCH: clarification)
+4. Sync Impact Report in header
+5. Update dependent documentation
 
-### Compliance Review
+### Exception Process
 
-All feature specifications, plans, and implementations MUST verify compliance with this constitution. The "Constitution Check" section in plan-template.md enforces this requirement.
+Principle violations require justification in plan.md:
+- Why violation is necessary
+- Alternatives considered and rejected
+- Mitigation strategies
 
-### Complexity Justification
+### Document Hierarchy
 
-Any violation of constitutional principles MUST be justified in the "Complexity Tracking" section of plan.md. Justifications must explain:
-- Why the principle violation is necessary
-- Why simpler alternatives were rejected
-- Mitigation strategies for introduced complexity
+1. **Constitution** (this file) — Principles and laws
+2. **CLAUDE.md** — Operational procedures implementing principles
+3. **Spec/Plan/Tasks** — Feature-specific guidance
 
-### Runtime Guidance
+---
 
-Development runtime guidance is maintained in `CLAUDE.md` at repository root. This file provides operational procedures that implement constitutional principles but may be updated more frequently than the constitution itself.
-
-**Version**: 1.0.0 | **Ratified**: 2025-11-10 | **Last Amended**: 2025-11-10
+**Version**: 2.0.0 | **Ratified**: {{RATIFIED_DATE}} | **Last Amended**: {{AMENDED_DATE}}
