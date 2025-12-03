@@ -74,7 +74,12 @@ Each task must be independently completable, testable, and committable:
 - Mark `completed` after validation only
 - Commit after EACH task, not in batches
 
-**Rationale**: Enables easy rollback, clear progress tracking, better code review.
+**Atomic Delegation Rule**: One agent invocation = one task. Never batch multiple tasks into a single agent call.
+- Parallel work: Launch N agents in single message, each with exactly one task
+- Sequential work: Complete one agent call, then start next
+- Same agent type can run multiple times in parallel — each instance handles one task
+
+**Rationale**: Enables easy rollback, clear progress tracking, better code review. Atomic delegation ensures predictable agent behavior and simplifies error handling.
 
 ### VII. Quality Gates (NON-NEGOTIABLE)
 
