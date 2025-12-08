@@ -1,8 +1,26 @@
-# Spec-Kit: Руководство по использованию
+# Claude Code Orchestrator Kit: Руководство по командам
 
-> Версия: v0.0.90 + DeksdenFlow расширения
+> Версия: v1.4.0
 
-Spec-Kit — это набор команд для **спецификационно-ориентированной разработки** (Spec-Driven Development). Позволяет структурированно описывать требования, планировать реализацию и выполнять задачи через агентов.
+Полный набор slash-команд для разработки с Claude Code: от спецификации до релиза.
+
+---
+
+## Обзор команд
+
+| Группа | Команды | Назначение |
+|--------|---------|------------|
+| **Spec-Kit** | `/speckit.*` (9 команд) | Спецификационно-ориентированная разработка |
+| **Health** | `/health-*` (6 команд) | Анализ и исправление качества кода |
+| **Worktree** | `/worktree-*` (4 команды) | Параллельная разработка в git worktrees |
+| **Release** | `/push` | Автоматизация релизов |
+| **Utility** | `/translate-doc` | Перевод документации |
+
+---
+
+# Spec-Kit
+
+Spec-Kit — набор команд для **спецификационно-ориентированной разработки** (Spec-Driven Development). Позволяет структурированно описывать требования, планировать реализацию и выполнять задачи через агентов.
 
 ---
 
@@ -251,12 +269,21 @@ Constitution определяет:
 
 **Использование**:
 ```bash
-/speckit.taskstoissues
+/speckit.taskstoissues                # все задачи
+/speckit.taskstoissues --dry-run      # только показать
+/speckit.taskstoissues --phase 1      # только Phase 1
+/speckit.taskstoissues --limit 5      # первые 5 задач
 ```
 
 **Требования**:
-- GitHub MCP server должен быть настроен
+- `gh` CLI установлен (`brew install gh` / `apt install gh`)
+- Авторизация: `gh auth login`
 - Remote должен быть GitHub URL
+
+**Что создаёт**:
+- Issue для каждой задачи из tasks.md
+- Labels: `speckit`, `setup`, `user-story`
+- Форматированное описание с metadata
 
 ---
 
@@ -409,7 +436,227 @@ mcp__context7__get-library-docs → получить docs по теме
 
 ---
 
+# Health Commands
+
+Команды для автоматического анализа и исправления качества кода.
+
+## `/health-bugs` — Поиск и исправление багов
+
+**Что делает**: Полный цикл обнаружения и исправления багов.
+
+```bash
+/health-bugs
+```
+
+**Workflow**:
+1. Сканирование кода на баги (все приоритеты)
+2. Исправление по стадиям: critical → high → medium → low
+3. Quality gates после каждой стадии
+4. Верификация
+5. До 3 итераций если проблемы остаются
+
+---
+
+## `/health-security` — Анализ безопасности
+
+**Что делает**: Обнаружение и исправление уязвимостей.
+
+```bash
+/health-security
+```
+
+**Что проверяет**:
+- SQL injection, XSS
+- Проблемы аутентификации
+- Hardcoded secrets
+- RLS policies (Supabase)
+- OWASP Top 10
+
+---
+
+## `/health-deps` — Управление зависимостями
+
+**Что делает**: Аудит и обновление зависимостей.
+
+```bash
+/health-deps
+```
+
+**Что делает**:
+- Поиск устаревших пакетов
+- Обнаружение уязвимостей (npm audit)
+- Обновление по одному пакету с валидацией
+- Откат при ошибках
+
+---
+
+## `/health-cleanup` — Очистка dead code
+
+**Что делает**: Поиск и удаление неиспользуемого кода.
+
+```bash
+/health-cleanup
+```
+
+**Что ищет**:
+- Неиспользуемые функции и переменные
+- Закомментированный код
+- Debug артефакты (console.log)
+- Недостижимый код
+
+---
+
+## `/health-reuse` — Дедупликация кода
+
+**Что делает**: Поиск и консолидация дублирующегося кода.
+
+```bash
+/health-reuse
+```
+
+**Что ищет**:
+- Дублирующиеся типы и интерфейсы
+- Повторяющиеся Zod схемы
+- Копипаст констант
+- Похожие утилиты
+
+---
+
+## `/health-metrics` — Метрики качества
+
+**Что делает**: Сбор метрик качества кода.
+
+```bash
+/health-metrics
+```
+
+**Метрики**:
+- Покрытие тестами
+- Сложность кода
+- Количество TODO/FIXME
+- Размер бандла
+
+---
+
+# Worktree Commands
+
+Команды для параллельной разработки через git worktrees.
+
+## `/worktree-create` — Создать worktree
+
+**Что делает**: Создаёт изолированную директорию для параллельной работы.
+
+```bash
+/worktree-create feature-name
+/worktree-create payment-system main
+```
+
+**Результат**:
+- Создаёт `../project-worktrees/feature-name/`
+- Создаёт ветку `feature-name`
+- Копирует конфиги из `.worktree-sync.json`
+
+---
+
+## `/worktree-list` — Список worktrees
+
+**Что делает**: Показывает все активные worktrees.
+
+```bash
+/worktree-list
+```
+
+---
+
+## `/worktree-remove` — Удалить worktree
+
+**Что делает**: Удаляет worktree и опционально ветку.
+
+```bash
+/worktree-remove feature-name
+```
+
+---
+
+## `/worktree-cleanup` — Очистка worktrees
+
+**Что делает**: Удаляет устаревшие worktrees.
+
+```bash
+/worktree-cleanup
+```
+
+---
+
+# Release & Utility
+
+## `/push` — Автоматизация релизов
+
+**Что делает**: Бампит версию, обновляет CHANGELOG, создаёт тег и пушит.
+
+```bash
+/push patch    # 1.0.0 → 1.0.1 (багфиксы)
+/push minor    # 1.0.0 → 1.1.0 (новые фичи)
+/push major    # 1.0.0 → 2.0.0 (breaking changes)
+/push          # автоопределение по коммитам
+```
+
+**Особенности**:
+- Синхронизирует версию с последним тегом
+- Анализирует conventional commits
+- Генерирует CHANGELOG
+- Откат при ошибках
+
+---
+
+## `/translate-doc` — Перевод документации
+
+**Что делает**: Переводит документацию с английского на русский.
+
+```bash
+/translate-doc docs/README.md
+```
+
+**Сохраняет**:
+- Markdown форматирование
+- Код без изменений
+- Технические термины
+
+---
+
+# Полная структура проекта
+
+```
+project/
+├── .claude/
+│   ├── commands/              # Slash команды
+│   │   ├── speckit.*.md       # Spec-Kit (9 файлов)
+│   │   ├── health-*.md        # Health (6 файлов)
+│   │   ├── worktree-*.md      # Worktree (4 файла)
+│   │   ├── push.md            # Release
+│   │   └── translate-doc.md   # Utility
+│   ├── agents/                # Субагенты
+│   │   ├── workers/
+│   │   └── orchestrators/
+│   ├── skills/                # Навыки (reusable)
+│   └── scripts/               # Bash скрипты
+│       └── release.sh
+├── .specify/
+│   ├── memory/
+│   │   └── constitution.md
+│   ├── templates/
+│   └── scripts/bash/
+├── specs/                     # Спецификации фич
+│   └── 1-feature-name/
+├── docs/
+│   └── SPECKIT-GUIDE.md       # Это руководство
+└── .worktree-sync.json        # Конфиг для worktrees
+```
+
+---
+
 ## Ссылки
 
 - [GitHub Spec-Kit](https://github.com/github/spec-kit)
 - [Spec-Driven Development Guide](https://github.blog/ai-and-ml/generative-ai/spec-driven-development-with-ai-get-started-with-a-new-open-source-toolkit/)
+- [Claude Code Orchestrator Kit](https://github.com/maslennikov-ig/claude-code-orchestrator-kit)
