@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.0] - 2025-12-08
+
+### Added
+- **commands**: add speckit.taskstoissues command (d3e994b)
+
 ## [1.3.1] - 2025-12-03
 
 ## [1.3.0] - 2025-11-28
