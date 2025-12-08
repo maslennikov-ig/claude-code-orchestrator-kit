@@ -1,5 +1,19 @@
 ---
 description: Execute the implementation planning workflow using the plan template to generate design artifacts.
+handoffs:
+  - label: Create Tasks
+    agent: speckit.tasks
+    prompt: Break the plan into tasks
+    send: true
+  - label: Create Checklist
+    agent: speckit.checklist
+    prompt: Create a checklist for the following domain...
+scripts:
+  sh: .specify/scripts/bash/setup-plan.sh --json
+  ps: .specify/scripts/powershell/setup-plan.ps1 -Json
+agent_scripts:
+  sh: .specify/scripts/bash/update-agent-context.sh __AGENT__
+  ps: .specify/scripts/powershell/update-agent-context.ps1 -AgentType __AGENT__
 ---
 
 ## User Input
@@ -31,18 +45,19 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 ### Phase 0: Outline & Research
 
-**Research Considerations**:
-- If tech decisions unclear, classify as research task
-- Document research questions in plan with classification (simple/complex)
-- Simple research: Agent tools (Grep, Read, WebSearch, Context7, Supabase docs)
-- Complex research: Create prompt → deepresearch → incorporate
-
 1. **Extract unknowns from Technical Context** above:
    - For each NEEDS CLARIFICATION → research task
    - For each dependency → best practices task
    - For each integration → patterns task
 
-2. **Generate and dispatch research agents**:
+2. **Library-First Search** (MANDATORY before research):
+   - For each major component (>20 lines expected), search for existing libraries:
+     - WebSearch: "npm {functionality} library 2024" or "python {functionality} package"
+     - Context7: documentation for candidate libraries
+     - Check: weekly downloads >1000, commits in last 6 months, TypeScript/types support
+   - Document library decisions in research.md
+
+3. **Generate and dispatch research agents**:
 
    ```text
    For each unknown in Technical Context:
@@ -51,17 +66,17 @@ You **MUST** consider the user input before proceeding (if not empty).
      Task: "Find best practices for {tech} in {domain}"
    ```
 
-3. **Consolidate findings** in `research.md` using format:
+4. **Research Considerations**:
+   - **Simple research**: Questions solvable with available tools (Grep, Read, WebSearch, Context7) - resolve immediately
+   - **Complex research**: Requires deep investigation → create research prompt in `FEATURE_DIR/research/` for deepresearch tool
+
+5. **Consolidate findings** in `research.md` using format:
    - Decision: [what was chosen]
    - Rationale: [why chosen]
    - Alternatives considered: [what else evaluated]
+   - Library: [if applicable - name, version, why chosen over alternatives]
 
-4. **Library discovery** for each planned component:
-   - Search npm/pypi for existing solutions (WebSearch + Context7)
-   - Evaluate: maintenance status (commits last 6 months), weekly downloads >1000, TypeScript support
-   - Document in research.md: chosen libraries with rationale, or justification for custom implementation
-
-**Output**: research.md with all NEEDS CLARIFICATION resolved and library decisions documented
+**Output**: research.md with all NEEDS CLARIFICATION resolved, research/ with complex research prompts (if any)
 
 ### Phase 1: Design & Contracts
 
@@ -90,3 +105,4 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 - Use absolute paths
 - ERROR on gate failures or unresolved clarifications
+- Library-first: Always check for existing libraries before planning custom implementations

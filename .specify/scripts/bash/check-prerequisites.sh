@@ -75,7 +75,7 @@ EOF
 done
 
 # Source common functions
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SCRIPT_DIR="$(CDPATH="" cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/common.sh"
 
 # Get feature paths and validate branch
@@ -131,13 +131,13 @@ if [[ -d "$CONTRACTS_DIR" ]] && [[ -n "$(ls -A "$CONTRACTS_DIR" 2>/dev/null)" ]]
     docs+=("contracts/")
 fi
 
-# Check research directory (only if it exists and has files)
+[[ -f "$QUICKSTART" ]] && docs+=("quickstart.md")
+
+# Check research directory (only if it exists and has files) - for complex research
 RESEARCH_DIR="${FEATURE_DIR}/research"
 if [[ -d "$RESEARCH_DIR" ]] && [[ -n "$(ls -A "$RESEARCH_DIR" 2>/dev/null)" ]]; then
     docs+=("research/")
 fi
-
-[[ -f "$QUICKSTART" ]] && docs+=("quickstart.md")
 
 # Include tasks.md if requested and it exists
 if $INCLUDE_TASKS && [[ -f "$TASKS" ]]; then

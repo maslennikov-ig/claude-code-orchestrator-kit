@@ -108,6 +108,8 @@ $RECYCLE.BIN/
 *.backup
 *.bak
 *.old
+.claude/commands.backup.*/
+.specify.backup.*/
 
 # Archive files
 *.archive
@@ -126,3 +128,9 @@ articles/
 
 # Content agents (temporary/helper agents for writing)
 .claude/agents/content/
+
+# ===================================================================
+# Spec-Kit Temporary
+# ===================================================================
+# Original spec-kit clone (for comparison)
+/tmp/spec-kit-comparison/

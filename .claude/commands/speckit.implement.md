@@ -1,5 +1,8 @@
 ---
 description: Execute the implementation plan by processing and executing all tasks defined in tasks.md
+scripts:
+  sh: .specify/scripts/bash/check-prerequisites.sh --json --require-tasks --include-tasks
+  ps: .specify/scripts/powershell/check-prerequisites.ps1 -Json -RequireTasks -IncludeTasks
 ---
 
 > **ORCHESTRATION REMINDER**: You are the orchestrator, not the implementer. Delegate all complex tasks to subagents with complete context. Gather full context before delegation (read code, search patterns, review docs, check commits). Verify results thoroughly (read files, run type-check). Re-delegate with corrections if validation fails. Execute directly only for trivial tasks (1-2 line fixes, imports, single npm install).

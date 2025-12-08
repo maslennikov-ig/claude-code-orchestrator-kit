@@ -1,5 +1,12 @@
 ---
 description: Identify underspecified areas in the current feature spec by asking up to 5 highly targeted clarification questions and encoding answers back into the spec.
+handoffs:
+  - label: Build Technical Plan
+    agent: speckit.plan
+    prompt: Create a plan for the spec. I am building with...
+scripts:
+   sh: .specify/scripts/bash/check-prerequisites.sh --json --paths-only
+   ps: .specify/scripts/powershell/check-prerequisites.ps1 -Json -PathsOnly
 ---
 
 ## User Input
@@ -166,7 +173,7 @@ Execution steps:
 
 Behavior rules:
 
-- If clarifications reveal complex unknowns, flag for research phase
+- If clarifications reveal complex unknowns, flag for research phase (create research prompts in `FEATURE_DIR/research/`)
 - If no meaningful ambiguities found (or all potential questions would be low-impact), respond: "No critical ambiguities detected worth formal clarification." and suggest proceeding.
 - If spec file missing, instruct user to run `/speckit.specify` first (do not create a new spec here).
 - Never exceed 5 total asked questions (clarification retries for a single question do not count as new questions).
