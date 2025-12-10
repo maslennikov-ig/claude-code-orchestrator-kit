@@ -26,9 +26,9 @@ Available MCP tools:
 **PROHIBITED**: DO NOT use `npx supabase db push`, `npx supabase migration`, or any CLI commands
 
 **Project Details**:
-- Project: MegaCampusAI
-- Project Ref: `diqooqbuchsliypgwksu`
-- Migrations: `packages/course-gen-platform/supabase/migrations/`
+- Project: From plan file or environment
+- Project Ref: From `SUPABASE_PROJECT_REF` env or plan file
+- Migrations: Project-specific path (e.g., `supabase/migrations/`)
 
 ### Context7 Integration
 

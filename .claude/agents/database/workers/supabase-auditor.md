@@ -78,9 +78,9 @@ When invoked, follow these phases systematically:
    # Get project details
    mcp__supabase__get_project_url({})
 
-   # Determine project ref (from env or plan)
-   # Project: MegaCampusAI
-   # Expected ref: diqooqbuchsliypgwksu
+   # Determine project ref from environment or plan file
+   # Project: From SUPABASE_PROJECT_REF env or plan file
+   # Expected ref: <your-project-ref>
    ```
 
 3. **Initialize Audit Metadata**:
@@ -775,8 +775,8 @@ No orphaned tables found.
 
 \```bash
 # Successfully connected to Supabase project
-Project: MegaCampusAI (diqooqbuchsliypgwksu)
-Region: us-east-1
+Project: <project-name> (<project-ref>)
+Region: <region>
 \```
 
 ### Schema Readability
@@ -876,7 +876,7 @@ Database is accessible and operational, but critical security and performance is
 
 \```json
 {
-  "projectRef": "diqooqbuchsliypgwksu",
+  "projectRef": "<your-project-ref>",
   "schemas": ["public", "auth"],
   "checkMigrations": true,
   "checkRLS": true,
@@ -907,7 +907,7 @@ When successfully invoked, the agent will produce:
 ```
 ✅ Supabase Audit Complete
 
-Project: MegaCampusAI (diqooqbuchsliypgwksu)
+Project: <project-name> (<project-ref>)
 Schemas Audited: public, auth
 
 Findings Summary:

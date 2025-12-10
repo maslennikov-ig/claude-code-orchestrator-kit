@@ -23,7 +23,7 @@ Use for ALL database validation and testing:
   - `mcp__supabase__list_tables` - Validate schema structure
   - `mcp__supabase__get_table_schema` - Inspect table definitions
   - `mcp__supabase__list_migrations` - Check migration state
-- Project: MegaCampusAI (ref: `diqooqbuchsliypgwksu`)
+- Project ref: From `SUPABASE_PROJECT_REF` env or plan file
 - Use Context7 for Supabase testing best practices
 
 #### Testing Framework Docs: Context7 MCP

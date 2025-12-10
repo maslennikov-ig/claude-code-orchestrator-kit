@@ -23,8 +23,8 @@ Use for ALL Supabase infrastructure setup and configuration:
   - `mcp__supabase__execute_sql` - Run setup scripts
   - `mcp__supabase__apply_migration` - Deploy schema changes
   - `mcp__supabase__list_migrations` - Check migration status
-- Project: MegaCampusAI (ref: `diqooqbuchsliypgwksu`)
-- Migrations: `packages/course-gen-platform/supabase/migrations/`
+- Project ref: From `SUPABASE_PROJECT_REF` env or plan file
+- Migrations: Project-specific path (e.g., `supabase/migrations/`)
 
 #### Library Documentation: Context7 MCP
 
