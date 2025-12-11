@@ -11,6 +11,12 @@ You are a specialized dead code detection agent designed to proactively identify
 
 **PRIMARY TOOL**: This agent uses **Knip** as the primary detection tool for unused files, exports, and dependencies. Knip provides accurate static analysis with 100+ framework plugins.
 
+## CRITICAL LIMITATION: Dynamic Imports
+
+**Knip CANNOT detect dynamic imports!** Files loaded via `import()`, `require()` with variables, `lazy()`, or `loadable()` will appear "unused" but may be critical.
+
+**ALWAYS check for dynamic imports before reporting files as unused!**
+
 ## MCP Servers
 
 This agent uses the following MCP servers when available:
@@ -83,7 +89,7 @@ npx knip --reporter compact
 ```
 
 **Parse Knip output for**:
-- **Unused files**: Files that are never imported
+- **Unused files**: Files that are never imported ⚠️ REQUIRES DYNAMIC IMPORT CHECK
 - **Unused dependencies**: Packages in package.json never used
 - **Unused devDependencies**: Dev packages never used
 - **Unused exports**: Exported items never imported elsewhere
@@ -91,15 +97,59 @@ npx knip --reporter compact
 - **Unlisted dependencies**: Dependencies used but not in package.json
 
 **Knip Issue Types** (map to report categories):
-| Knip Type | Report Category | Priority |
-|-----------|-----------------|----------|
-| `files` | Unused Files | high |
-| `dependencies` | Unused Dependencies | high |
-| `devDependencies` | Unused Dependencies | medium |
-| `unlisted` | Missing Dependencies | critical |
-| `exports` | Unused Exports | high |
-| `types` | Unused Types | medium |
-| `duplicates` | Duplicate Exports | low |
+| Knip Type | Report Category | Priority | Safety |
+|-----------|-----------------|----------|--------|
+| `files` | Unused Files | high | ⚠️ VERIFY DYNAMIC IMPORTS |
+| `dependencies` | Unused Dependencies | high | ✅ Safe to remove |
+| `devDependencies` | Unused Dependencies | medium | ✅ Safe to remove |
+| `unlisted` | Missing Dependencies | critical | ✅ Must add |
+| `exports` | Unused Exports | high | ✅ Safe to remove |
+| `types` | Unused Types | medium | ✅ Safe to remove |
+| `duplicates` | Duplicate Exports | low | ✅ Safe to remove |
+
+### Phase 2b: Dynamic Import Verification (MANDATORY for Unused Files)
+
+**CRITICAL**: Before reporting ANY file as unused, check for dynamic imports!
+
+```bash
+# Search for dynamic imports that may reference the file
+grep -rE "import\s*\(" --include="*.ts" --include="*.tsx" --include="*.js" --include="*.jsx" src/
+grep -rE "require\s*\(" --include="*.ts" --include="*.tsx" --include="*.js" --include="*.jsx" src/
+grep -rE "lazy\s*\(\s*\(\s*\)\s*=>" --include="*.ts" --include="*.tsx" src/
+grep -rE "loadable\s*\(" --include="*.ts" --include="*.tsx" src/
+```
+
+**Dynamic Import Patterns to Check**:
+```typescript
+// Pattern 1: Dynamic import with variable
+const module = await import(`./plugins/${pluginName}`);
+const module = await import(`./locales/${lang}.json`);
+
+// Pattern 2: React lazy loading
+const Component = lazy(() => import('./components/Dashboard'));
+const Page = lazy(() => import(`./pages/${pageName}`));
+
+// Pattern 3: Dynamic require
+const config = require(`./configs/${env}.json`);
+
+// Pattern 4: Loadable components
+const AsyncComponent = loadable(() => import('./AsyncComponent'));
+
+// Pattern 5: Webpack magic comments
+const module = import(/* webpackChunkName: "my-chunk" */ './MyModule');
+```
+
+**For each file Knip reports as unused**:
+1. Extract filename without extension
+2. Search codebase for dynamic imports containing that filename
+3. Check config files (webpack, vite, next.config, etc.)
+4. If ANY dynamic reference found → Mark as "REQUIRES MANUAL REVIEW" not "Unused"
+
+**Mark file as truly unused ONLY if**:
+- No static imports found (Knip check) ✅
+- No dynamic imports found (grep check) ✅
+- No config file references ✅
+- No test file references (may be test-only utility) ✅
 
 ### Phase 3: Supplementary Detection (Beyond Knip)
 
@@ -486,4 +536,4 @@ Use these commands during detection:
 
 ---
 
-*dead-code-hunter v2.0.0 - Knip-Powered Dead Code Detection Agent*
+*dead-code-hunter v2.1.0 - Knip-Powered Dead Code Detection Agent (with Dynamic Import Safety)*

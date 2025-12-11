@@ -301,10 +301,46 @@ For agents using Knip after setup:
 | `npx knip --dependencies` | Dependencies only | dependency-auditor |
 | `npx knip --exports` | Exports only | Unused export detection |
 | `npx knip --files` | Files only | Unused file detection |
-| `npx knip --fix` | Auto-fix issues | dead-code-remover |
-| `npx knip --fix --allow-remove-files` | Fix + remove files | Aggressive cleanup |
+| `npx knip --fix --fix-type exports,types` | Auto-fix exports/types | Safe automated cleanup |
+| `npx knip --fix --fix-type dependencies` | Auto-fix deps | Remove from package.json |
 | `npx knip --reporter json` | JSON output | Machine parsing |
 | `npx knip --reporter compact` | Compact output | Quick review |
+
+## CRITICAL SAFETY WARNING
+
+### NEVER Use `--allow-remove-files`
+
+**`npx knip --fix --allow-remove-files` is FORBIDDEN!**
+
+Knip has a critical limitation: **it cannot detect dynamic imports**.
+
+```typescript
+// Knip CANNOT see these relationships:
+const module = await import(`./plugins/${name}.ts`);
+const Component = lazy(() => import('./components/Dashboard'));
+require(`./locales/${lang}.json`);
+```
+
+Files loaded via dynamic imports will appear "unused" to Knip but are actually critical!
+
+### Safe Knip Usage
+
+**ALLOWED**:
+- `npx knip --fix --fix-type exports` - Safe: removes unused exports from files
+- `npx knip --fix --fix-type types` - Safe: removes unused type exports
+- `npx knip --fix --fix-type dependencies` - Safe: removes from package.json only
+
+**FORBIDDEN**:
+- `npx knip --fix --allow-remove-files` - DANGEROUS: may delete files with dynamic imports
+- `npx knip --fix` (without --fix-type) - May include file removal
+
+### Manual Verification Required
+
+Before removing ANY file flagged by Knip:
+1. Search for dynamic imports: `import(`, `require(`, `lazy(`, `loadable(`
+2. Check for string interpolation in imports
+3. Verify no config files reference the file
+4. Run build and tests after removal
 
 ## Integration with Agents
 
