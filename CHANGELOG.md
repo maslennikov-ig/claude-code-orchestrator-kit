@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.4] - 2025-12-11
+
+### Added
+- **skills**: update skill implementations (06ad51c)
+
 ## [1.4.3] - 2025-12-11
 
 ### Added
