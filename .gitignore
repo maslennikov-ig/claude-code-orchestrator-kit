@@ -5,6 +5,9 @@
 # ===================================================================
 # Sensitive Files - NEVER COMMIT THESE
 # ===================================================================
+# Server security documentation (contains private server info)
+docs/SERVER-SECURITY-CHECKLIST.md
+
 # Environment files with credentials
 .env.local
 .env.*.local
@@ -134,3 +137,4 @@ articles/
 # ===================================================================
 # Original spec-kit clone (for comparison)
 /tmp/spec-kit-comparison/
+.cache-config.md

@@ -57,6 +57,43 @@ declare -a DEPRECATIONS=()        # Deprecated features
 declare -a REMOVALS=()            # Removed features
 declare -a OTHER_CHANGES=()
 
+# === SIGPIPE-SAFE UTILITIES ===
+# These functions replace head to avoid SIGPIPE errors with pipefail in bash 3.2+
+# When head closes the pipe early, the writing process receives SIGPIPE (exit 141)
+# awk reads only needed lines and exits cleanly without triggering SIGPIPE
+
+# Safe replacement for head -n N
+# Usage: command | safe_head 5
+safe_head() {
+    local n="${1:-1}"
+    awk -v n="$n" 'NR <= n {print} NR > n {exit}'
+}
+
+# Optimized version for getting first line only
+# Usage: command | safe_first
+safe_first() {
+    awk 'NR==1 {print; exit}'
+}
+
+# Get commits range handling first release edge case
+# Usage: get_commits_range "$LAST_TAG"
+get_commits_range() {
+    local last_tag="$1"
+
+    if [ -z "$last_tag" ]; then
+        # First release - get all commits from repository start
+        local first_commit
+        first_commit=$(git rev-list --max-parents=0 HEAD 2>/dev/null | safe_first)
+        if [ -n "$first_commit" ]; then
+            echo "${first_commit}^..HEAD"
+        else
+            echo "HEAD"
+        fi
+    else
+        echo "${last_tag}..HEAD"
+    fi
+}
+
 # === UTILITY FUNCTIONS ===
 
 log_info() {
@@ -163,6 +200,48 @@ trap cleanup EXIT
 
 # === PRE-FLIGHT CHECKS ===
 
+# Check if remote is ahead of local to prevent push conflicts
+check_remote_status() {
+    local branch="$1"
+    local skip_check="${RELEASE_SKIP_REMOTE_CHECK:-false}"
+
+    if [ "$skip_check" = "true" ]; then
+        log_warning "Skipping remote status check (RELEASE_SKIP_REMOTE_CHECK=true)"
+        return 0
+    fi
+
+    log_info "Checking remote status..."
+
+    # Fetch latest from remote (without merging)
+    if ! git fetch origin "$branch" --quiet 2>/dev/null; then
+        log_warning "Could not fetch from remote (offline mode or no upstream)"
+        return 0
+    fi
+
+    # Check if remote branch exists
+    if ! git rev-parse "origin/$branch" >/dev/null 2>&1; then
+        log_info "Remote branch origin/$branch does not exist yet (new branch)"
+        return 0
+    fi
+
+    # Check if remote is ahead
+    local behind
+    behind=$(git rev-list --count "HEAD..origin/$branch" 2>/dev/null || echo "0")
+
+    if [ "$behind" -gt 0 ]; then
+        log_error "Remote is $behind commit(s) ahead of local"
+        echo ""
+        log_info "Please pull changes first:"
+        echo "  git pull origin $branch"
+        echo ""
+        log_info "Or skip this check with:"
+        echo "  RELEASE_SKIP_REMOTE_CHECK=true ./release.sh"
+        exit 1
+    fi
+
+    log_success "Local branch is up to date with remote"
+}
+
 run_preflight_checks() {
     log_info "Running pre-flight checks..."
     echo ""
@@ -224,7 +303,7 @@ run_preflight_checks() {
         if [ "$new_agents" -gt 0 ]; then
             commit_type="feat"
             commit_scope="agents"
-            local agent_file=$(echo "$file_status" | grep "^A.*\.claude/agents/.*\.md$" | head -1 | awk '{print $2}')
+            local agent_file=$(echo "$file_status" | grep "^A.*\.claude/agents/.*\.md$" | safe_first | awk '{print $2}')
             local agent_name=$(basename "$agent_file" .md)
             if [ "$new_agents" -eq 1 ]; then
                 commit_desc="add ${agent_name} agent"
@@ -236,7 +315,7 @@ run_preflight_checks() {
         elif [ "$new_skills" -gt 0 ]; then
             commit_type="feat"
             commit_scope="skills"
-            local skill_file=$(echo "$file_status" | grep "^A.*\.claude/skills/.*/SKILL\.md$" | head -1 | awk '{print $2}')
+            local skill_file=$(echo "$file_status" | grep "^A.*\.claude/skills/.*/SKILL\.md$" | safe_first | awk '{print $2}')
             local skill_name=$(echo "$skill_file" | cut -d'/' -f4)
             if [ "$new_skills" -eq 1 ]; then
                 commit_desc="add ${skill_name} skill"
@@ -248,7 +327,7 @@ run_preflight_checks() {
         elif [ "$new_commands" -gt 0 ]; then
             commit_type="feat"
             commit_scope="commands"
-            local cmd_file=$(echo "$file_status" | grep "^A.*\.claude/commands/.*\.md$" | head -1 | awk '{print $2}')
+            local cmd_file=$(echo "$file_status" | grep "^A.*\.claude/commands/.*\.md$" | safe_first | awk '{print $2}')
             local cmd_name=$(basename "$cmd_file" .md)
             if [ "$new_commands" -eq 1 ]; then
                 commit_desc="add ${cmd_name} command"
@@ -327,6 +406,9 @@ Co-Authored-By: Claude <noreply@anthropic.com>"
     fi
     log_success "Remote configured"
 
+    # Check if remote is ahead of local
+    check_remote_status "$BRANCH"
+
     # Check for Node.js
     if ! command -v node &> /dev/null; then
         log_error "Node.js is not installed"
@@ -343,14 +425,15 @@ Co-Authored-By: Claude <noreply@anthropic.com>"
     log_success "Current version: $CURRENT_VERSION"
 
     # Get last git tag (across all branches using --all)
-    LAST_TAG=$(git tag --sort=-version:refname | head -n 1 || echo "")
+    # Using safe_first instead of head -n 1 to avoid SIGPIPE with pipefail
+    LAST_TAG=$(git tag --sort=-version:refname | safe_first || echo "")
     if [ -z "$LAST_TAG" ]; then
         log_warning "No previous git tags found (first release)"
-        LAST_TAG="HEAD~999999" # Get all commits
-        COMMITS_RANGE="HEAD"
+        log_info "Will include all commits from repository start"
+        COMMITS_RANGE=$(get_commits_range "")
     else
         log_success "Last tag: $LAST_TAG"
-        COMMITS_RANGE="${LAST_TAG}..HEAD"
+        COMMITS_RANGE=$(get_commits_range "$LAST_TAG")
 
         # Sync package.json version with git tag if needed
         TAG_VERSION="${LAST_TAG#v}" # Remove 'v' prefix
@@ -689,11 +772,12 @@ update_changelog() {
         # Insert new entry after [Unreleased] section
         if echo "$existing_content" | grep -q "## \[Unreleased\]"; then
             # Find the line number of [Unreleased]
-            local unreleased_line=$(echo "$existing_content" | grep -n "## \[Unreleased\]" | head -1 | cut -d: -f1)
+            # Using safe_first instead of head -1 to avoid SIGPIPE
+            local unreleased_line=$(echo "$existing_content" | grep -n "## \[Unreleased\]" | safe_first | cut -d: -f1)
 
             # Insert after [Unreleased] and its blank line
             {
-                echo "$existing_content" | head -n $((unreleased_line))
+                echo "$existing_content" | safe_head "$((unreleased_line))"
                 echo ""
                 echo "$new_entry"
                 echo "$existing_content" | tail -n +$((unreleased_line + 1))
@@ -701,7 +785,7 @@ update_changelog() {
         else
             # No [Unreleased] section, insert at the beginning after header
             {
-                echo "$existing_content" | head -n 6
+                echo "$existing_content" | safe_head 6
                 echo ""
                 echo "$new_entry"
                 echo "$existing_content" | tail -n +7
@@ -854,7 +938,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>" || {
         log_error "Tag v$NEW_VERSION already exists!"
         echo ""
         log_info "Existing tags:"
-        git tag --sort=-version:refname | head -n 10
+        git tag --sort=-version:refname | safe_head 10
         echo ""
         log_info "Suggested actions:"
         echo "  1. Delete existing tag: git tag -d v$NEW_VERSION && git push origin :refs/tags/v$NEW_VERSION"
