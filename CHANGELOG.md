@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.6] - 2025-12-17
+
+### Fixed
+- **scripts**: add Other section to CHANGELOG for chore/docs commits (cf40449)
+
 ## [1.4.5] - 2025-12-17
 
 ## [1.4.4] - 2025-12-11
