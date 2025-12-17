@@ -675,6 +675,15 @@ EOF
         done
         echo ""
     fi
+
+    # Other section (chore, docs, ci, build, test, style, etc.)
+    if [ ${#OTHER_CHANGES[@]} -gt 0 ]; then
+        echo "### Other"
+        for commit in "${OTHER_CHANGES[@]}"; do
+            format_changelog_line "$commit"
+        done
+        echo ""
+    fi
 }
 
 format_changelog_line() {
