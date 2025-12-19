@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.7] - 2025-12-19
+
+### Added
+- **agents**: add deployment-engineer worker agent (587b18a)
+
 ## [1.4.6] - 2025-12-17
 
 ### Fixed
