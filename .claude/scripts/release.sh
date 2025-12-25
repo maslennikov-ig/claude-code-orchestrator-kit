@@ -81,14 +81,9 @@ get_commits_range() {
     local last_tag="$1"
 
     if [ -z "$last_tag" ]; then
-        # First release - get all commits from repository start
-        local first_commit
-        first_commit=$(git rev-list --max-parents=0 HEAD 2>/dev/null | safe_first)
-        if [ -n "$first_commit" ]; then
-            echo "${first_commit}^..HEAD"
-        else
-            echo "HEAD"
-        fi
+        # First release - use special marker to include all commits
+        # We can't use ${first_commit}^..HEAD because the first commit has no parent
+        echo "__ALL_COMMITS__"
     else
         echo "${last_tag}..HEAD"
     fi
@@ -455,7 +450,12 @@ Co-Authored-By: Claude <noreply@anthropic.com>"
     fi
 
     # Check for commits since last tag
-    COMMITS_COUNT=$(git rev-list $COMMITS_RANGE --count 2>/dev/null || echo "0")
+    if [ "$COMMITS_RANGE" = "__ALL_COMMITS__" ]; then
+        # First release - count all commits
+        COMMITS_COUNT=$(git rev-list HEAD --count 2>/dev/null || echo "0")
+    else
+        COMMITS_COUNT=$(git rev-list $COMMITS_RANGE --count 2>/dev/null || echo "0")
+    fi
     if [ "$COMMITS_COUNT" -eq 0 ]; then
         log_error "No commits since last release ($LAST_TAG)"
         echo "Nothing to release!"
@@ -477,7 +477,13 @@ parse_commits() {
         if [ -n "$line" ]; then
             ALL_COMMITS+=("$line")
         fi
-    done < <(git log --format="%h %s" $COMMITS_RANGE)
+    done < <(
+        if [ "$COMMITS_RANGE" = "__ALL_COMMITS__" ]; then
+            git log --format="%h %s" HEAD
+        else
+            git log --format="%h %s" $COMMITS_RANGE
+        fi
+    )
 
     # Parse and categorize each commit
     # Define regex patterns as variables for proper bash regex matching
