@@ -741,12 +741,12 @@ format_user_facing_line() {
 }
 
 # Generate user-facing release notes (marketing format)
-generate_user_facing_notes() {
+generate_user_facing_notes_entry() {
     local version="$1"
     local date="$2"
 
     cat << EOF
-# Release Notes - v${version}
+## v${version}
 
 _Released on ${date}_
 
@@ -754,7 +754,7 @@ EOF
 
     # New Features (from feat commits)
     if [ ${#FEATURES[@]} -gt 0 ]; then
-        echo "## ✨ New Features"
+        echo "### ✨ New Features"
         echo ""
         for commit in "${FEATURES[@]}"; do
             format_user_facing_line "$commit"
@@ -764,7 +764,7 @@ EOF
 
     # Improvements (from refactor + perf)
     if [ ${#REFACTORS[@]} -gt 0 ] || [ ${#PERF[@]} -gt 0 ]; then
-        echo "## 🔧 Improvements"
+        echo "### 🔧 Improvements"
         echo ""
         for commit in "${PERF[@]}"; do
             format_user_facing_line "$commit"
@@ -777,7 +777,7 @@ EOF
 
     # Security (from security commits)
     if [ ${#SECURITY_FIXES[@]} -gt 0 ]; then
-        echo "## 🔒 Security"
+        echo "### 🔒 Security"
         echo ""
         for commit in "${SECURITY_FIXES[@]}"; do
             format_user_facing_line "$commit"
@@ -787,7 +787,7 @@ EOF
 
     # Bug Fixes
     if [ ${#FIXES[@]} -gt 0 ]; then
-        echo "## 🐛 Bug Fixes"
+        echo "### 🐛 Bug Fixes"
         echo ""
         for commit in "${FIXES[@]}"; do
             format_user_facing_line "$commit"
@@ -797,7 +797,7 @@ EOF
 
     # Breaking Changes (important for users!)
     if [ ${#BREAKING_CHANGES[@]} -gt 0 ]; then
-        echo "## ⚠️ Breaking Changes"
+        echo "### ⚠️ Breaking Changes"
         echo ""
         for commit in "${BREAKING_CHANGES[@]}"; do
             format_user_facing_line "$commit"
@@ -807,7 +807,7 @@ EOF
 
     # Deprecations
     if [ ${#DEPRECATIONS[@]} -gt 0 ]; then
-        echo "## 📦 Deprecated"
+        echo "### 📦 Deprecated"
         echo ""
         for commit in "${DEPRECATIONS[@]}"; do
             format_user_facing_line "$commit"
@@ -953,10 +953,67 @@ update_release_notes() {
     # Track for rollback
     MODIFIED_FILES+=("$release_notes_file")
 
-    # Generate user-facing notes (overwrites the file)
-    generate_user_facing_notes "$version" "$date" > "$release_notes_file"
+    # Generate new entry
+    local new_entry=$(generate_user_facing_notes_entry "$version" "$date")
 
-    log_success "RELEASE_NOTES.md generated"
+    # Read existing release notes and prepend new entry
+    if [ -f "$release_notes_file" ]; then
+        local existing_content=$(<"$release_notes_file")
+
+        # Check if file has header "# Release Notes"
+        if echo "$existing_content" | grep -q "^# Release Notes"; then
+            # Find the first ## section (first release) to insert before it
+            local first_release_line=$(echo "$existing_content" | grep -n "^## v" | safe_first | cut -d: -f1)
+
+            if [ -n "$first_release_line" ] && [ "$first_release_line" -gt 0 ]; then
+                # Insert new entry before the first release
+                {
+                    echo "$existing_content" | safe_head "$((first_release_line - 1))"
+                    echo "$new_entry"
+                    echo ""
+                    echo "$existing_content" | tail -n +"$first_release_line"
+                } > "$release_notes_file"
+            else
+                # No releases yet, append after header
+                {
+                    echo "$existing_content" | safe_head 4
+                    echo ""
+                    echo "$new_entry"
+                } > "$release_notes_file"
+            fi
+        else
+            # Old format or missing header - recreate with new structure
+            {
+                cat << EOF
+# Release Notes
+
+User-facing release notes for all versions.
+
+EOF
+                echo "$new_entry"
+                echo ""
+                # Keep old content after separator
+                echo "---"
+                echo ""
+                echo "## Previous Releases"
+                echo ""
+                echo "$existing_content"
+            } > "$release_notes_file"
+        fi
+    else
+        # Create new RELEASE_NOTES.md with header
+        {
+            cat << EOF
+# Release Notes
+
+User-facing release notes for all versions.
+
+EOF
+            echo "$new_entry"
+        } > "$release_notes_file"
+    fi
+
+    log_success "RELEASE_NOTES.md updated"
     echo ""
 }
 
@@ -1007,7 +1064,7 @@ $(generate_changelog_entry "$NEW_VERSION" "$DATE")──────────
 
 📣 RELEASE_NOTES.md (User-Facing):
 ───────────────────────────────────────────────────────────
-$(generate_user_facing_notes "$NEW_VERSION" "$DATE")───────────────────────────────────────────────────────────
+$(generate_user_facing_notes_entry "$NEW_VERSION" "$DATE")───────────────────────────────────────────────────────────
 
 💬 Git Commit Message:
 ───────────────────────────────────────────────────────────
