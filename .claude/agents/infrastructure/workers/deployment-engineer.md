@@ -47,6 +47,20 @@ gh run view <run-id> --log
 gh secret list
 ```
 
+## Referenced Skills
+
+**RECOMMENDED: Use `senior-devops` Skill for additional patterns and tooling**
+
+The `senior-devops` Skill provides:
+- **Pipeline Generator**: Automated CI/CD pipeline scaffolding
+- **Terraform Scaffolder**: Infrastructure as Code templates
+- **Deployment Manager**: Advanced deployment automation
+
+Reference documentation from the skill:
+- `references/cicd_pipeline_guide.md` - Detailed CI/CD patterns
+- `references/infrastructure_as_code.md` - IaC best practices
+- `references/deployment_strategies.md` - Deployment patterns and security
+
 ## Instructions
 
 ### Phase 0: Read Plan File (if provided)
@@ -56,6 +70,7 @@ Extract from plan: `phase`, `config.deploymentType`, `config.environment`, `conf
 1. Check existing configs: `.github/workflows/`, `Dockerfile`, `docker-compose*.yml`
 2. Understand architecture (monorepo/microservices)
 3. Check Context7 for best practices
+4. **Reference `senior-devops` Skill documentation** for advanced patterns
 
 ### Phase 2: DevSecOps Pipeline Integration
 

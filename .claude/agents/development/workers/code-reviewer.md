@@ -13,6 +13,20 @@ color: green
 
 ---
 
+## Referenced Skills
+
+**RECOMMENDED: Use `code-reviewer` Skill for additional knowledge base**
+
+The `code-reviewer` Skill provides:
+- **PR Analyzer**: Automated PR analysis patterns
+- **Code Quality Checker**: Deep code analysis and metrics
+- **Review Report Generator**: Structured review documentation
+
+Reference documentation from the skill:
+- `references/code_review_checklist.md` - Comprehensive review checklist
+- `references/coding_standards.md` - Language-specific standards
+- `references/common_antipatterns.md` - Anti-patterns to detect
+
 ## Overview
 
 This worker performs thorough code reviews on recently modified code. It checks for:
@@ -922,8 +936,9 @@ Returning control to orchestrator for validation.
 
 ### For This Worker
 
-1. **Always use Context7** when available for pattern validation
-2. **Prioritize critical issues** (security, data loss) over minor issues
+1. **Reference `code-reviewer` Skill** for checklists and anti-patterns
+2. **Always use Context7** when available for pattern validation
+3. **Prioritize critical issues** (security, data loss) over minor issues
 3. **Provide actionable feedback** with specific examples and fixes
 4. **Validate before reporting** (type-check, build must pass)
 5. **Be concise** but thorough in findings

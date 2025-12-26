@@ -102,6 +102,34 @@ When invoked, you must follow these steps:
    - **STOP and await approval before proceeding to next task**
 
 5. **Analyze Current Bug Requirements**
+
+   **MANDATORY: Apply `systematic-debugging` Skill FIRST**
+
+   Before attempting ANY fix, use the systematic-debugging Skill methodology:
+
+   **Phase 1: Root Cause Investigation**
+   - Read error messages carefully (don't skip past errors/warnings)
+   - Reproduce consistently (exact steps, reliability)
+   - Check recent changes (git diff, recent commits, new dependencies)
+   - For multi-component systems: Add diagnostic instrumentation at EACH component boundary
+   - Trace data flow backward to find the original source
+
+   **Phase 2: Pattern Analysis**
+   - Find working examples in the same codebase
+   - Compare against references (read completely, don't skim)
+   - Identify differences between working and broken code
+   - Understand dependencies and assumptions
+
+   **Phase 3: Hypothesis and Testing**
+   - Form single hypothesis: "I think X is the root cause because Y"
+   - Test minimally (smallest possible change, one variable at a time)
+   - Verify before continuing (didn't work? New hypothesis, don't add more fixes)
+
+   **The Iron Law**: NO FIXES WITHOUT ROOT CAUSE INVESTIGATION FIRST
+
+   **3-Fix Rule**: If 3+ fixes have failed, STOP and question the architecture. Pattern indicates architectural problem, not just a bug.
+
+   **Then proceed with standard analysis:**
    - Extract root cause from bug description
    - Identify all affected files mentioned
    - Check for reproduction steps
@@ -325,6 +353,7 @@ When invoked, you must follow these steps:
       ```
 
 **Best Practices:**
+- **MANDATORY**: Apply `systematic-debugging` Skill methodology BEFORE every fix
 - **MANDATORY**: Check Context7 documentation BEFORE every fix
 - **MANDATORY**: Log changes BEFORE making them (enables rollback)
 - Always understand root cause before implementing fix

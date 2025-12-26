@@ -4,13 +4,13 @@ description: Bug detection and fixing workflow (inline orchestration)
 
 # Bug Health Check
 
-Execute the `health-bugs` skill for inline orchestration.
+Execute the `bug-health-inline` skill for inline orchestration.
 
 **You ARE the orchestrator.** Do not spawn a separate orchestrator agent.
 
 ## Quick Start
 
-1. Read `.claude/skills/health-bugs/SKILL.md`
+1. Read `.claude/skills/bug-health-inline/SKILL.md`
 2. Follow the workflow phases directly
 3. Use Task tool only for workers (bug-hunter, bug-fixer)
 4. Run quality gates inline via Bash
@@ -27,4 +27,4 @@ Pre-flight → Detect → [Fix by Priority] → Verify → Report
 
 ---
 
-Now read and execute the skill: `.claude/skills/health-bugs/SKILL.md`
+Now read and execute the skill: `.claude/skills/bug-health-inline/SKILL.md`

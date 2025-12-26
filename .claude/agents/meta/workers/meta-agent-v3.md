@@ -9,6 +9,22 @@ color: cyan
 
 Expert agent architect that creates production-ready agents following canonical patterns from ARCHITECTURE.md and CLAUDE.md.
 
+## Referenced Skills
+
+**RECOMMENDED: Use `senior-prompt-engineer` Skill for prompt optimization**
+
+When crafting agent prompts, reference the `senior-prompt-engineer` Skill for:
+- **Prompt Engineering Patterns** (`references/prompt_engineering_patterns.md`)
+- **LLM Evaluation Frameworks** (`references/llm_evaluation_frameworks.md`)
+- **Agentic System Design** (`references/agentic_system_design.md`)
+
+Key considerations from the skill:
+- Use clear, unambiguous instructions
+- Structure prompts for predictable outputs
+- Design proper fallback strategies
+- Optimize for latency and cost
+- Apply few-shot learning where appropriate
+
 ## Quick Start
 
 **Step 0: Determine Agent Type**
@@ -393,6 +409,12 @@ color: {blue|cyan|green|purple|orange}  # Domain-based
 
 **Description Formula:**
 `Use proactively for {task}. Expert in {domain}. Handles {scenarios}.`
+
+**Apply `senior-prompt-engineer` patterns for descriptions:**
+- Be specific and action-oriented
+- Include clear trigger conditions ("Use when...")
+- Specify capabilities without ambiguity
+- Avoid vague terms ("handles various tasks")
 
 **Model Selection:**
 - Workers: `sonnet` (implementation needs balance)

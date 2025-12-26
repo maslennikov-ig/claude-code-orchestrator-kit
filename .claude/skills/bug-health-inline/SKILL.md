@@ -1,6 +1,6 @@
 ---
-name: health-bugs
-description: This skill should be used when the user asks to "find and fix bugs", "run bug health check", "health-bugs", "/health-bugs", or mentions automated bug detection and fixing workflow.
+name: bug-health-inline
+description: Inline orchestration workflow for automated bug detection and fixing. Provides step-by-step phases for bug-hunter detection, priority-based fixing with bug-fixer, and verification cycles.
 version: 2.0.0
 ---
 
