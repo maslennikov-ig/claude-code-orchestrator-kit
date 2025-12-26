@@ -716,6 +716,141 @@ format_changelog_line() {
     fi
 }
 
+# === USER-FACING RELEASE NOTES ===
+
+# Transform technical scope to user-friendly name
+get_friendly_scope_name() {
+    local scope="$1"
+
+    case "$scope" in
+        auth|authentication) echo "Authentication" ;;
+        api) echo "API" ;;
+        ui|frontend) echo "Interface" ;;
+        db|database) echo "Database" ;;
+        perf|performance) echo "Performance" ;;
+        security|sec) echo "Security" ;;
+        agents) echo "AI Agents" ;;
+        skills) echo "Skills" ;;
+        commands) echo "Commands" ;;
+        mcp) echo "MCP Servers" ;;
+        docs) echo "Documentation" ;;
+        ci|cd) echo "CI/CD" ;;
+        *) echo "$scope" ;;
+    esac
+}
+
+# Format a commit message for user-facing notes (no hash, friendly language)
+format_user_facing_line() {
+    local commit="$1"
+    local message=$(echo "$commit" | cut -d' ' -f2-)
+
+    # Extract scope and message: "type(scope): message" -> friendly format
+    local scope_pattern='^[a-z]+(\(([^)]+)\))?!?:[ ]+(.+)$'
+    if [[ "$message" =~ $scope_pattern ]]; then
+        local scope="${BASH_REMATCH[2]}"
+        local msg="${BASH_REMATCH[3]}"
+
+        # Capitalize first letter of message
+        msg="$(echo "${msg:0:1}" | tr '[:lower:]' '[:upper:]')${msg:1}"
+
+        if [ -n "$scope" ]; then
+            local friendly_scope=$(get_friendly_scope_name "$scope")
+            echo "- **${friendly_scope}**: ${msg}"
+        else
+            echo "- ${msg}"
+        fi
+    else
+        # Not a conventional commit, capitalize and use as-is
+        local capitalized="$(echo "${message:0:1}" | tr '[:lower:]' '[:upper:]')${message:1}"
+        echo "- ${capitalized}"
+    fi
+}
+
+# Generate user-facing release notes (marketing format)
+generate_user_facing_notes() {
+    local version="$1"
+    local date="$2"
+
+    cat << EOF
+# Release Notes - v${version}
+
+_Released on ${date}_
+
+EOF
+
+    # New Features (from feat commits)
+    if [ ${#FEATURES[@]} -gt 0 ]; then
+        echo "## ✨ New Features"
+        echo ""
+        for commit in "${FEATURES[@]}"; do
+            format_user_facing_line "$commit"
+        done
+        echo ""
+    fi
+
+    # Improvements (from refactor + perf)
+    if [ ${#REFACTORS[@]} -gt 0 ] || [ ${#PERF[@]} -gt 0 ]; then
+        echo "## 🔧 Improvements"
+        echo ""
+        for commit in "${PERF[@]}"; do
+            format_user_facing_line "$commit"
+        done
+        for commit in "${REFACTORS[@]}"; do
+            format_user_facing_line "$commit"
+        done
+        echo ""
+    fi
+
+    # Security (from security commits)
+    if [ ${#SECURITY_FIXES[@]} -gt 0 ]; then
+        echo "## 🔒 Security"
+        echo ""
+        for commit in "${SECURITY_FIXES[@]}"; do
+            format_user_facing_line "$commit"
+        done
+        echo ""
+    fi
+
+    # Bug Fixes
+    if [ ${#FIXES[@]} -gt 0 ]; then
+        echo "## 🐛 Bug Fixes"
+        echo ""
+        for commit in "${FIXES[@]}"; do
+            format_user_facing_line "$commit"
+        done
+        echo ""
+    fi
+
+    # Breaking Changes (important for users!)
+    if [ ${#BREAKING_CHANGES[@]} -gt 0 ]; then
+        echo "## ⚠️ Breaking Changes"
+        echo ""
+        for commit in "${BREAKING_CHANGES[@]}"; do
+            format_user_facing_line "$commit"
+        done
+        echo ""
+    fi
+
+    # Deprecations
+    if [ ${#DEPRECATIONS[@]} -gt 0 ]; then
+        echo "## 📦 Deprecated"
+        echo ""
+        for commit in "${DEPRECATIONS[@]}"; do
+            format_user_facing_line "$commit"
+        done
+        echo ""
+    fi
+
+    # Note: We intentionally skip OTHER_CHANGES (chore, ci, docs, etc.)
+    # as they are not relevant to end users
+
+    cat << EOF
+---
+
+_This release was automatically generated from ${#ALL_COMMITS[@]} commits._
+EOF
+}
+
 # === PACKAGE.JSON UPDATES ===
 
 update_package_files() {
@@ -826,6 +961,31 @@ EOF
     echo ""
 }
 
+# === RELEASE NOTES UPDATE ===
+
+update_release_notes() {
+    local version="$1"
+    local date="$2"
+
+    log_info "Generating RELEASE_NOTES.md..."
+
+    local release_notes_file="$PROJECT_ROOT/RELEASE_NOTES.md"
+
+    # Create backup BEFORE modifying (if exists)
+    if [ -f "$release_notes_file" ]; then
+        create_backup "$release_notes_file"
+    fi
+
+    # Track for rollback
+    MODIFIED_FILES+=("$release_notes_file")
+
+    # Generate user-facing notes (overwrites the file)
+    generate_user_facing_notes "$version" "$date" > "$release_notes_file"
+
+    log_success "RELEASE_NOTES.md generated"
+    echo ""
+}
+
 # === PREVIEW ===
 
 show_preview() {
@@ -867,9 +1027,13 @@ EOF
 
     cat << EOF
 
-📄 CHANGELOG.md Entry:
+📄 CHANGELOG.md Entry (Technical):
 ───────────────────────────────────────────────────────────
 $(generate_changelog_entry "$NEW_VERSION" "$DATE")───────────────────────────────────────────────────────────
+
+📣 RELEASE_NOTES.md (User-Facing):
+───────────────────────────────────────────────────────────
+$(generate_user_facing_notes "$NEW_VERSION" "$DATE")───────────────────────────────────────────────────────────
 
 💬 Git Commit Message:
 ───────────────────────────────────────────────────────────
@@ -1037,6 +1201,7 @@ main() {
     # Execute release
     update_package_files "$NEW_VERSION"
     update_changelog "$NEW_VERSION" "$DATE"
+    update_release_notes "$NEW_VERSION" "$DATE"
     execute_release
 
     echo ""
@@ -1048,9 +1213,14 @@ main() {
     log_success "Tag: v$NEW_VERSION"
     log_success "Branch: $BRANCH"
     echo ""
+    log_info "Generated files:"
+    echo "  • CHANGELOG.md (technical, for developers)"
+    echo "  • RELEASE_NOTES.md (user-facing, for marketing)"
+    echo ""
     log_info "Next steps:"
     echo "  • Verify release on GitHub: git remote -v"
     echo "  • Create GitHub Release from tag (optional)"
+    echo "  • Copy RELEASE_NOTES.md content for announcements"
     echo "  • Notify team if applicable"
     echo ""
 }

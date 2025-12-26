@@ -17,13 +17,6 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 ## Outline
 
-0. **Session Check** (DeksdenFlow):
-   - Invoke `resume-session` skill to check for existing session
-   - If valid session found: ask user "Resume previous session or start fresh?"
-   - If resume: load context.md and session-log.md, jump to saved phase
-   - If fresh or no session: proceed to step 1
-   - **Also**: Invoke `load-project-context` skill to load project structure map
-
 1. Run `.specify/scripts/bash/check-prerequisites.sh --json --require-tasks --include-tasks` from repo root and parse FEATURE_DIR and AVAILABLE_DOCS list. All paths must be absolute. For single quotes in args like "I'm Groot", use escape syntax: e.g 'I'\''m Groot' (or double-quote if possible: "I'm Groot").
 
 2. **Check checklists status** (if FEATURE_DIR/checklists/ exists):
@@ -192,10 +185,6 @@ You **MUST** consider the user input before proceeding (if not empty).
    - Provide clear error messages with context for debugging
    - Suggest next steps if implementation cannot proceed
    - **IMPORTANT** For completed tasks, make sure to mark the task off as [X] in the tasks file
-   - **Session Context** (DeksdenFlow):
-     * After completing each PHASE (not task): invoke `save-session-context` skill
-     * On error or pause: save context before stopping
-     * Log significant decisions to session-log.md (architecture choices, issue resolutions)
    - **Critical Rules**:
      * NEVER skip verification
      * NEVER proceed if task failed

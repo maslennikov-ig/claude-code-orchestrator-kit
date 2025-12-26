@@ -232,27 +232,6 @@ Orchestrator → Resume → Verify → Next phase
 
 **Result**: Main Claude Code stays lean, all context gathered on-demand.
 
-### 🧠 **DeksdenFlow Integration (Lazy Knowledge Loading)**
-
-Inspired by [deksden-flow](https://github.com/deksden/deksden-flow), we implement **zero-overhead context management**:
-
-**Project Index** (`.claude/project-index.md`):
-- Compact project map with annotated links
-- Loaded on-demand via `load-project-context` skill
-- ~100-200 tokens when used, 0 at baseline
-
-**Session Context** (`.tmp/current/session/`):
-- `context.md`: Current workflow state for resumption
-- `log.md`: Decisions, issues, learnings (write-only)
-- Enables seamless session continuation
-
-**Why It Matters**:
-- Resume health workflows after session restart
-- Track decisions for debugging
-- Navigate codebase without full exploration
-
-**Token Impact**: Zero baseline overhead. Skills load context only when needed.
-
 ### 🔬 **Serena LSP Integration**
 
 **Serena MCP** provides semantic code understanding via Language Server Protocol:
@@ -875,14 +854,6 @@ Reusable utilities accessible via `Skill` tool.
 | `format-commit-message` | Generate conventional commits |
 | `render-template` | Variable substitution in templates |
 | `rollback-changes` | Restore files from changes log |
-
-### Context & Session Skills (DeksdenFlow)
-
-| Skill | Purpose |
-|-------|---------|
-| `load-project-context` | Load project index for navigation |
-| `save-session-context` | Save workflow state for resumption |
-| `resume-session` | Resume previously saved session |
 
 ---
 

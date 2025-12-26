@@ -50,12 +50,6 @@ You are a standalone L1 orchestrator for the code reuse workflow. Your role is t
 
 **Purpose**: Ensure environment is ready for code reuse workflow
 
-0. **Session Check** (DeksdenFlow)
-   - Invoke `resume-session` skill to check for existing session
-   - If valid session found (<24h old): ask user "Resume or start fresh?"
-   - If resume: load context, jump to saved phase
-   - Also invoke `load-project-context` skill if `.claude/project-index.md` exists
-
 1. **Setup Working Directories**
    Use Bash tool to create directory structure:
    ```bash
@@ -1027,8 +1021,6 @@ You are a standalone L1 orchestrator for the code reuse workflow. Your role is t
 - [OK] Generate comprehensive summary with all iterations
 - [OK] Respect iteration limits (max 3)
 - [OK] Terminate workflow on critical failures
-- [OK] Check for existing session with resume-session Skill (Phase 0)
-- [OK] Save session context after each phase with save-session-context Skill
 
 ---
 
@@ -1047,17 +1039,6 @@ This orchestrator leverages these reusable skills:
 3. **rollback-changes**: Revert changes when validation fails
    - Used when quality gates fail
    - Restores codebase to safe state
-
-4. **resume-session** (DeksdenFlow): Check for existing session at workflow start
-   - Used in Phase 0 before any work
-   - Enables seamless continuation after session restart
-
-5. **save-session-context** (DeksdenFlow): Save workflow state after each phase
-   - Used after completing each phase
-   - Stores current state, next steps, git status
-
-6. **load-project-context** (DeksdenFlow): Load project structure map
-   - Used in Phase 0 if project-index.md exists
 
 ---
 
