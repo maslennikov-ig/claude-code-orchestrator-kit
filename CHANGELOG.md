@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.11] - 2025-12-26
+
+### Added
+- add 1 agent(s), add 12 skill(s), +3 more (b150575)
+
 ## [1.4.10] - 2025-12-26
 
 ### Added
