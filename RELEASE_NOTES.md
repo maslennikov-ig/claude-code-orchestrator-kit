@@ -1,10 +1,10 @@
-# Release Notes - v1.4.9
+# Release Notes - v1.4.10
 
 _Released on 2025-12-26_
 
 ## ✨ New Features
 
-- **Skills**: Add 3 new skills (SKILL.md, ...)
+- Add 1 skill(s), update scripts
 
 ---
 
