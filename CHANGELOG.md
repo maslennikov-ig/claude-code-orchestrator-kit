@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.13] - 2025-12-28
+
+### Added
+- add 4 skill(s), add 1 command(s), +4 more (eb1320b)
+
 ## [1.4.12] - 2025-12-26
 
 ### Other
