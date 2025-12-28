@@ -1,6 +1,6 @@
 ---
 description: Automated release management with version bumping and dual changelog generation
-argument-hint: [patch|minor|major]
+argument-hint: [patch|minor|major] [-m "message"]
 ---
 
 Execute the release automation script with auto-confirmation for Claude Code.
@@ -15,12 +15,18 @@ Execute the release automation script with auto-confirmation for Claude Code.
 - Updates all package.json files
 - Creates git tag and pushes to GitHub
 - Full rollback support on errors
+- **Custom commit message** for uncommitted changes via `--message` / `-m` flag
 
 **Generated RELEASE_NOTES.md format:**
 - Friendly scope names (auth → Authentication, db → Database)
 - Emojis for visual clarity (✨ Features, 🐛 Fixes, 🔒 Security)
 - Skips technical commits (chore, ci, docs) not relevant to users
 - Ready to copy for announcements, app stores, emails
+
+**Tip:** Use `-m` with `feat:` or `fix:` prefix to include your changes in RELEASE_NOTES:
+```bash
+/push patch -m "feat(worker): add worker readiness pre-flight system"
+```
 
 **Usage:**
 
