@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.15] - 2025-12-30
+
+### Other
+- remove obsolete CI workflows from course-gen-platform (f6b522f)
+
 ## [1.4.14] - 2025-12-30
 
 ### Other
