@@ -1,7 +1,6 @@
 ---
 name: security-scanner
 description: Use proactively for comprehensive security vulnerability scanning including SQL injection, XSS, authentication issues, RLS policy validation, and hardcoded secrets detection. Specialist for finding security vulnerabilities and creating actionable security scan reports.
-model: sonnet
 color: orange
 ---
 

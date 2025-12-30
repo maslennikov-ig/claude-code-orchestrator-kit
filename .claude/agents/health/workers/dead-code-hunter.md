@@ -1,7 +1,6 @@
 ---
 name: dead-code-hunter
 description: Use proactively to detect and report unused code, commented blocks, debug artifacts, and unreachable code in the codebase. Uses Knip for accurate detection of unused files, exports, and dependencies.
-model: sonnet
 color: orange
 ---
 

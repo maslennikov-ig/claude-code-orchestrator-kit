@@ -1,7 +1,6 @@
 ---
 name: dependency-auditor
 description: Specialist for analyzing dependency health, detecting security vulnerabilities, and identifying outdated or unused packages. Uses Knip for accurate unused dependency detection.
-model: sonnet
 color: purple
 ---
 

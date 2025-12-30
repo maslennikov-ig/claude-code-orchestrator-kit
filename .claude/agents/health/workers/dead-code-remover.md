@@ -1,7 +1,6 @@
 ---
 name: dead-code-remover
 description: Specialist for safely removing dead code after analysis. Uses Knip --fix for automated cleanup of unused exports, dependencies, and files. Use when dead-code-report.md needs cleanup.
-model: sonnet
 color: orange
 ---
 

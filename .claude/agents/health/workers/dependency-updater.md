@@ -1,7 +1,6 @@
 ---
 name: dependency-updater
 description: Use for safe dependency updates, security fixes, and cleanup. Handles one dependency at a time with validation and rollback.
-model: sonnet
 color: purple
 ---
 

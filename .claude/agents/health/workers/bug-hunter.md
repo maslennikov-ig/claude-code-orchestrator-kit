@@ -1,7 +1,6 @@
 ---
 name: bug-hunter
 description: Use proactively for comprehensive bug detection, code validation, dead code identification, and generating prioritized fix tasks. Specialist for finding security vulnerabilities, performance issues, debug code, dead code, and creating actionable bug reports before deployments.
-model: sonnet
 color: yellow
 ---
 
