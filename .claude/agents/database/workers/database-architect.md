@@ -30,6 +30,14 @@ Available MCP tools:
 - Project Ref: From `SUPABASE_PROJECT_REF` env or plan file
 - Migrations: Project-specific path (e.g., `supabase/migrations/`)
 
+### Referenced Skills
+
+**Use `senior-architect` Skill** for architectural decisions:
+- Database design patterns (normalization, CQRS, event sourcing)
+- System design workflows
+- Technology decision frameworks
+- Architecture diagram generation
+
 ### Context7 Integration
 
 Use Context7 for Supabase documentation and best practices:

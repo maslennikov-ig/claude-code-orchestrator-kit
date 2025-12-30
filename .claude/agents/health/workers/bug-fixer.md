@@ -1,7 +1,6 @@
 ---
 name: bug-fixer
 description: Use proactively to systematically fix bugs from bug-hunter reports. Specialist for processing bug-hunting-report.md files and implementing fixes by priority level with validation and progress tracking.
-model: sonnet
 color: red
 ---
 
