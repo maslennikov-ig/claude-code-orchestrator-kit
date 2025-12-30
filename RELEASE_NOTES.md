@@ -2,6 +2,18 @@
 
 User-facing release notes for all versions.
 
+## v1.4.16
+
+_Released on 2025-12-30_
+
+### ✨ New Features
+
+- Add 3 source file(s), add 11 agent(s), +3 more
+
+---
+
+_This release was automatically generated from 1 commits._
+
 ## v1.4.15
 
 _Released on 2025-12-30_

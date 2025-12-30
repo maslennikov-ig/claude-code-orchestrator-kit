@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.16] - 2025-12-30
+
+### Added
+- add 3 source file(s), add 11 agent(s), +3 more (3ebe06e)
+
 ## [1.4.15] - 2025-12-30
 
 ### Other
