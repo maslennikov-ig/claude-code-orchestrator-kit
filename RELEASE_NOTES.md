@@ -2,6 +2,18 @@
 
 User-facing release notes for all versions.
 
+## v1.4.17
+
+_Released on 2026-01-14_
+
+### ✨ New Features
+
+- Add 1 skill(s), add 2 command(s), +2 more
+
+---
+
+_This release was automatically generated from 1 commits._
+
 ## v1.4.16
 
 _Released on 2025-12-30_
