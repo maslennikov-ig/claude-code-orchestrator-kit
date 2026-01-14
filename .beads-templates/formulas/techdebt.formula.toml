@@ -1,0 +1,99 @@
+# Technical Debt Workflow
+# Address technical debt items
+
+formula = "techdebt"
+description = """
+Technical debt remediation workflow.
+
+Types of debt:
+- Code quality (any types, console.log)
+- Architecture (large files, coupling)
+- Dependencies (outdated, unused)
+- Documentation (missing, outdated)
+"""
+type = "workflow"
+phase = "liquid"
+version = 1
+
+[vars.debt_id]
+description = "Debt ID (e.g., DEBT-001)"
+required = true
+
+[vars.debt_description]
+description = "Description of the technical debt"
+required = true
+
+[vars.priority]
+description = "Priority: high, medium, low"
+required = false
+
+[[steps]]
+id = "assess"
+title = "Assess Debt"
+needs = []
+description = """
+Understand the debt and its impact.
+
+Debt: {{debt_id}} - {{debt_description}}
+
+Questions:
+- What is the actual problem?
+- What is the impact if not addressed?
+- What is the effort to fix?
+- Are there dependencies?
+"""
+
+[[steps]]
+id = "plan"
+title = "Plan Remediation"
+needs = ["assess"]
+description = """
+Create a remediation plan.
+
+Actions:
+- Break into subtasks if large
+- Identify affected files
+- Plan validation steps
+- Estimate effort
+"""
+
+[[steps]]
+id = "implement"
+title = "Implement Fix"
+needs = ["plan"]
+description = """
+Address the debt.
+
+Guidelines:
+- Follow existing patterns
+- Maintain backwards compatibility
+- Don't expand scope
+- Update related docs
+"""
+
+[[steps]]
+id = "validate"
+title = "Validate Changes"
+needs = ["implement"]
+description = """
+Verify debt is resolved.
+
+Checks:
+- Type-check passes
+- Build succeeds
+- Linting passes
+- Debt condition no longer exists
+"""
+
+[[steps]]
+id = "complete"
+title = "Complete and Document"
+needs = ["validate"]
+description = """
+Finalize the debt remediation.
+
+Actions:
+- /push patch
+- Update tech debt documentation
+- Close Beads issue
+"""

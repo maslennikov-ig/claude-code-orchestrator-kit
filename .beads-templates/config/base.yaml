@@ -1,0 +1,57 @@
+# Beads Base Configuration Template
+# =================================
+#
+# Minimal configuration for getting started with Beads.
+# Copy to .beads/config.yaml after running: bd init
+#
+# Documentation: https://github.com/steveyegge/beads
+# Methodology by: Steve Yegge (https://github.com/steveyegge)
+
+# =============================================================================
+# CORE SETTINGS (REQUIRED - customize these)
+# =============================================================================
+
+# Issue prefix - all issues will be PREFIX-xxx
+# IMPORTANT: Change this to your project's short name!
+issue-prefix: "myproject"
+
+# Auto-start daemon when running bd commands
+auto-start-daemon: true
+
+# Debounce interval for auto-flush (how often to sync to JSONL)
+flush-debounce: "5s"
+
+# =============================================================================
+# DAEMON SETTINGS (Auto-Sync)
+# =============================================================================
+# Automatic synchronization with git
+
+daemon.auto-commit: true
+daemon.auto-push: true
+daemon.auto-pull: true
+
+# =============================================================================
+# EXCLUSIVE LOCK PROTOCOL (Multi-session safety)
+# =============================================================================
+# Prevents conflicts when multiple Claude sessions work in parallel
+
+exclusive-lock:
+  enabled: true
+  timeout: "30m"
+  lock-file: ".beads/locks.json"
+  on-conflict: "warn"
+
+# =============================================================================
+# AGENT WORKFLOW NOTES
+# =============================================================================
+#
+# Core workflow for AI agents:
+#   1. bd ready                  - Find available work
+#   2. bd update ID --status in_progress - Claim task (acquires lock)
+#   3. Do the work
+#   4. bd close ID --reason "..." - Complete task (releases lock)
+#   5. Daemon auto-syncs (or bd sync manually)
+#
+# SESSION CLOSE PROTOCOL (MANDATORY):
+#   git status → git add → bd sync → git commit → bd sync → git push
+#   Work is NOT done until pushed!

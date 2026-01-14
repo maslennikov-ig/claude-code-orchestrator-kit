@@ -1,0 +1,141 @@
+# Beads Full Configuration Template
+# ==================================
+#
+# Complete configuration with all features enabled.
+# Recommended for production projects.
+#
+# Documentation: https://github.com/steveyegge/beads
+# Methodology by: Steve Yegge (https://github.com/steveyegge)
+
+# =============================================================================
+# CORE SETTINGS (REQUIRED - customize these)
+# =============================================================================
+
+# Issue prefix - all issues will be PREFIX-xxx
+# IMPORTANT: Change this to your project's short name!
+issue-prefix: "myproject"
+
+# Auto-start daemon when running bd commands
+auto-start-daemon: true
+
+# Debounce interval for auto-flush (how often to sync to JSONL)
+flush-debounce: "5s"
+
+# =============================================================================
+# DAEMON SETTINGS (Auto-Sync)
+# =============================================================================
+
+daemon.auto-commit: true
+daemon.auto-push: true
+daemon.auto-pull: true
+
+# =============================================================================
+# DIRECTORY LABELS (Auto-categorization)
+# =============================================================================
+# Automatically assign labels based on file paths when creating issues
+# Usage: bd create "Fix X" --files src/components/Button.tsx
+#        → automatically gets labels: frontend, components
+#
+# CUSTOMIZE: Adjust paths to match your project structure
+
+directory-labels:
+  "src": ["source"]
+  "src/components": ["frontend", "components"]
+  "src/pages": ["frontend", "pages"]
+  "src/api": ["backend", "api"]
+  "src/utils": ["utils"]
+  "src/types": ["types"]
+  "tests": ["testing"]
+  "docs": ["documentation"]
+  ".claude": ["agent", "config"]
+
+# =============================================================================
+# EXCLUSIVE LOCK PROTOCOL (Multi-session safety)
+# =============================================================================
+
+exclusive-lock:
+  enabled: true
+  timeout: "30m"
+  lock-file: ".beads/locks.json"
+  on-conflict: "warn"
+
+# =============================================================================
+# PROTECTED BRANCH MODE (Safe deployment)
+# =============================================================================
+# Prevents accidental pushes to production branch
+
+protected-branches:
+  enabled: true
+  production: "main"
+  development: "develop"
+
+# =============================================================================
+# PATROL PATTERN (Recurring workflows)
+# =============================================================================
+# Run with: bd patrol run <name>
+
+patrols:
+  code-review:
+    description: "Code review after major implementation"
+    formula: "codereview"
+    trigger: "on_demand"
+    default-vars:
+      fix_mode: "ask"
+
+  health-check:
+    description: "Codebase health check"
+    formula: "healthcheck"
+    trigger: "on_demand"
+
+# =============================================================================
+# MOLECULE BONDING (Complex feature pipelines)
+# =============================================================================
+# Bond multiple molecules into a pipeline for large features
+
+molecule-bonds:
+  bigfeature-pipeline:
+    description: "Full feature lifecycle with bonded stages"
+    stages:
+      - id: "spec"
+        formula: "exploration"
+        output: "spec.md"
+      - id: "design"
+        formula: "exploration"
+        depends_on: ["spec"]
+        output: "plan.md"
+      - id: "implement"
+        formula: "bigfeature"
+        depends_on: ["design"]
+      - id: "review"
+        formula: "codereview"
+        depends_on: ["implement"]
+      - id: "release"
+        formula: "release"
+        depends_on: ["review"]
+    auto_advance: false
+
+# =============================================================================
+# AGENT WORKFLOW NOTES
+# =============================================================================
+#
+# Core workflow for AI agents:
+#   1. bd ready                  - Find available work
+#   2. bd update ID --status in_progress - Claim task (acquires lock)
+#   3. Do the work
+#   4. bd close ID --reason "..." - Complete task (releases lock)
+#   5. Daemon auto-syncs (or bd sync manually)
+#
+# Multi-terminal work:
+#   - Each terminal should work on DIFFERENT issues
+#   - Lock prevents two terminals from editing same issue
+#   - If locked: bd list --unlocked to find available work
+#
+# Creating new work:
+#   bd create "Title" -t feature|bug|chore -p 0-4
+#
+# Emergent work (discovered during other task):
+#   bd create "Found issue" -t bug --deps discovered-from:PREFIX-current
+#
+# SESSION CLOSE PROTOCOL (MANDATORY):
+#   git status → git add → bd sync → git commit → bd sync → git push
+#   Work is NOT done until pushed!

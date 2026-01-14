@@ -1,0 +1,104 @@
+# Exploration Workflow
+# Research spikes and technical exploration
+
+formula = "exploration"
+description = """
+Exploration workflow for research and spikes.
+
+Use when:
+- Investigating new technology
+- Evaluating approaches
+- Prototyping solutions
+- Answering technical questions
+
+This is a WISP workflow - results may be burned or squashed.
+"""
+type = "workflow"
+phase = "vapor"
+version = 1
+
+[vars.question]
+description = "The question or problem to explore"
+required = true
+
+[vars.timebox]
+description = "Time limit for exploration (e.g., '2 hours', '1 day')"
+required = false
+
+[[steps]]
+id = "define"
+title = "Define Exploration Scope"
+needs = []
+description = """
+Clearly define what we're exploring.
+
+Question: {{question}}
+{{#timebox}}Timebox: {{timebox}}{{/timebox}}
+
+Define:
+- Success criteria
+- What we're trying to learn
+- Out of scope items
+"""
+
+[[steps]]
+id = "research"
+title = "Conduct Research"
+needs = ["define"]
+description = """
+Gather information.
+
+Methods:
+- Web search for docs and examples
+- Read existing code for patterns
+- Review similar solutions
+- Consult documentation
+"""
+
+[[steps]]
+id = "prototype"
+title = "Create Prototype"
+needs = ["research"]
+description = """
+Build a minimal prototype if needed.
+
+Guidelines:
+- Quick and dirty is OK
+- Focus on learning, not production quality
+- Document discoveries
+- Note blockers and unknowns
+"""
+
+[[steps]]
+id = "conclude"
+title = "Document Conclusions"
+needs = ["prototype"]
+description = """
+Document findings.
+
+Output:
+- Summary of findings
+- Recommended approach
+- Risks and concerns
+- Next steps
+
+Save to: .tmp/explorations/ or squash into summary.
+"""
+
+[[steps]]
+id = "decide"
+title = "Decide Outcome"
+needs = ["conclude"]
+description = """
+Decide what to do with results.
+
+Options:
+1. SQUASH - Compress into permanent record
+   bd mol squash <wisp-id>
+
+2. BURN - Discard if dead end
+   bd mol burn <wisp-id>
+
+3. PROMOTE - Convert to feature work
+   Create Beads issue for implementation
+"""

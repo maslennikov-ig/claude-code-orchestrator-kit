@@ -1,0 +1,69 @@
+# Code Review Workflow
+# Comprehensive analysis with issue tracking and fixing
+
+formula = "codereview"
+description = "Code review workflow with comprehensive analysis, issue tracking, and optional fixing"
+type = "workflow"
+phase = "liquid"
+version = 1
+
+[vars.scope]
+description = "Files/directories to review (e.g., 'src/components', 'recent', 'pr:123')"
+required = true
+
+[vars.topic]
+description = "Short topic name for report filename (e.g., 'auth-refactor', 'api-handlers')"
+required = true
+
+[vars.fix_mode]
+description = "Fixing mode: 'all', 'critical-high', 'none'"
+required = false
+default = "ask"
+
+[[steps]]
+id = "review"
+title = "Code Review Analysis"
+needs = []
+description = "Run comprehensive code review using code-reviewer agent"
+
+[[steps]]
+id = "create-issues"
+title = "Create Beads Issues"
+needs = ["review"]
+description = "Create Beads issues for each finding with appropriate priority"
+
+[[steps]]
+id = "fix-critical"
+title = "Fix Critical Issues"
+needs = ["create-issues"]
+description = "Fix P0 security and crash issues"
+
+[[steps]]
+id = "fix-high"
+title = "Fix High Issues"
+needs = ["fix-critical"]
+description = "Fix P1 correctness and major bugs"
+
+[[steps]]
+id = "fix-medium"
+title = "Fix Medium Issues"
+needs = ["fix-high"]
+description = "Fix P2 best practices and consistency issues"
+
+[[steps]]
+id = "fix-low"
+title = "Fix Low Issues"
+needs = ["fix-medium"]
+description = "Fix P3 style and documentation issues"
+
+[[steps]]
+id = "verify"
+title = "Verification"
+needs = ["fix-low"]
+description = "Run type-check, build, lint and verify all fixes"
+
+[[steps]]
+id = "complete"
+title = "Complete & Commit"
+needs = ["verify"]
+description = "Complete wisp, generate summary, commit changes"

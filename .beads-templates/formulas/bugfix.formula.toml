@@ -1,0 +1,100 @@
+# Bug Fix Workflow
+# Standard bug fix process
+
+formula = "bugfix"
+description = """
+Standard bug fix workflow.
+
+Process:
+1. Reproduce the bug
+2. Investigate root cause
+3. Implement fix
+4. Add tests (if applicable)
+5. Verify fix
+6. Commit and close
+"""
+type = "workflow"
+phase = "liquid"
+version = 1
+
+[vars.bug_description]
+description = "Description of the bug"
+required = true
+
+[vars.source_issue]
+description = "Source issue ID if discovered during other work"
+required = false
+
+[[steps]]
+id = "reproduce"
+title = "Reproduce Bug"
+needs = []
+description = """
+Reproduce the bug consistently.
+
+Actions:
+- Document reproduction steps
+- Identify triggering conditions
+- Note any error messages
+
+Bug: {{bug_description}}
+"""
+
+[[steps]]
+id = "investigate"
+title = "Investigate Root Cause"
+needs = ["reproduce"]
+description = """
+Find the root cause.
+
+Use problem-investigator agent for complex bugs:
+  subagent_type: problem-investigator
+
+Actions:
+- Trace execution flow
+- Identify faulty code
+- Understand why bug occurs
+"""
+
+[[steps]]
+id = "fix"
+title = "Implement Fix"
+needs = ["investigate"]
+description = """
+Fix the bug.
+
+Guidelines:
+- Fix root cause, not symptoms
+- Minimal changes
+- Don't introduce new issues
+- Consider edge cases
+"""
+
+[[steps]]
+id = "test"
+title = "Test Fix"
+needs = ["fix"]
+description = """
+Verify fix works.
+
+Actions:
+- Reproduce scenario no longer triggers bug
+- Run type-check and build
+- Run related tests
+- Check for regressions
+"""
+
+[[steps]]
+id = "commit"
+title = "Commit Fix"
+needs = ["test"]
+description = """
+Commit the fix.
+
+Commands:
+  /push patch -m "fix: {{bug_description}}"
+
+{{#source_issue}}
+Link to: {{source_issue}}
+{{/source_issue}}
+"""

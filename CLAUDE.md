@@ -144,9 +144,59 @@ Follow command-specific instructions. See `docs/Agents Ecosystem/AGENT-ORCHESTRA
 
 ---
 
+## Task Tracking with Beads (Optional)
+
+> **Attribution**: [Beads](https://github.com/steveyegge/beads) methodology by [Steve Yegge](https://github.com/steveyegge)
+
+If project uses Beads (`/beads-init` was run), follow this workflow:
+
+### Session Workflow
+
+```bash
+# START
+bd prime                    # Restore context
+bd ready                    # Find available work
+
+# WORK
+bd update ID --status in_progress  # Take task
+# ... implement ...
+bd close ID --reason "Done"        # Complete task
+/push patch                        # Commit
+
+# END (MANDATORY!)
+bd sync
+git push
+```
+
+### When to Use What
+
+| Scenario | Tool |
+|----------|------|
+| Large feature (>1 day) | `/speckit.specify` → `/speckit.tobeads` |
+| Small feature (<1 day) | `bd create -t feature` |
+| Bug | `bd create -t bug` |
+| Tech debt | `bd create -t chore` |
+| Research/spike | `bd mol wisp exploration` |
+
+### Emergent Work
+
+Found something during current task?
+```bash
+bd create "Found: ..." -t bug --deps discovered-from:PREFIX-current
+```
+
+### Initialize Beads
+
+Run `/beads-init` to set up Beads in this project.
+
+See `.claude/docs/beads-quickstart.md` for full reference.
+
+---
+
 ## Reference Docs
 
 - Agent orchestration: `docs/Agents Ecosystem/AGENT-ORCHESTRATION.md`
 - Architecture: `docs/Agents Ecosystem/ARCHITECTURE.md`
 - Quality gates: `docs/Agents Ecosystem/QUALITY-GATES-SPECIFICATION.md`
 - Report templates: `docs/Agents Ecosystem/REPORT-TEMPLATE-STANDARD.md`
+- **Beads quickstart**: `.claude/docs/beads-quickstart.md`

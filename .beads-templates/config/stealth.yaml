@@ -1,0 +1,57 @@
+# Beads Stealth Configuration Template
+# =====================================
+#
+# Local-only configuration - no auto-push to remote.
+# Use when working on shared repos where you don't want to push Beads commits.
+#
+# Documentation: https://github.com/steveyegge/beads
+# Methodology by: Steve Yegge (https://github.com/steveyegge)
+
+# =============================================================================
+# CORE SETTINGS
+# =============================================================================
+
+issue-prefix: "local"
+
+auto-start-daemon: true
+flush-debounce: "5s"
+
+# =============================================================================
+# DAEMON SETTINGS (LOCAL ONLY - no auto-push)
+# =============================================================================
+
+daemon.auto-commit: true
+daemon.auto-push: false    # <-- Key difference: no auto-push
+daemon.auto-pull: false    # <-- No auto-pull either
+
+# =============================================================================
+# EXCLUSIVE LOCK PROTOCOL
+# =============================================================================
+
+exclusive-lock:
+  enabled: true
+  timeout: "30m"
+  lock-file: ".beads/locks.json"
+  on-conflict: "warn"
+
+# =============================================================================
+# STEALTH MODE NOTES
+# =============================================================================
+#
+# In stealth mode:
+#   - Beads tracks your work locally
+#   - Changes are committed to local git only
+#   - Nothing is pushed to remote automatically
+#   - You control when/if to push .beads/ changes
+#
+# To push manually when ready:
+#   git add .beads/
+#   git commit -m "chore: sync beads"
+#   git push
+#
+# Or to never push beads data:
+#   Add to .gitignore: .beads/
+#
+# SESSION CLOSE PROTOCOL:
+#   git status → git add → bd sync → git commit
+#   (skip push if you want to keep local only)

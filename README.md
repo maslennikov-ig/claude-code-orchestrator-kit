@@ -2,13 +2,13 @@
 
 > **Professional automation and orchestration system for Claude Code**
 
-Complete toolkit with **39 AI agents**, **37 skills**, **18 slash commands**, **7 MCP configurations**, and **quality gates** for building production-ready projects with Claude Code.
+Complete toolkit with **39 AI agents**, **37 skills**, **20 slash commands**, **7 MCP configurations**, **Beads issue tracking**, and **quality gates** for building production-ready projects with Claude Code.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![npm version](https://img.shields.io/npm/v/claude-code-orchestrator-kit.svg)](https://www.npmjs.com/package/claude-code-orchestrator-kit)
 [![Agents](https://img.shields.io/badge/Agents-39-green.svg)](#agents-ecosystem)
 [![Skills](https://img.shields.io/badge/Skills-37-blue.svg)](#skills-library)
-[![Commands](https://img.shields.io/badge/Commands-18-orange.svg)](#slash-commands)
+[![Commands](https://img.shields.io/badge/Commands-20-orange.svg)](#slash-commands)
 
 **[English](#overview)** | **[Русский](README.ru.md)**
 
@@ -43,7 +43,7 @@ Complete toolkit with **39 AI agents**, **37 skills**, **18 slash commands**, **
 |----------|-------|-------------|
 | **AI Agents** | 39 | Specialized workers for bugs, security, testing, database, frontend, DevOps |
 | **Skills** | 37 | Reusable utilities for validation, reporting, automation, senior expertise |
-| **Commands** | 18 | Health checks, SpecKit, worktree management, releases |
+| **Commands** | 20 | Health checks, SpecKit, Beads, worktree, releases |
 | **MCP Configs** | 7 | Pre-configured setups from minimal (600 tokens) to full (6500 tokens) |
 
 ### Key Benefits
@@ -128,6 +128,15 @@ Specification-driven development workflow with Phase 0 Planning:
 - Executor assignment (MAIN vs specialized agent)
 - Parallel agent creation via meta-agent
 - Atomicity: 1 Task = 1 Agent Invocation
+
+### 6. Beads Issue Tracking (Optional)
+
+[Beads](https://github.com/steveyegge/beads) by Steve Yegge — git-backed issue tracker for AI agents:
+- **Persistent tasks**: Survives session restarts, tracked in git
+- **Dependency graph**: `blocks`, `blocked-by`, `discovered-from`
+- **Multi-session**: Work across multiple Claude sessions without losing context
+- **8 workflow formulas**: `bigfeature`, `bugfix`, `hotfix`, `healthcheck`, etc.
+- **Initialize**: Run `/beads-init` in your project
 
 ---
 
@@ -448,6 +457,13 @@ Professional-grade domain expertise:
 | `/speckit.constitution` | Define project constitution |
 | `/speckit.taskstoissues` | Convert tasks to GitHub issues |
 
+#### Beads (2 commands)
+
+| Command | Purpose |
+|---------|---------|
+| `/beads-init` | Initialize Beads in project |
+| `/speckit.tobeads` | Import tasks.md to Beads |
+
 #### Other (3 commands)
 
 | Command | Purpose |
@@ -675,6 +691,14 @@ echo ".env.local" >> .gitignore
 Commands `/speckit.*` adapted from [GitHub's SpecKit](https://github.com/github/spec-kit).
 - **License**: MIT License
 - **Copyright**: GitHub, Inc.
+
+### Beads by Steve Yegge
+Beads issue tracking integration adapted from [Steve Yegge's Beads](https://github.com/steveyegge/beads).
+- **Description**: Distributed, git-backed graph issue tracker for AI agents
+- **License**: MIT License
+- **Copyright**: Steve Yegge
+- **Commands**: `/beads-init`, `/speckit.tobeads`
+- **Templates**: `.beads-templates/` directory with 8 workflow formulas
 
 ---
 

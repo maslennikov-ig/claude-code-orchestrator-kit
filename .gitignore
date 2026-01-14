@@ -138,3 +138,20 @@ articles/
 # Original spec-kit clone (for comparison)
 /tmp/spec-kit-comparison/
 .cache-config.md
+
+# ===================================================================
+# Beads Issue Tracker
+# ===================================================================
+# Data files (initialized per-project, not template)
+.beads/issues.jsonl
+.beads/beads.db
+.beads/daemon.log
+.beads/metadata.json
+.beads/locks.json
+.beads/*.lock
+
+# Keep these (config and formulas) if project uses Beads:
+# !.beads/config.yaml
+# !.beads/formulas/
+# !.beads/PRIME.md
+# !.beads/README.md

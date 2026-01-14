@@ -1,0 +1,105 @@
+# Health Check Workflow
+# Bug-hunter detection -> Bug-fixer remediation cycle
+
+formula = "healthcheck"
+description = """
+Health check workflow for codebase quality.
+
+Cycle:
+1. Run bug-hunter agent for detection
+2. Review and prioritize findings
+3. Run bug-fixer agent for remediation
+4. Verify fixes
+5. Commit changes
+"""
+type = "workflow"
+phase = "vapor"
+version = 1
+
+[vars.scope]
+description = "Scope of health check: full, src/, packages/web"
+required = false
+
+[[steps]]
+id = "detect"
+title = "Run Bug Hunter"
+needs = []
+description = """
+Run bug-hunter agent to detect issues.
+
+Commands:
+  /health-bugs (inline orchestration)
+
+Or spawn agent:
+  subagent_type: bug-hunter
+
+Outputs:
+  docs/reports/bugs/YYYY-MM/bug-hunting-report.md
+"""
+
+[[steps]]
+id = "review"
+title = "Review Findings"
+needs = ["detect"]
+description = """
+Review bug-hunting report.
+
+Actions:
+- Categorize by priority (CRITICAL, HIGH, MEDIUM, LOW)
+- Filter false positives
+- Identify quick wins
+- Create Beads issues for complex items
+"""
+
+[[steps]]
+id = "fix-critical"
+title = "Fix Critical Issues"
+needs = ["review"]
+description = """
+Address CRITICAL priority issues immediately.
+
+Use bug-fixer agent:
+  subagent_type: bug-fixer
+  prompt: "Fix CRITICAL issues from bug-hunting-report.md"
+
+These block release.
+"""
+
+[[steps]]
+id = "fix-high"
+title = "Fix High Priority Issues"
+needs = ["fix-critical"]
+description = """
+Address HIGH priority issues.
+
+Use bug-fixer agent for each issue.
+Commit after each fix with /push patch.
+"""
+
+[[steps]]
+id = "verify"
+title = "Verify All Fixes"
+needs = ["fix-high"]
+description = """
+Run quality gates.
+
+Commands:
+  pnpm type-check (or tsc)
+  pnpm build
+  pnpm lint
+
+All must pass.
+"""
+
+[[steps]]
+id = "document"
+title = "Document Results"
+needs = ["verify"]
+description = """
+Update health check documentation.
+
+Actions:
+- Update bug-hunting-report.md status
+- Create Beads issues for deferred items
+- Close healthcheck wisp
+"""

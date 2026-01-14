@@ -18,13 +18,6 @@
         "SUPABASE_ACCESS_TOKEN": "${SUPABASE_ACCESS_TOKEN}"
       }
     },
-    "supabase-legacy": {
-      "command": "npx",
-      "args": ["-y", "@supabase/mcp-server-supabase@latest", "--project-ref=${SUPABASE_LEGACY_PROJECT_REF}"],
-      "env": {
-        "SUPABASE_ACCESS_TOKEN": "${SUPABASE_ACCESS_TOKEN}"
-      }
-    },
     "n8n-workflows": {
       "command": "npx",
       "args": ["mcp-remote", "https://gitmcp.io/Zie619/n8n-workflows"]

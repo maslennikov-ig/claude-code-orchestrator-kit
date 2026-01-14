@@ -1,0 +1,82 @@
+# Release Workflow
+# Standard release process for version bumps
+
+formula = "release"
+description = """
+Release workflow for projects.
+
+Handles:
+- Version bump (patch/minor/major)
+- Changelog generation
+- Git tagging
+- Beads sync
+"""
+type = "workflow"
+phase = "vapor"
+version = 1
+
+[vars.bump_type]
+description = "Version bump type: patch, minor, or major"
+required = true
+
+[vars.message]
+description = "Optional release message"
+required = false
+
+[[steps]]
+id = "preflight"
+title = "Pre-flight Checks"
+needs = []
+description = """
+Verify release readiness.
+
+Checks:
+- Clean git working directory
+- All tests passing
+- Type-check passing
+- Build successful
+- bd sync completed
+"""
+
+[[steps]]
+id = "sync-beads"
+title = "Sync Beads"
+needs = ["preflight"]
+description = """
+Ensure Beads is synced before release.
+
+Commands:
+  bd sync
+
+Verify no pending changes to .beads/issues.jsonl
+"""
+
+[[steps]]
+id = "release"
+title = "Execute Release"
+needs = ["sync-beads"]
+description = """
+Run release script.
+
+Commands:
+  /push {{bump_type}} {{#message}}-m "{{message}}"{{/message}}
+
+This will:
+- Bump version in package.json files
+- Generate changelog
+- Create git tag
+- Push to remote
+"""
+
+[[steps]]
+id = "verify"
+title = "Verify Release"
+needs = ["release"]
+description = """
+Confirm release success.
+
+Checks:
+- Git tag exists
+- Remote shows new tag
+- Package versions updated
+"""

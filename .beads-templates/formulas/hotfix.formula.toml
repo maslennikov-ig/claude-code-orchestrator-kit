@@ -1,0 +1,97 @@
+# Hotfix Workflow
+# Emergency production fix
+
+formula = "hotfix"
+description = """
+Emergency hotfix workflow for critical production issues.
+
+Fast-track process:
+1. Identify and reproduce issue
+2. Implement minimal fix
+3. Test fix
+4. Deploy immediately
+5. Document and create follow-up tasks
+"""
+type = "workflow"
+phase = "vapor"
+version = 1
+
+[vars.issue_description]
+description = "Brief description of the production issue"
+required = true
+
+[vars.affected_area]
+description = "Affected component or package"
+required = true
+
+[[steps]]
+id = "identify"
+title = "Identify Issue"
+needs = []
+description = """
+Quickly identify and reproduce the issue.
+
+Actions:
+- Check error logs
+- Identify affected code path
+- Create minimal reproduction
+- Document symptoms
+
+Issue: {{issue_description}}
+Area: {{affected_area}}
+"""
+
+[[steps]]
+id = "fix"
+title = "Implement Fix"
+needs = ["identify"]
+description = """
+Implement minimal fix.
+
+Guidelines:
+- MINIMAL changes only
+- No refactoring
+- No feature additions
+- Direct fix for the issue
+"""
+
+[[steps]]
+id = "test"
+title = "Test Fix"
+needs = ["fix"]
+description = """
+Verify fix works.
+
+Checks:
+- Type-check passes
+- Build succeeds
+- Manual verification
+- Reproduction no longer occurs
+"""
+
+[[steps]]
+id = "deploy"
+title = "Deploy Hotfix"
+needs = ["test"]
+description = """
+Deploy immediately.
+
+Commands:
+  /push patch -m "hotfix: {{issue_description}}"
+
+Verify deployment success.
+"""
+
+[[steps]]
+id = "followup"
+title = "Create Follow-up Tasks"
+needs = ["deploy"]
+description = """
+Document and create follow-up work.
+
+Actions:
+- Create Beads issue for proper fix if needed
+- Document root cause
+- Update incident log
+- Close hotfix wisp
+"""

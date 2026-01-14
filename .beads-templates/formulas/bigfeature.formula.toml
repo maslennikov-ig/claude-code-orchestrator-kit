@@ -1,0 +1,160 @@
+# Big Feature Workflow
+# Spec-kit planning layer -> Beads execution
+# Use for features requiring >1 day of work
+
+formula = "bigfeature"
+description = """
+Big Feature implementation workflow using Spec-kit for planning and Beads for execution.
+
+Workflow phases:
+1. Requirements - Create spec.md with /speckit.specify
+2. Design - Create plan.md with /speckit.plan
+3. Tasks - Generate tasks.md with /speckit.tasks
+4. Import - Convert to Beads with /speckit.tobeads
+5. Execute - Implement using Beads tracking
+6. Verify - Quality gates and testing
+7. Release - Deploy and document
+"""
+type = "workflow"
+phase = "liquid"
+version = 1
+
+[vars.feature_name]
+description = "Short feature name (e.g., 'user-auth', 'dark-mode')"
+required = true
+
+[vars.spec_dir]
+description = "Spec directory path (default: .specify/features/{{feature_name}})"
+required = false
+
+[[steps]]
+id = "requirements"
+title = "Create Requirements (spec.md)"
+needs = []
+description = """
+Create feature specification using Spec-kit.
+
+Commands:
+  /speckit.specify
+
+Output: {{spec_dir}}/spec.md
+
+Include:
+- User stories
+- Acceptance criteria
+- Non-functional requirements
+- Out of scope items
+"""
+
+[[steps]]
+id = "clarify"
+title = "Clarify Requirements"
+needs = ["requirements"]
+description = """
+Identify and resolve ambiguities in requirements.
+
+Commands:
+  /speckit.clarify
+
+Review spec.md and ask clarifying questions.
+Update spec.md with answers.
+"""
+
+[[steps]]
+id = "design"
+title = "Create Design (plan.md)"
+needs = ["clarify"]
+description = """
+Create technical design document.
+
+Commands:
+  /speckit.plan
+
+Output: {{spec_dir}}/plan.md
+
+Include:
+- Architecture decisions
+- Component design
+- Data models
+- API contracts
+- Integration points
+"""
+
+[[steps]]
+id = "tasks"
+title = "Generate Tasks (tasks.md)"
+needs = ["design"]
+description = """
+Break down design into actionable tasks.
+
+Commands:
+  /speckit.tasks
+
+Output: {{spec_dir}}/tasks.md
+
+Tasks should be:
+- Atomic (1-4 hours each)
+- Dependency-ordered
+- Parallelizable where possible
+"""
+
+[[steps]]
+id = "import"
+title = "Import to Beads"
+needs = ["tasks"]
+description = """
+Convert tasks.md to Beads issues.
+
+Commands:
+  /speckit.tobeads
+
+Creates:
+- Epic for the feature
+- Child issues for each task
+- Proper dependencies
+"""
+
+[[steps]]
+id = "execute"
+title = "Execute Tasks"
+needs = ["import"]
+description = """
+Implement tasks using Beads tracking.
+
+Workflow:
+1. bd ready - find next task
+2. bd update <id> --status in_progress
+3. Implement with quality gates
+4. bd close <id> --reason "description"
+5. /push patch
+6. Repeat until done
+"""
+
+[[steps]]
+id = "verify"
+title = "Verify Implementation"
+needs = ["execute"]
+description = """
+Run quality gates and testing.
+
+Checks:
+- Type-check (tsc / pnpm type-check)
+- Build (pnpm build)
+- Tests (pnpm test)
+- Manual testing
+- Code review
+"""
+
+[[steps]]
+id = "release"
+title = "Release Feature"
+needs = ["verify"]
+description = """
+Deploy and document the feature.
+
+Actions:
+- /push minor (or major if breaking)
+- Update documentation
+- Notify stakeholders
+- Close epic in Beads
+"""
