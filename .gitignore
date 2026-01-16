@@ -13,11 +13,8 @@ docs/SERVER-SECURITY-CHECKLIST.md
 .env.*.local
 *.env.local
 
-# MCP configuration (may contain secrets)
-.mcp.json
+# Local MCP configuration (for personal credentials)
 .mcp.local.json
-.mcp.*.json
-!.mcp.example.json
 
 # Local settings
 .claude/settings.local.json
