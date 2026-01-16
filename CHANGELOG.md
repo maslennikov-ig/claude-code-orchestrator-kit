@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.18] - 2026-01-16
+
+### Added
+- add unified MCP configuration with auto-optimization (658d61b)
+
 ## [1.4.17] - 2026-01-14
 
 ### Added

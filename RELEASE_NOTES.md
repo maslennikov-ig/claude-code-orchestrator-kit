@@ -2,6 +2,18 @@
 
 User-facing release notes for all versions.
 
+## v1.4.18
+
+_Released on 2026-01-16_
+
+### ✨ New Features
+
+- Add unified MCP configuration with auto-optimization
+
+---
+
+_This release was automatically generated from 1 commits._
+
 ## v1.4.17
 
 _Released on 2026-01-14_
