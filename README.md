@@ -2,13 +2,13 @@
 
 > **Professional automation and orchestration system for Claude Code**
 
-Complete toolkit with **39 AI agents**, **37 skills**, **20 slash commands**, **7 MCP configurations**, **Beads issue tracking**, and **quality gates** for building production-ready projects with Claude Code.
+Complete toolkit with **39 AI agents**, **38 skills**, **21 slash commands**, **7 MCP configurations**, **Beads issue tracking**, **ready-to-use prompts**, and **quality gates** for building production-ready projects with Claude Code.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![npm version](https://img.shields.io/npm/v/claude-code-orchestrator-kit.svg)](https://www.npmjs.com/package/claude-code-orchestrator-kit)
 [![Agents](https://img.shields.io/badge/Agents-39-green.svg)](#agents-ecosystem)
-[![Skills](https://img.shields.io/badge/Skills-37-blue.svg)](#skills-library)
-[![Commands](https://img.shields.io/badge/Commands-20-orange.svg)](#slash-commands)
+[![Skills](https://img.shields.io/badge/Skills-38-blue.svg)](#skills-library)
+[![Commands](https://img.shields.io/badge/Commands-21-orange.svg)](#slash-commands)
 
 **[English](#overview)** | **[Русский](README.ru.md)**
 
@@ -25,6 +25,7 @@ Complete toolkit with **39 AI agents**, **37 skills**, **20 slash commands**, **
 - [Skills Library](#skills-library)
 - [Slash Commands](#slash-commands)
 - [MCP Configurations](#mcp-configurations)
+- [Prompts](#prompts)
 - [Project Structure](#project-structure)
 - [Usage Examples](#usage-examples)
 - [Best Practices](#best-practices)
@@ -42,8 +43,8 @@ Complete toolkit with **39 AI agents**, **37 skills**, **20 slash commands**, **
 | Category | Count | Description |
 |----------|-------|-------------|
 | **AI Agents** | 39 | Specialized workers for bugs, security, testing, database, frontend, DevOps |
-| **Skills** | 37 | Reusable utilities for validation, reporting, automation, senior expertise |
-| **Commands** | 20 | Health checks, SpecKit, Beads, worktree, releases |
+| **Skills** | 38 | Reusable utilities for validation, reporting, automation, senior expertise |
+| **Commands** | 21 | Health checks, SpecKit, Beads, process-logs, worktree, releases |
 | **MCP Configs** | 7 | Pre-configured setups from minimal (600 tokens) to full (6500 tokens) |
 
 ### Key Benefits
@@ -261,12 +262,12 @@ SEQUENTIAL_THINKING_PROFILE=your-profile
                               ↓
 ┌────────────────────────────────────────────────────────────────┐
 │                        COMMANDS                                 │
-│            (18 slash commands)                                  │
+│            (21 slash commands)                                  │
 ├────────────────────────────────────────────────────────────────┤
 │  /health-bugs      /speckit.specify    /worktree              │
 │  /health-security  /speckit.plan       /push                  │
 │  /health-deps      /speckit.implement  /translate-doc          │
-│  /health-cleanup   /speckit.clarify                            │
+│  /health-cleanup   /speckit.clarify    /process-logs          │
 │  /health-reuse     /speckit.constitution                       │
 │  /health-metrics   /speckit.taskstoissues                      │
 └────────────────────────────────────────────────────────────────┘
@@ -349,7 +350,7 @@ SEQUENTIAL_THINKING_PROFILE=your-profile
 
 ## Skills Library
 
-### 37 Reusable Skills
+### 38 Reusable Skills
 
 #### Inline Orchestration (5 skills)
 Execute health workflows directly without spawning orchestrator agents:
@@ -412,9 +413,10 @@ Professional-grade domain expertise:
 | `webapp-testing` | Playwright testing |
 | `frontend-aesthetics` | Distinctive UI design |
 
-#### Other (4 skills)
+#### Other (5 skills)
 | Skill | Purpose |
 |-------|---------|
+| `process-logs` | Automated error log processing workflow |
 | `git-commit-helper` | Commit message from diff |
 | `changelog-generator` | User-facing changelogs |
 | `content-research-writer` | Research-driven content |
@@ -424,7 +426,7 @@ Professional-grade domain expertise:
 
 ## Slash Commands
 
-### 18 Commands
+### 21 Commands
 
 #### Health Monitoring (6 commands)
 
@@ -464,10 +466,11 @@ Professional-grade domain expertise:
 | `/beads-init` | Initialize Beads in project |
 | `/speckit.tobeads` | Import tasks.md to Beads |
 
-#### Other (3 commands)
+#### Other (4 commands)
 
 | Command | Purpose |
 |---------|---------|
+| `/process-logs` | Automated error log processing and fixing |
 | `/push [patch\|minor\|major]` | Automated release with changelog |
 | `/worktree` | Git worktree management |
 | `/translate-doc` | Translate documentation (EN↔RU) |
@@ -493,6 +496,24 @@ Switch configurations based on your task to save tokens:
 | **FRONTEND** | Base + Playwright + ShadCN | ~2000 | UI development |
 | **SERENA** | Base + Serena LSP | ~2500 | Semantic code search |
 | **FULL** | All servers | ~6500 | Maximum capabilities |
+
+---
+
+## Prompts
+
+Ready-to-use prompts for setting up various features in your project. Copy, paste, and let Claude Code do the work.
+
+| Prompt | Description |
+|--------|-------------|
+| [`setup-error-logging.md`](prompts/setup-error-logging.md) | Complete error logging system with DB table, logger service, auto-mute rules |
+
+**How to Use:**
+
+1. Copy the prompt content to your chat with Claude Code
+2. Answer any questions Claude asks about your project specifics
+3. Review the generated code before committing
+
+See [`prompts/README.md`](prompts/README.md) for full documentation.
 
 ---
 
@@ -533,6 +554,10 @@ claude-code-orchestrator-kit/
 │   ├── .mcp.supabase-only.json
 │   ├── .mcp.frontend.json
 │   └── ...
+│
+├── prompts/                    # Ready-to-use setup prompts
+│   ├── README.md
+│   └── setup-error-logging.md
 │
 ├── docs/                       # Documentation
 │   ├── FAQ.md
@@ -717,8 +742,8 @@ Built with:
 ## Stats
 
 - **39** AI Agents
-- **37** Reusable Skills
-- **18** Slash Commands
+- **38** Reusable Skills
+- **21** Slash Commands
 - **7** MCP Configurations
 - **v1.4.13** Current Version
 
