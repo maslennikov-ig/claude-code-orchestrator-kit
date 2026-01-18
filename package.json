@@ -1,6 +1,6 @@
 {
   "name": "claude-code-orchestrator-kit",
-  "version": "1.4.18",
+  "version": "1.4.19",
   "description": "Professional automation and orchestration system for Claude Code with 39 AI agents, 37 skills, 18 slash commands, 7 MCP configurations, quality gates, and inline orchestration workflows",
   "main": "index.js",
   "type": "module",

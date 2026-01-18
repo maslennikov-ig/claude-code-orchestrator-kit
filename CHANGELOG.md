@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.4.19] - 2026-01-18
+
+### Added
+- add /process-logs command and prompts section (44b62c0)
+
 ## [1.4.18] - 2026-01-16
 
 ### Added

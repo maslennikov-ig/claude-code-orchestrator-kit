@@ -2,6 +2,18 @@
 
 User-facing release notes for all versions.
 
+## v1.4.19
+
+_Released on 2026-01-18_
+
+### ✨ New Features
+
+- Add /process-logs command and prompts section
+
+---
+
+_This release was automatically generated from 1 commits._
+
 ## v1.4.18
 
 _Released on 2026-01-16_
