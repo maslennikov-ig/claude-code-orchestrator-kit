@@ -2,12 +2,12 @@
 
 > **Professional automation and orchestration system for Claude Code**
 
-Complete toolkit with **39 AI agents**, **38 skills**, **21 slash commands**, **7 MCP configurations**, **Beads issue tracking**, **ready-to-use prompts**, and **quality gates** for building production-ready projects with Claude Code.
+Complete toolkit with **39 AI agents**, **38 skills**, **21 slash commands**, **auto-optimized MCP**, **Beads issue tracking**, **ready-to-use prompts**, and **quality gates** for building production-ready projects with Claude Code.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![npm version](https://img.shields.io/npm/v/claude-code-orchestrator-kit.svg)](https://www.npmjs.com/package/claude-code-orchestrator-kit)
 [![Agents](https://img.shields.io/badge/Agents-39-green.svg)](#agents-ecosystem)
-[![Skills](https://img.shields.io/badge/Skills-38-blue.svg)](#skills-library)
+[![Skills](https://img.shields.io/badge/Skills-39-blue.svg)](#skills-library)
 [![Commands](https://img.shields.io/badge/Commands-21-orange.svg)](#slash-commands)
 
 **[English](#overview)** | **[Русский](README.ru.md)**
@@ -24,7 +24,8 @@ Complete toolkit with **39 AI agents**, **38 skills**, **21 slash commands**, **
 - [Agents Ecosystem](#agents-ecosystem)
 - [Skills Library](#skills-library)
 - [Slash Commands](#slash-commands)
-- [MCP Configurations](#mcp-configurations)
+- [MCP Configuration](#mcp-configuration)
+- [Claude Code Settings](#claude-code-settings)
 - [Prompts](#prompts)
 - [Project Structure](#project-structure)
 - [Usage Examples](#usage-examples)
@@ -43,9 +44,9 @@ Complete toolkit with **39 AI agents**, **38 skills**, **21 slash commands**, **
 | Category | Count | Description |
 |----------|-------|-------------|
 | **AI Agents** | 39 | Specialized workers for bugs, security, testing, database, frontend, DevOps |
-| **Skills** | 38 | Reusable utilities for validation, reporting, automation, senior expertise |
+| **Skills** | 39 | Reusable utilities for validation, reporting, automation, senior expertise |
 | **Commands** | 21 | Health checks, SpecKit, Beads, process-logs, worktree, releases |
-| **MCP Configs** | 7 | Pre-configured setups from minimal (600 tokens) to full (6500 tokens) |
+| **MCP Servers** | 6 | Auto-optimized: Context7, Sequential Thinking, Supabase, Playwright, shadcn, Serena |
 
 ### Key Benefits
 
@@ -114,14 +115,14 @@ Professional-grade skills for complex tasks:
 | `ux-researcher-designer` | User research, personas, journey mapping |
 | `systematic-debugging` | Root cause analysis, debugging workflows |
 
-### 4. MCP Dynamic Switching
+### 4. Auto-Optimized MCP Configuration
 
-Save 500-4500 context tokens by loading only what you need:
+**No manual switching required!** Claude Code automatically optimizes context usage:
 
-```bash
-./switch-mcp.sh
-# Select configuration based on your task
-```
+- **Single `.mcp.json`** with all servers — no manual switching needed
+- **Automatic deferred loading** via `ENABLE_TOOL_SEARCH=auto:5`
+- **85% context reduction** for MCP tools (loaded on-demand via ToolSearch)
+- **Transparent to user** — just works without configuration
 
 ### 5. SpecKit Integration
 
@@ -148,7 +149,7 @@ Specification-driven development workflow with Phase 0 Planning:
 ```bash
 npm install -g claude-code-orchestrator-kit
 cd your-project
-claude-orchestrator  # Interactive MCP setup
+claude-orchestrator  # Interactive setup
 ```
 
 ### Option 2: Clone Repository
@@ -157,12 +158,9 @@ claude-orchestrator  # Interactive MCP setup
 git clone https://github.com/maslennikov-ig/claude-code-orchestrator-kit.git
 cd claude-code-orchestrator-kit
 
-# Configure environment
+# Configure environment (optional, for Supabase)
 cp .env.example .env.local
 # Edit .env.local with your credentials
-
-# Choose MCP configuration
-./switch-mcp.sh
 
 # Restart Claude Code - ready!
 ```
@@ -172,8 +170,8 @@ cp .env.example .env.local
 ```bash
 # Copy orchestration system to your project
 cp -r claude-code-orchestrator-kit/.claude /path/to/your/project/
+cp claude-code-orchestrator-kit/.mcp.json /path/to/your/project/
 cp claude-code-orchestrator-kit/CLAUDE.md /path/to/your/project/
-cp claude-code-orchestrator-kit/switch-mcp.sh /path/to/your/project/
 ```
 
 ---
@@ -203,10 +201,10 @@ SEQUENTIAL_THINKING_PROFILE=your-profile
 ### Verify Installation
 
 ```bash
-# Check MCP config
-./switch-mcp.sh  # Select option 0 to see active servers
+# Check that .mcp.json and .claude/settings.json exist
+ls -la .mcp.json .claude/settings.json
 
-# Try a health command
+# Try a health command in Claude Code
 /health-bugs
 ```
 
@@ -353,15 +351,15 @@ SEQUENTIAL_THINKING_PROFILE=your-profile
 ### 38 Reusable Skills
 
 #### Inline Orchestration (5 skills)
-Execute health workflows directly without spawning orchestrator agents:
+Execute health workflows directly without spawning orchestrator agents. All skills include **Beads integration** for issue tracking.
 
-| Skill | Command | Purpose |
-|-------|---------|---------|
-| `bug-health-inline` | `/health-bugs` | Bug detection & fixing |
-| `security-health-inline` | `/health-security` | Security scanning & fixing |
-| `deps-health-inline` | `/health-deps` | Dependency audit & update |
-| `cleanup-health-inline` | `/health-cleanup` | Dead code removal |
-| `reuse-health-inline` | `/health-reuse` | Code duplication elimination |
+| Skill | Invocation | Purpose | Version |
+|-------|------------|---------|---------|
+| `health-bugs` | `/health-bugs` | Bug detection & fixing with history enrichment | 3.1.0 |
+| `security-health-inline` | `/health-security` | Security vulnerability scanning & fixing | 3.0.0 |
+| `deps-health-inline` | `/health-deps` | Dependency audit & update | 3.0.0 |
+| `cleanup-health-inline` | `/health-cleanup` | Dead code detection & removal | 3.0.0 |
+| `reuse-health-inline` | `/health-reuse` | Code duplication consolidation | 3.0.0 |
 
 #### Senior Expertise (6 skills)
 Professional-grade domain expertise:
@@ -413,10 +411,15 @@ Professional-grade domain expertise:
 | `webapp-testing` | Playwright testing |
 | `frontend-aesthetics` | Distinctive UI design |
 
-#### Other (5 skills)
+#### Automation Workflows (2 skills)
+| Skill | Purpose | Version |
+|-------|---------|---------|
+| `process-logs` | Automated error log processing with Beads integration | 1.8.0 |
+| `process-issues` | GitHub Issues processing with similar issue search | 1.1.0 |
+
+#### Other (4 skills)
 | Skill | Purpose |
 |-------|---------|
-| `process-logs` | Automated error log processing workflow |
 | `git-commit-helper` | Commit message from diff |
 | `changelog-generator` | User-facing changelogs |
 | `content-research-writer` | Research-driven content |
@@ -477,25 +480,72 @@ Professional-grade domain expertise:
 
 ---
 
-## MCP Configurations
+## MCP Configuration
 
-### 7 Pre-configured Setups
+### Unified Auto-Optimized Setup
 
-Switch configurations based on your task to save tokens:
+**No more manual switching!** The kit uses a single `.mcp.json` with automatic optimization.
 
+#### How It Works
+
+1. **Single config file** (`.mcp.json`) contains all MCP servers
+2. **Auto-deferred loading** via `.claude/settings.json`:
+   ```json
+   {
+     "env": { "ENABLE_TOOL_SEARCH": "auto:5" }
+   }
+   ```
+3. **On-demand loading** — Claude loads tools only when needed via ToolSearch
+4. **85% context savings** compared to loading all tools upfront
+
+#### Included MCP Servers
+
+| Server | Purpose | Tools |
+|--------|---------|-------|
+| **Context7** | Up-to-date library documentation | `resolve-library-id`, `query-docs` |
+| **Sequential Thinking** | Structured reasoning for complex tasks | `sequentialthinking` |
+| **Supabase** | Database operations, migrations, RLS | Tables, SQL, migrations, edge functions |
+| **Playwright** | Browser automation & testing | Screenshots, navigation, form filling |
+| **shadcn/ui** | UI component library integration | Registry search, component examples |
+| **Serena** | Semantic code analysis (LSP) | Symbol search, references, refactoring |
+
+#### Environment Variables
+
+Set in `.env.local` for Supabase integration:
 ```bash
-./switch-mcp.sh
+SUPABASE_PROJECT_REF=your-project-ref
+SUPABASE_ACCESS_TOKEN=your-token
 ```
 
-| Config | Servers | Tokens | Use Case |
-|--------|---------|--------|----------|
-| **BASE** | Context7 + Sequential Thinking | ~600 | Daily development |
-| **SUPABASE** | Base + Supabase | ~2500 | Database work |
-| **SUPABASE-FULL** | Base + Supabase (dual) | ~3000 | Multi-project DB |
-| **N8N** | Base + n8n automation | ~2500 | Workflow automation |
-| **FRONTEND** | Base + Playwright + ShadCN | ~2000 | UI development |
-| **SERENA** | Base + Serena LSP | ~2500 | Semantic code search |
-| **FULL** | All servers | ~6500 | Maximum capabilities |
+---
+
+## Claude Code Settings
+
+### `.claude/settings.json`
+
+Project-level Claude Code configuration for enhanced workflow:
+
+```json
+{
+  "plansDirectory": "./docs/plans",
+  "env": {
+    "ENABLE_TOOL_SEARCH": "auto:5"
+  }
+}
+```
+
+#### Settings Explained
+
+| Setting | Value | Purpose |
+|---------|-------|---------|
+| `plansDirectory` | `./docs/plans` | Where Claude saves implementation plans when using Plan Mode |
+| `ENABLE_TOOL_SEARCH` | `auto:5` | Auto-enables deferred MCP tool loading for servers with >5 tools |
+
+#### Benefits
+
+- **Plan Mode Integration**: Plans are saved to `docs/plans/` for version control and review
+- **Automatic Context Optimization**: MCP tools load on-demand instead of upfront
+- **No Manual Configuration**: Works transparently — just install and use
 
 ---
 
@@ -505,7 +555,21 @@ Ready-to-use prompts for setting up various features in your project. Copy, past
 
 | Prompt | Description |
 |--------|-------------|
+| [`setup-health-workflows.md`](prompts/setup-health-workflows.md) | Health workflows with Beads integration (`/health-bugs`, `/health-security`, etc.) |
 | [`setup-error-logging.md`](prompts/setup-error-logging.md) | Complete error logging system with DB table, logger service, auto-mute rules |
+
+### Quick Start: Health Workflows
+
+```bash
+# 1. Install Beads CLI
+npm install -g @anthropic/beads-cli
+
+# 2. Initialize in your project
+bd init
+
+# 3. Run in Claude Code
+/health-bugs
+```
 
 **How to Use:**
 
@@ -549,10 +613,7 @@ claude-code-orchestrator-kit/
 │   ├── schemas/                # JSON schemas
 │   └── scripts/                # Quality gate scripts
 │
-├── mcp/                        # 7 MCP configurations
-│   ├── .mcp.base.json
-│   ├── .mcp.supabase-only.json
-│   ├── .mcp.frontend.json
+├── mcp/                        # Legacy MCP configs (reference only)
 │   └── ...
 │
 ├── prompts/                    # Ready-to-use setup prompts
@@ -565,8 +626,8 @@ claude-code-orchestrator-kit/
 │   ├── TUTORIAL-CUSTOM-AGENTS.md
 │   └── ...
 │
+├── .mcp.json                   # Unified MCP configuration
 ├── CLAUDE.md                   # Behavioral Operating System
-├── switch-mcp.sh               # MCP switcher
 └── package.json                # npm package config
 ```
 
@@ -639,11 +700,10 @@ cd .worktrees/feature-new-auth
 
 ## Best Practices
 
-### 1. Start with BASE Configuration
-Use minimal MCP config for daily work (~600 tokens):
-```bash
-./switch-mcp.sh  # Select BASE
-```
+### 1. Use Auto-Optimized MCP
+The kit automatically optimizes context usage — no configuration needed:
+- MCP tools load on-demand via ToolSearch
+- ~85% context reduction compared to loading all tools upfront
 
 ### 2. Run Health Checks Weekly
 ```bash
@@ -702,11 +762,10 @@ echo ".env.local" >> .gitignore
 2. Add `SKILL.md` following format
 3. Add to this README
 
-### Adding MCP Configurations
+### Adding MCP Servers
 
-1. Create `mcp/.mcp.{name}.json`
-2. Update `switch-mcp.sh`
-3. Document in README
+1. Add server to `.mcp.json`
+2. Document in README under MCP Configuration section
 
 ---
 
@@ -742,10 +801,10 @@ Built with:
 ## Stats
 
 - **39** AI Agents
-- **38** Reusable Skills
+- **39** Reusable Skills
 - **21** Slash Commands
-- **7** MCP Configurations
-- **v1.4.13** Current Version
+- **6** MCP Servers (auto-optimized)
+- **v1.4.19** Current Version
 
 ---
 

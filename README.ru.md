@@ -2,13 +2,13 @@
 
 > **Профессиональная система автоматизации и оркестрации для Claude Code**
 
-Полный набор инструментов с **39 ИИ-агентами**, **37 скиллами**, **18 слэш-командами**, **7 MCP-конфигурациями** и **Quality Gates** для создания production-ready проектов с Claude Code.
+Полный набор инструментов с **39 ИИ-агентами**, **38 скиллами**, **21 слэш-командой**, **авто-оптимизированным MCP**, **Beads issue tracking** и **Quality Gates** для создания production-ready проектов с Claude Code.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![npm version](https://img.shields.io/npm/v/claude-code-orchestrator-kit.svg)](https://www.npmjs.com/package/claude-code-orchestrator-kit)
 [![Agents](https://img.shields.io/badge/Agents-39-green.svg)](#экосистема-агентов)
-[![Skills](https://img.shields.io/badge/Skills-37-blue.svg)](#библиотека-скиллов)
-[![Commands](https://img.shields.io/badge/Commands-18-orange.svg)](#слэш-команды)
+[![Skills](https://img.shields.io/badge/Skills-39-blue.svg)](#библиотека-скиллов)
+[![Commands](https://img.shields.io/badge/Commands-21-orange.svg)](#слэш-команды)
 
 **[English](README.md)** | **[Русский](#обзор)**
 
@@ -24,7 +24,8 @@
 - [Экосистема агентов](#экосистема-агентов)
 - [Библиотека скиллов](#библиотека-скиллов)
 - [Слэш-команды](#слэш-команды)
-- [MCP-конфигурации](#mcp-конфигурации)
+- [MCP-конфигурация](#mcp-конфигурация)
+- [Настройки Claude Code](#настройки-claude-code)
 - [Структура проекта](#структура-проекта)
 - [Примеры использования](#примеры-использования)
 - [Лучшие практики](#лучшие-практики)
@@ -42,9 +43,9 @@
 | Категория | Количество | Описание |
 |-----------|------------|----------|
 | **ИИ-агенты** | 39 | Специализированные воркеры для багов, безопасности, тестирования, БД, фронтенда, DevOps |
-| **Скиллы** | 37 | Переиспользуемые утилиты для валидации, отчётов, автоматизации, экспертизы |
-| **Команды** | 18 | Health-проверки, SpecKit, управление worktree, релизы |
-| **MCP-конфиги** | 7 | Готовые настройки от минимальных (600 токенов) до полных (6500 токенов) |
+| **Скиллы** | 39 | Переиспользуемые утилиты для валидации, отчётов, автоматизации, экспертизы |
+| **Команды** | 21 | Health-проверки, SpecKit, Beads, process-logs, worktree, релизы |
+| **MCP-серверы** | 6 | Авто-оптимизация: Context7, Sequential Thinking, Supabase, Playwright, shadcn, Serena |
 
 ### Ключевые преимущества
 
@@ -114,14 +115,23 @@
 | `ux-researcher-designer` | Исследование пользователей, персоны, CJM |
 | `systematic-debugging` | Анализ корневых причин, дебаггинг |
 
-### 4. Динамическое переключение MCP
+### 4. Авто-оптимизированная MCP-конфигурация
 
-Экономьте 500-4500 токенов контекста, загружая только нужное:
+**Никакого ручного переключения!** Claude Code автоматически оптимизирует использование контекста:
 
-```bash
-./switch-mcp.sh
-# Выберите конфигурацию под вашу задачу
-```
+- **Единый `.mcp.json`** со всеми серверами — не нужно переключать вручную
+- **Автоматическая отложенная загрузка** через `ENABLE_TOOL_SEARCH=auto:5`
+- **85% экономии контекста** для MCP-инструментов (загружаются по требованию через ToolSearch)
+- **Прозрачно для пользователя** — просто работает без настройки
+
+### 5. Beads Issue Tracking (опционально)
+
+[Beads](https://github.com/steveyegge/beads) от Steve Yegge — git-backed трекер задач для AI-агентов:
+- **Персистентные задачи**: Переживают рестарты сессий, отслеживаются в git
+- **Граф зависимостей**: `blocks`, `blocked-by`, `discovered-from`
+- **Мульти-сессии**: Работа в нескольких сессиях Claude без потери контекста
+- **8 формул workflow**: `bigfeature`, `bugfix`, `hotfix`, `healthcheck` и др.
+- **Инициализация**: Запустите `/beads-init` в вашем проекте
 
 ### 5. Интеграция SpecKit
 
@@ -139,7 +149,7 @@ Specification-driven workflow с Phase 0 Planning:
 ```bash
 npm install -g claude-code-orchestrator-kit
 cd your-project
-claude-orchestrator  # Интерактивная настройка MCP
+claude-orchestrator  # Интерактивная настройка
 ```
 
 ### Вариант 2: Клонирование репозитория
@@ -148,12 +158,9 @@ claude-orchestrator  # Интерактивная настройка MCP
 git clone https://github.com/maslennikov-ig/claude-code-orchestrator-kit.git
 cd claude-code-orchestrator-kit
 
-# Настройка окружения
+# Настройка окружения (опционально, для Supabase)
 cp .env.example .env.local
 # Отредактируйте .env.local с вашими credentials
-
-# Выбор MCP-конфигурации
-./switch-mcp.sh
 
 # Перезапустите Claude Code — готово!
 ```
@@ -163,8 +170,8 @@ cp .env.example .env.local
 ```bash
 # Скопируйте систему оркестрации в ваш проект
 cp -r claude-code-orchestrator-kit/.claude /path/to/your/project/
+cp claude-code-orchestrator-kit/.mcp.json /path/to/your/project/
 cp claude-code-orchestrator-kit/CLAUDE.md /path/to/your/project/
-cp claude-code-orchestrator-kit/switch-mcp.sh /path/to/your/project/
 ```
 
 ---
@@ -194,10 +201,10 @@ SEQUENTIAL_THINKING_PROFILE=your-profile
 ### Проверка установки
 
 ```bash
-# Проверить MCP-конфигурацию
-./switch-mcp.sh  # Выберите опцию 0 для просмотра активных серверов
+# Проверьте что .mcp.json и .claude/settings.json существуют
+ls -la .mcp.json .claude/settings.json
 
-# Попробуйте health-команду
+# Попробуйте health-команду в Claude Code
 /health-bugs
 ```
 
@@ -235,7 +242,7 @@ SEQUENTIAL_THINKING_PROFILE=your-profile
                               ↓
 ┌────────────────────────────────────────────────────────────────┐
 │                         СКИЛЛЫ                                  │
-│            (37 переиспользуемых утилит)                         │
+│            (39 переиспользуемых утилит)                         │
 ├────────────────────────────────────────────────────────────────┤
 │  Inline-оркестрация:          Senior-экспертиза:               │
 │  ├─bug-health-inline          ├─code-reviewer                  │
@@ -254,14 +261,14 @@ SEQUENTIAL_THINKING_PROFILE=your-profile
                               ↓
 ┌────────────────────────────────────────────────────────────────┐
 │                        КОМАНДЫ                                  │
-│            (18 слэш-команд)                                     │
+│            (21 слэш-команда)                                    │
 ├────────────────────────────────────────────────────────────────┤
 │  /health-bugs      /speckit.specify    /worktree              │
 │  /health-security  /speckit.plan       /push                  │
 │  /health-deps      /speckit.implement  /translate-doc          │
-│  /health-cleanup   /speckit.clarify                            │
-│  /health-reuse     /speckit.constitution                       │
-│  /health-metrics   /speckit.taskstoissues                      │
+│  /health-cleanup   /speckit.clarify    /process-logs          │
+│  /health-reuse     /speckit.constitution   /beads-init        │
+│  /health-metrics   /speckit.taskstoissues  /speckit.tobeads   │
 └────────────────────────────────────────────────────────────────┘
 ```
 
@@ -342,18 +349,18 @@ SEQUENTIAL_THINKING_PROFILE=your-profile
 
 ## Библиотека скиллов
 
-### 37 переиспользуемых скиллов
+### 39 переиспользуемых скиллов
 
 #### Inline-оркестрация (5 скиллов)
-Выполнение health-workflows напрямую без порождения агентов-оркестраторов:
+Выполнение health-workflows напрямую без порождения агентов-оркестраторов. Все скиллы включают **интеграцию с Beads** для отслеживания задач.
 
-| Скилл | Команда | Назначение |
-|-------|---------|------------|
-| `bug-health-inline` | `/health-bugs` | Обнаружение и исправление багов |
-| `security-health-inline` | `/health-security` | Сканирование и исправление безопасности |
-| `deps-health-inline` | `/health-deps` | Аудит и обновление зависимостей |
-| `cleanup-health-inline` | `/health-cleanup` | Удаление мёртвого кода |
-| `reuse-health-inline` | `/health-reuse` | Устранение дублирования кода |
+| Скилл | Вызов | Назначение | Версия |
+|-------|-------|------------|--------|
+| `health-bugs` | `/health-bugs` | Обнаружение и исправление багов с обогащением истории | 3.1.0 |
+| `security-health-inline` | `/health-security` | Сканирование и исправление уязвимостей | 3.0.0 |
+| `deps-health-inline` | `/health-deps` | Аудит и обновление зависимостей | 3.0.0 |
+| `cleanup-health-inline` | `/health-cleanup` | Обнаружение и удаление мёртвого кода | 3.0.0 |
+| `reuse-health-inline` | `/health-reuse` | Консолидация дублирования кода | 3.0.0 |
 
 #### Senior-экспертиза (6 скиллов)
 Профессиональная доменная экспертиза:
@@ -405,6 +412,12 @@ SEQUENTIAL_THINKING_PROFILE=your-profile
 | `webapp-testing` | Playwright-тестирование |
 | `frontend-aesthetics` | Уникальный UI-дизайн |
 
+#### Автоматизация workflows (2 скилла)
+| Скилл | Назначение | Версия |
+|-------|------------|--------|
+| `process-logs` | Автоматизированная обработка логов ошибок с интеграцией Beads | 1.8.0 |
+| `process-issues` | Обработка GitHub Issues с поиском похожих проблем | 1.1.0 |
+
 #### Прочие (4 скилла)
 | Скилл | Назначение |
 |-------|------------|
@@ -417,7 +430,7 @@ SEQUENTIAL_THINKING_PROFILE=your-profile
 
 ## Слэш-команды
 
-### 18 команд
+### 21 команда
 
 #### Health-мониторинг (6 команд)
 
@@ -450,35 +463,122 @@ SEQUENTIAL_THINKING_PROFILE=your-profile
 | `/speckit.constitution` | Определение конституции проекта |
 | `/speckit.taskstoissues` | Конвертация задач в GitHub issues |
 
-#### Прочие (3 команды)
+#### Beads (2 команды)
 
 | Команда | Назначение |
 |---------|------------|
+| `/beads-init` | Инициализация Beads в проекте |
+| `/speckit.tobeads` | Импорт tasks.md в Beads |
+
+#### Прочие (4 команды)
+
+| Команда | Назначение |
+|---------|------------|
+| `/process-logs` | Автоматическая обработка и исправление логов ошибок |
 | `/push [patch\|minor\|major]` | Автоматический релиз с changelog |
 | `/worktree` | Управление git worktree |
 | `/translate-doc` | Перевод документации (EN↔RU) |
 
 ---
 
-## MCP-конфигурации
+## MCP-конфигурация
 
-### 7 готовых настроек
+### Единая авто-оптимизированная настройка
 
-Переключайте конфигурации в зависимости от задачи для экономии токенов:
+**Больше не нужно переключать вручную!** Kit использует единый `.mcp.json` с автоматической оптимизацией.
 
+#### Как это работает
+
+1. **Один файл конфигурации** (`.mcp.json`) содержит все MCP-серверы
+2. **Авто-отложенная загрузка** через `.claude/settings.json`:
+   ```json
+   {
+     "env": { "ENABLE_TOOL_SEARCH": "auto:5" }
+   }
+   ```
+3. **Загрузка по требованию** — Claude загружает инструменты только когда они нужны через ToolSearch
+4. **85% экономии контекста** по сравнению с загрузкой всех инструментов сразу
+
+#### Включённые MCP-серверы
+
+| Сервер | Назначение | Инструменты |
+|--------|------------|-------------|
+| **Context7** | Актуальная документация библиотек | `resolve-library-id`, `query-docs` |
+| **Sequential Thinking** | Структурированное рассуждение для сложных задач | `sequentialthinking` |
+| **Supabase** | Операции с БД, миграции, RLS | Таблицы, SQL, миграции, edge functions |
+| **Playwright** | Автоматизация браузера и тестирование | Скриншоты, навигация, заполнение форм |
+| **shadcn/ui** | Интеграция библиотеки UI-компонентов | Поиск в реестре, примеры компонентов |
+| **Serena** | Семантический анализ кода (LSP) | Поиск символов, ссылки, рефакторинг |
+
+#### Переменные окружения
+
+Установите в `.env.local` для интеграции с Supabase:
 ```bash
-./switch-mcp.sh
+SUPABASE_PROJECT_REF=your-project-ref
+SUPABASE_ACCESS_TOKEN=your-token
 ```
 
-| Конфигурация | Серверы | Токенов | Сценарий |
-|--------------|---------|---------|----------|
-| **BASE** | Context7 + Sequential Thinking | ~600 | Ежедневная разработка |
-| **SUPABASE** | Base + Supabase | ~2500 | Работа с БД |
-| **SUPABASE-FULL** | Base + Supabase (dual) | ~3000 | Мульти-проект БД |
-| **N8N** | Base + n8n automation | ~2500 | Автоматизация workflows |
-| **FRONTEND** | Base + Playwright + ShadCN | ~2000 | UI-разработка |
-| **SERENA** | Base + Serena LSP | ~2500 | Семантический поиск кода |
-| **FULL** | Все серверы | ~6500 | Максимальные возможности |
+---
+
+## Настройки Claude Code
+
+### `.claude/settings.json`
+
+Конфигурация Claude Code на уровне проекта для улучшенного workflow:
+
+```json
+{
+  "plansDirectory": "./docs/plans",
+  "env": {
+    "ENABLE_TOOL_SEARCH": "auto:5"
+  }
+}
+```
+
+#### Описание настроек
+
+| Настройка | Значение | Назначение |
+|-----------|----------|------------|
+| `plansDirectory` | `./docs/plans` | Куда Claude сохраняет планы реализации при использовании Plan Mode |
+| `ENABLE_TOOL_SEARCH` | `auto:5` | Авто-включение отложенной загрузки MCP-инструментов для серверов с >5 инструментами |
+
+#### Преимущества
+
+- **Интеграция с Plan Mode**: Планы сохраняются в `docs/plans/` для контроля версий и ревью
+- **Автоматическая оптимизация контекста**: MCP-инструменты загружаются по требованию
+- **Без ручной настройки**: Работает прозрачно — просто установите и используйте
+
+---
+
+## Промпты
+
+Готовые промпты для настройки различных функций в вашем проекте. Скопируйте, вставьте в Claude Code — и он всё настроит.
+
+| Промпт | Описание |
+|--------|----------|
+| [`setup-health-workflows.md`](prompts/setup-health-workflows.md) | Health-воркфлоу с интеграцией Beads (`/health-bugs`, `/health-security` и др.) |
+| [`setup-error-logging.md`](prompts/setup-error-logging.md) | Система логирования ошибок с БД-таблицей, логгер-сервисом и авто-мутом |
+
+### Быстрый старт: Health Workflows
+
+```bash
+# 1. Установите Beads CLI
+npm install -g @anthropic/beads-cli
+
+# 2. Инициализируйте в вашем проекте
+bd init
+
+# 3. Запустите в Claude Code
+/health-bugs
+```
+
+**Как использовать:**
+
+1. Скопируйте содержимое промпта в чат с Claude Code
+2. Ответьте на вопросы Claude о специфике вашего проекта
+3. Проверьте сгенерированный код перед коммитом
+
+Подробности в [`prompts/README.md`](prompts/README.md).
 
 ---
 
@@ -506,7 +606,7 @@ claude-code-orchestrator-kit/
 │   │   ├── validate-plan-file/ # Утилиты валидации
 │   │   └── ...
 │   │
-│   ├── commands/               # 18 слэш-команд
+│   ├── commands/               # 21 слэш-команда
 │   │   ├── health-*.md         # Health-мониторинг
 │   │   ├── speckit.*.md        # SpecKit workflow
 │   │   └── ...
@@ -514,10 +614,7 @@ claude-code-orchestrator-kit/
 │   ├── schemas/                # JSON-схемы
 │   └── scripts/                # Скрипты Quality Gates
 │
-├── mcp/                        # 7 MCP-конфигураций
-│   ├── .mcp.base.json
-│   ├── .mcp.supabase-only.json
-│   ├── .mcp.frontend.json
+├── mcp/                        # Legacy MCP-конфигурации (только для справки)
 │   └── ...
 │
 ├── docs/                       # Документация
@@ -526,8 +623,8 @@ claude-code-orchestrator-kit/
 │   ├── TUTORIAL-CUSTOM-AGENTS.md
 │   └── ...
 │
+├── .mcp.json                   # Единая MCP-конфигурация
 ├── CLAUDE.md                   # Поведенческая ОС
-├── switch-mcp.sh               # Переключатель MCP
 └── package.json                # npm package config
 ```
 
@@ -600,11 +697,10 @@ cd .worktrees/feature-new-auth
 
 ## Лучшие практики
 
-### 1. Начинайте с BASE-конфигурации
-Используйте минимальный MCP-конфиг для ежедневной работы (~600 токенов):
-```bash
-./switch-mcp.sh  # Выберите BASE
-```
+### 1. Используйте авто-оптимизированный MCP
+Kit автоматически оптимизирует использование контекста — настройка не требуется:
+- MCP-инструменты загружаются по требованию через ToolSearch
+- ~85% экономии контекста по сравнению с загрузкой всех инструментов сразу
 
 ### 2. Запускайте Health-проверки еженедельно
 ```bash
@@ -663,11 +759,10 @@ echo ".env.local" >> .gitignore
 2. Добавьте `SKILL.md` по формату
 3. Добавьте в этот README
 
-### Добавление MCP-конфигураций
+### Добавление MCP-серверов
 
-1. Создайте `mcp/.mcp.{name}.json`
-2. Обновите `switch-mcp.sh`
-3. Задокументируйте в README
+1. Добавьте сервер в `.mcp.json`
+2. Задокументируйте в README в секции MCP-конфигурация
 
 ---
 
@@ -677,6 +772,14 @@ echo ".env.local" >> .gitignore
 Команды `/speckit.*` адаптированы из [GitHub's SpecKit](https://github.com/github/spec-kit).
 - **Лицензия**: MIT License
 - **Copyright**: GitHub, Inc.
+
+### Beads от Steve Yegge
+Интеграция Beads issue tracking адаптирована из [Steve Yegge's Beads](https://github.com/steveyegge/beads).
+- **Описание**: Распределённый, git-backed граф-трекер задач для AI-агентов
+- **Лицензия**: MIT License
+- **Copyright**: Steve Yegge
+- **Команды**: `/beads-init`, `/speckit.tobeads`
+- **Шаблоны**: директория `.beads-templates/` с 8 формулами workflow
 
 ---
 
@@ -695,10 +798,10 @@ echo ".env.local" >> .gitignore
 ## Статистика
 
 - **39** ИИ-агентов
-- **37** Переиспользуемых скиллов
-- **18** Слэш-команд
-- **7** MCP-конфигураций
-- **v1.4.13** Текущая версия
+- **39** Переиспользуемых скиллов
+- **21** Слэш-команда
+- **6** MCP-серверов (авто-оптимизация)
+- **v1.4.19** Текущая версия
 
 ---
 

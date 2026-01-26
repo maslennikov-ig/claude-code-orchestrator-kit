@@ -1,0 +1,6 @@
+{
+  "plansDirectory": "./docs/plans",
+  "env": {
+    "ENABLE_TOOL_SEARCH": "auto:5"
+  }
+}
