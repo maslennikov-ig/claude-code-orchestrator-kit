@@ -232,3 +232,57 @@ Run `/beads-init` to set up Beads in this project.
 See `.claude/docs/beads-quickstart.md` for full reference.
 
 ---
+
+## Multi-Agent Orchestration with Gastown (Optional)
+
+> **Attribution**: [Gastown](https://github.com/steveyegge/gastown) by [Steve Yegge](https://github.com/steveyegge)
+
+If project uses Gastown (`/onboard` was run), AI agents are dispatched to polecats — isolated worker processes with their own git worktrees.
+
+Runtimes: `claude` (default), `codex`, `gemini` — all subscription-based, no API billing.
+
+### Quick Start
+
+| Command | What it does |
+|---------|-------------|
+| `/work "task description"` | Give task to AI agent |
+| `/work --agent codex "task"` | Use specific runtime |
+| `/work --ab "task"` | A/B test: claude + codex |
+| `/status` | See convoys, agents, tasks |
+| `bd ready` | Find available tasks |
+| `gt dashboard --open` | Visual monitoring |
+
+### How It Works
+
+1. `/work` creates a bead (task) and slings it to a polecat
+2. Polecat works in an isolated git worktree — no conflicts
+3. Refinery merges completed work back
+4. Witness monitors health, respawns crashed agents
+5. User reviews results via `/status` or `gt convoy list`
+
+### Infrastructure (Self-Managed)
+
+All services auto-start on boot via systemd. No manual intervention needed.
+
+- **Daemon** (`gastown-daemon.service`): Manages Dolt, heartbeats, patrols
+- **Dolt**: SQL database for beads, managed by daemon's `dolt_server` config
+- **Witness**: Monitors polecat health per rig (auto-spawned)
+- **Refinery**: Merge queue processor (auto-spawned)
+- **Deacon**: Health orchestrator (auto-spawned)
+
+If something breaks:
+
+```bash
+RIG=$(basename "$(git rev-parse --show-toplevel)")
+gt doctor --fix --rig $RIG       # Diagnose and auto-fix
+gt daemon logs                   # Check daemon logs
+systemctl --user restart gastown-daemon  # Restart everything
+```
+
+**NEVER start Dolt manually** — daemon manages it with health checks every 30s.
+
+### Initialize Gastown
+
+Run `/onboard` to connect this project. See `/upgrade` for safe version updates.
+
+---

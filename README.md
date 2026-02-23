@@ -2,13 +2,13 @@
 
 > **Professional automation and orchestration system for Claude Code**
 
-Complete toolkit with **39 AI agents**, **38 skills**, **21 slash commands**, **auto-optimized MCP**, **Beads issue tracking**, **ready-to-use prompts**, and **quality gates** for building production-ready projects with Claude Code.
+Complete toolkit with **39 AI agents**, **38 skills**, **25 slash commands**, **auto-optimized MCP**, **Beads issue tracking**, **Gastown multi-agent orchestration**, **ready-to-use prompts**, and **quality gates** for building production-ready projects with Claude Code.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![npm version](https://img.shields.io/npm/v/claude-code-orchestrator-kit.svg)](https://www.npmjs.com/package/claude-code-orchestrator-kit)
 [![Agents](https://img.shields.io/badge/Agents-39-green.svg)](#agents-ecosystem)
 [![Skills](https://img.shields.io/badge/Skills-39-blue.svg)](#skills-library)
-[![Commands](https://img.shields.io/badge/Commands-21-orange.svg)](#slash-commands)
+[![Commands](https://img.shields.io/badge/Commands-25-orange.svg)](#slash-commands)
 
 **[English](#overview)** | **[Русский](README.ru.md)**
 
@@ -30,6 +30,7 @@ Complete toolkit with **39 AI agents**, **38 skills**, **21 slash commands**, **
 - [Project Structure](#project-structure)
 - [Usage Examples](#usage-examples)
 - [Best Practices](#best-practices)
+- [Gastown Setup](#gastown-setup)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -45,7 +46,7 @@ Complete toolkit with **39 AI agents**, **38 skills**, **21 slash commands**, **
 |----------|-------|-------------|
 | **AI Agents** | 39 | Specialized workers for bugs, security, testing, database, frontend, DevOps |
 | **Skills** | 39 | Reusable utilities for validation, reporting, automation, senior expertise |
-| **Commands** | 21 | Health checks, SpecKit, Beads, process-logs, worktree, releases |
+| **Commands** | 25 | Health checks, SpecKit, Beads, Gastown, process-logs, worktree, releases |
 | **MCP Servers** | 6 | Auto-optimized: Context7, Sequential Thinking, Supabase, Playwright, shadcn, Serena |
 
 ### Key Benefits
@@ -139,6 +140,51 @@ Specification-driven development workflow with Phase 0 Planning:
 - **Multi-session**: Work across multiple Claude sessions without losing context
 - **8 workflow formulas**: `bigfeature`, `bugfix`, `hotfix`, `healthcheck`, etc.
 - **Initialize**: Run `/beads-init` in your project
+
+### 7. Gastown Multi-Agent Orchestration (Optional)
+
+[Gastown](https://github.com/steveyegge/gastown) by Steve Yegge — multi-agent workspace manager that dispatches tasks to AI worker processes (polecats):
+
+```
+You (human)
+  │
+  ├─ /work "Fix login bug"          ← Give task via Claude Code
+  │    │
+  │    ├─ bd create (bead)           ← Creates task in Beads
+  │    └─ gt sling PREFIX-xxx RIG   ← Dispatches to Gastown
+  │         │
+  │         └─ Daemon (automatic)
+  │              ├─ Spawns Polecat (AI worker in isolated git worktree)
+  │              ├─ Polecat: branch → implement → test → commit
+  │              ├─ Refinery: merge queue → develop
+  │              └─ Witness: health monitoring
+  │
+  ├─ /status                         ← Check progress
+  └─ git push                        ← Ship changes
+```
+
+**Key Features:**
+- **Parallel AI workers**: Multiple polecats work simultaneously in isolated git worktrees
+- **Multi-runtime**: `claude` (default), `codex`, `gemini` — all subscription-based, no API billing
+- **A/B testing**: `/work --ab "task"` sends same task to 2 runtimes, compare results
+- **Self-healing**: Daemon manages Dolt DB, restarts crashed agents, monitors health
+- **Auto-provisioning**: `/onboard` connects any project with a single command
+
+**Included commands:**
+
+| Command | Purpose |
+|---------|---------|
+| `/onboard` | Connect project to Gastown (one-time setup) |
+| `/work "task"` | Dispatch task to AI polecat |
+| `/status` | Show convoys, agents, pending tasks |
+| `/upgrade` | Safely upgrade gt/bd binaries |
+
+**Agent instruction templates** for all runtimes are provided in `.claude/templates/`:
+- `CLAUDE.md` — Claude Code instructions with Gastown workflow
+- `AGENTS.md` — Codex-compatible instructions
+- `GEMINI.md` — Gemini-compatible instructions
+
+**Initialize**: Run `/onboard` in your project directory. See [Gastown Setup Guide](#gastown-setup) below.
 
 ---
 
@@ -469,6 +515,15 @@ Professional-grade domain expertise:
 | `/beads-init` | Initialize Beads in project |
 | `/speckit.tobeads` | Import tasks.md to Beads |
 
+#### Gastown (4 commands)
+
+| Command | Purpose |
+|---------|---------|
+| `/onboard [rig-name]` | Connect project to Gastown (one-time setup) |
+| `/work [--agent\|--ab\|--all] "task"` | Dispatch task to AI polecat |
+| `/status` | Show convoys, agents, pending tasks |
+| `/upgrade [gt\|bd\|all]` | Safely upgrade Gastown/Beads binaries |
+
 #### Other (4 commands)
 
 | Command | Purpose |
@@ -605,10 +660,19 @@ claude-code-orchestrator-kit/
 │   │   ├── validate-plan-file/ # Validation utilities
 │   │   └── ...
 │   │
-│   ├── commands/               # 18 slash commands
+│   ├── commands/               # 25 slash commands
 │   │   ├── health-*.md         # Health monitoring
 │   │   ├── speckit.*.md        # SpecKit workflow
+│   │   ├── work.md             # Gastown: dispatch tasks
+│   │   ├── status.md           # Gastown: show status
+│   │   ├── upgrade.md          # Gastown: safe upgrade
+│   │   ├── onboard.md          # Gastown: connect project
 │   │   └── ...
+│   │
+│   ├── templates/              # Instruction file templates
+│   │   ├── CLAUDE.md           # Claude Code template
+│   │   ├── AGENTS.md           # Codex template
+│   │   └── GEMINI.md           # Gemini template
 │   │
 │   ├── schemas/                # JSON schemas
 │   └── scripts/                # Quality gate scripts
@@ -734,6 +798,137 @@ echo ".env.local" >> .gitignore
 
 ---
 
+## Gastown Setup
+
+### Prerequisites
+
+1. **Go 1.21+** installed (`go version`)
+2. **Gastown** and **Beads** CLI installed:
+   ```bash
+   go install github.com/steveyegge/gastown/cmd/gt@latest
+   go install github.com/steveyegge/beads/cmd/bd@latest
+   ```
+3. **Gastown town** initialized:
+   ```bash
+   gt init ~/gt
+   ```
+4. **Daemon** running as systemd user service:
+   ```bash
+   gt daemon enable-supervisor
+   systemctl --user start gastown-daemon
+   loginctl enable-linger $USER  # Auto-start on boot
+   ```
+
+### Important: Daemon Service Customization
+
+The default `gt daemon enable-supervisor` template does NOT include PATH. You must add Environment lines manually:
+
+```bash
+# Edit the service file
+nano ~/.local/share/systemd/user/gastown-daemon.service
+```
+
+Add under `[Service]`:
+```ini
+Environment="GT_TOWN_ROOT=/home/YOUR_USER/gt"
+Environment="GT_ROOT=/home/YOUR_USER/gt"
+Environment="PATH=/home/YOUR_USER/go/bin:/home/YOUR_USER/.local/bin:/usr/local/bin:/usr/bin:/bin"
+Environment="HOME=/home/YOUR_USER"
+```
+
+Then reload and restart:
+```bash
+systemctl --user daemon-reload
+systemctl --user restart gastown-daemon
+```
+
+### Daemon Configuration
+
+Configure Dolt management in `~/gt/mayor/daemon.json`:
+
+```json
+{
+  "heartbeat": { "enabled": true, "interval": "3m" },
+  "patrols": {
+    "dolt_server": {
+      "enabled": true,
+      "port": 3307,
+      "host": "127.0.0.1",
+      "user": "root",
+      "data_dir": "/home/YOUR_USER/gt/.dolt-data",
+      "log_file": "/home/YOUR_USER/gt/daemon/dolt-server.log",
+      "auto_restart": true
+    },
+    "deacon": { "enabled": true, "interval": "5m", "agent": "deacon" },
+    "refinery": { "agent": "refinery", "enabled": true, "interval": "5m", "rigs": [] },
+    "witness": { "agent": "witness", "enabled": true, "interval": "5m", "rigs": [] }
+  },
+  "type": "daemon-patrol-config",
+  "version": 1
+}
+```
+
+**Important**: `time.Duration` fields like `health_check_interval` must be integers (nanoseconds) in Go, NOT strings like `"30s"`. Omit them to use defaults (30 seconds).
+
+### Connect a Project
+
+Run `/onboard` from your project directory in Claude Code:
+
+```
+/onboard
+```
+
+This will:
+1. Run `gt rig add <name> <path>` — auto-provisions 30+ components
+2. Update `daemon.json` — adds project to witness/refinery patrols
+3. Restart daemon — picks up new configuration
+4. Run `gt doctor --fix` — diagnoses and auto-fixes issues
+5. Copy slash commands — `/work`, `/status`, `/upgrade`, `/onboard`
+6. Copy instruction templates — `CLAUDE.md`, `AGENTS.md`, `GEMINI.md`
+
+### Daily Workflow
+
+```bash
+# Give task to AI agent
+/work "Fix the login validation bug"
+
+# Check progress
+/status
+
+# Use specific runtime
+/work --agent codex "Refactor auth module"
+
+# A/B test: same task to 2 agents
+/work --ab "Optimize database queries"
+
+# Find available tasks
+bd ready
+
+# Visual dashboard
+gt dashboard --open
+```
+
+### Troubleshooting
+
+| Problem | Diagnosis | Solution |
+|---------|-----------|----------|
+| Daemon not starting | `systemctl --user status gastown-daemon` | Check PATH in service file |
+| Dolt unreachable | `gt dolt status` | Restart daemon, check `daemon.json` |
+| Doctor failures | `gt doctor --fix --rig <name>` | Auto-fixes most issues |
+| Polecat stuck | `gt convoy list` | `gt convoy cancel <id>` |
+
+### Upgrading
+
+```bash
+/upgrade        # Upgrade both gt and bd
+/upgrade gt     # Upgrade Gastown only
+/upgrade bd     # Upgrade Beads only
+```
+
+The `/upgrade` command handles the full cycle: stop daemon, upgrade binaries, verify service file, check `daemon.json`, restart, run doctor.
+
+---
+
 ## Documentation
 
 | Document | Description |
@@ -784,6 +979,14 @@ Beads issue tracking integration adapted from [Steve Yegge's Beads](https://gith
 - **Commands**: `/beads-init`, `/speckit.tobeads`
 - **Templates**: `.beads-templates/` directory with 8 workflow formulas
 
+### Gastown by Steve Yegge
+Multi-agent orchestration integration from [Steve Yegge's Gastown](https://github.com/steveyegge/gastown).
+- **Description**: Multi-agent workspace manager with isolated git worktrees
+- **License**: MIT License
+- **Copyright**: Steve Yegge
+- **Commands**: `/onboard`, `/work`, `/status`, `/upgrade`
+- **Templates**: `.claude/templates/` directory with instruction files for all runtimes
+
 ---
 
 ## Acknowledgments
@@ -802,9 +1005,10 @@ Built with:
 
 - **39** AI Agents
 - **39** Reusable Skills
-- **21** Slash Commands
+- **25** Slash Commands
 - **6** MCP Servers (auto-optimized)
-- **v1.4.19** Current Version
+- **3** Runtime templates (Claude, Codex, Gemini)
+- **v1.4.20** Current Version
 
 ---
 

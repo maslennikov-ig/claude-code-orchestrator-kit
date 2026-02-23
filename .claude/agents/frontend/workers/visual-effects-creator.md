@@ -26,7 +26,7 @@ When invoked, you must follow these steps:
    - Use Context7 to fetch latest Paper Shaders documentation
    - Research additional animation libraries if needed (Framer Motion, GSAP, etc.)
    - Review Paper Shaders components: MeshGradient, DotOrbit, StaticMeshGradient
-   - Study layering strategies from `/home/me/code/aidevteam/docs/papershades.md` if available
+   - Study layering strategies from project docs if available
 
 3. **Design Animation Architecture**
    - Plan layered structure for depth (multiple MeshGradient components)

@@ -24,7 +24,7 @@ Manage git worktrees for parallel feature development.
 Create new worktree for parallel development.
 
 **What it does:**
-- Creates `megacampus2-worktrees/` directory (if not exists)
+- Creates `project-worktrees/` directory (if not exists)
 - Creates new branch `feature/<name>` from base
 - Creates worktree in separate directory
 - Copies gitignored files per `.worktree-sync.json`
@@ -32,7 +32,7 @@ Create new worktree for parallel development.
 **Process:**
 1. Validate feature name (alphanumeric, hyphens only)
 2. Check for uncommitted changes (warn if present)
-3. Create worktree: `git worktree add ../megacampus2-worktrees/<name> -b feature/<name> <base>`
+3. Create worktree: `git worktree add ../project-worktrees/<name> -b feature/<name> <base>`
 4. Sync files from `.worktree-sync.json`:
    - `sync.files`: `.env`, `.env.local`, `.mcp.json`, etc.
    - `sync.directories`: `.vscode`
@@ -83,8 +83,8 @@ Show all worktrees with status.
 
 | Name | Branch | Path | Status |
 |------|--------|------|--------|
-| main (основной) | main | /home/me/code/megacampus2 | Active |
-| feature-name | feature/feature-name | .../megacampus2-worktrees/feature-name | Active |
+| main (основной) | main | /path/to/your-project | Active |
+| feature-name | feature/feature-name | .../your-project-worktrees/feature-name | Active |
 
 Commands: /worktree create <name> | /worktree remove <name>
 ```
@@ -107,7 +107,7 @@ Clean up stale worktree files and orphaned directories.
 
 **Process:**
 1. Dry-run check: `git worktree prune --dry-run --verbose`
-2. Find orphaned dirs in `megacampus2-worktrees/` not in `git worktree list`
+2. Find orphaned dirs in `project-worktrees/` not in `git worktree list`
 3. Try repair: `git worktree repair <path>`
 4. If not --dry-run: `git worktree prune --verbose`
 5. If --remove-dirs: remove orphaned/empty directories
