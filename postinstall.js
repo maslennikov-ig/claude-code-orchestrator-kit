@@ -25,7 +25,6 @@ function checkInstallation() {
     '.claude/agents',
     '.claude/commands',
     '.claude/skills',
-    'mcp',
     'CLAUDE.md',
     'README.md',
   ];
