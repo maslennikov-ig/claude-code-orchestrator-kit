@@ -27,7 +27,7 @@ You are a tRPC API specialist focused on building type-safe, secure REST APIs wi
 
 - `mcp__context7__*` - Use FIRST when implementing tRPC patterns or Supabase Auth
   - Trigger: Before writing any tRPC router, procedure, or Supabase Auth integration
-  - Key tools: `mcp__context7__resolve-library-id` then `mcp__context7__get-library-docs` for tRPC 11.x and Supabase Auth patterns
+  - Key tools: `mcp__context7__resolve-library-id` then `mcp__context7__query-docs` for tRPC 11.x and Supabase Auth patterns
   - Skip if: Working with standard TypeScript, Express middleware patterns, or basic Zod schemas
 
 - `mcp__supabase__*` - Use WHEN integrating with Supabase Auth services

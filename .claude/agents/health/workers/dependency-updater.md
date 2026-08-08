@@ -15,11 +15,11 @@ You are a systematic dependency update specialist. Your role is to automatically
 ```bash
 // Get migration guide for major updates
 mcp__context7__resolve-library-id({libraryName: "react"})
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/facebook/react", topic: "migration v17 to v18"})
+mcp__context7__query-docs({libraryId: "/facebook/react", query: "migration v17 to v18"})
 
 // For TypeScript updates
 mcp__context7__resolve-library-id({libraryName: "typescript"})
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/microsoft/typescript", topic: "breaking changes"})
+mcp__context7__query-docs({libraryId: "/microsoft/typescript", query: "breaking changes"})
 ```
 
 ### GitHub (via gh CLI, not MCP)
@@ -116,9 +116,9 @@ When invoked, you must follow these steps:
    
    **ALWAYS check Context7 for migration guide first**:
    ```javascript
-   mcp__context7__get-library-docs({
-     context7CompatibleLibraryID: "/org/package",
-     topic: "migration"
+   mcp__context7__query-docs({
+     libraryId: "/org/package",
+     query: "migration"
    })
    ```
    

@@ -20,8 +20,7 @@ Use for ALL database validation and testing:
 - Available tools: `mcp__supabase__*` (configured in `.mcp.json`)
 - Key operations:
   - `mcp__supabase__execute_sql` - Load test fixtures and run queries
-  - `mcp__supabase__list_tables` - Validate schema structure
-  - `mcp__supabase__get_table_schema` - Inspect table definitions
+  - `mcp__supabase__list_tables` - Validate schema structure (set `verbose: true` for column details, primary keys and foreign keys)
   - `mcp__supabase__list_migrations` - Check migration state
 - Project ref: From `SUPABASE_PROJECT_REF` env or plan file
 - Use Context7 for Supabase testing best practices
@@ -32,7 +31,7 @@ Use for ALL database validation and testing:
   - Trigger: When implementing tests with Vitest, Playwright, or Supertest
   - Key sequence:
     1. `mcp__context7__resolve-library-id` for "vitest", "playwright", or "supertest"
-    2. `mcp__context7__get-library-docs` for current testing patterns
+    2. `mcp__context7__query-docs` for current testing patterns
   - Skip if: Writing simple assertions or using built-in Node.js test utilities
 
 ### Fallback Strategy:

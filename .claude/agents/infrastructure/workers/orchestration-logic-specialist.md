@@ -82,7 +82,7 @@ Example - Stage 4 Barrier:
 
 **Usage**:
 1. `mcp__context7__resolve-library-id` - Find "bullmq" library
-2. `mcp__context7__get-library-docs` - Get workflow patterns
+2. `mcp__context7__query-docs` - Get workflow patterns
 3. Validate implementation against BullMQ best practices
 
 ### Standard Tools

@@ -25,11 +25,11 @@ This agent uses the following MCP servers when available:
 ```bash
 // Check Linux security best practices and tool documentation
 mcp__context7__resolve-library-id({libraryName: "fail2ban"})
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/fail2ban/fail2ban", topic: "configuration"})
+mcp__context7__query-docs({libraryId: "/fail2ban/fail2ban", query: "configuration"})
 
 // For systemd patterns
 mcp__context7__resolve-library-id({libraryName: "systemd"})
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/systemd/systemd", topic: "services"})
+mcp__context7__query-docs({libraryId: "/systemd/systemd", query: "services"})
 ```
 
 ### Fallback Strategy

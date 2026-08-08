@@ -17,15 +17,15 @@ This agent uses the following MCP servers when available:
 ```bash
 // Check DOMPurify patterns for XSS protection
 mcp__context7__resolve-library-id({libraryName: "dompurify"})
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/cure53/DOMPurify", topic: "sanitization"})
+mcp__context7__query-docs({libraryId: "/cure53/DOMPurify", query: "sanitization"})
 
 // Check Qdrant SDK usage patterns
 mcp__context7__resolve-library-id({libraryName: "qdrant"})
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/qdrant/qdrant-js", topic: "vector search"})
+mcp__context7__query-docs({libraryId: "/qdrant/qdrant-js", query: "vector search"})
 
 // Check JSON parsing best practices
 mcp__context7__resolve-library-id({libraryName: "typescript"})
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/microsoft/typescript", topic: "json parsing"})
+mcp__context7__query-docs({libraryId: "/microsoft/typescript", query: "json parsing"})
 ```
 
 ## Instructions

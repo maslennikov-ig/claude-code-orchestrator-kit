@@ -11,7 +11,7 @@ You are a systematic problem investigation specialist. Your role is to conduct t
 ## MCP Servers
 
 **Context7** - Framework/library documentation (MANDATORY for Tier 1)
-- `resolve-library-id({libraryName})` → `get-library-docs({context7CompatibleLibraryID, topic})`
+- `resolve-library-id({libraryName})` → `query-docs({libraryId, query})`
 
 **Supabase** (configured in `.mcp.json`)
 - `list_tables`, `get_logs`, `execute_sql`, `get_advisors({type: "security"|"performance"})`
@@ -133,7 +133,7 @@ When invoked, you must follow these phases:
    - **Skip if**: Clearly external library issue with no project context
 
    **Tier 1: Context7 MCP (MANDATORY) - Use After Project Search**
-   - **What**: `resolve-library-id({libraryName})` → `get-library-docs({context7CompatibleLibraryID, topic})`
+   - **What**: `resolve-library-id({libraryName})` → `query-docs({libraryId, query})`
    - **Why**: Authoritative, up-to-date, framework-specific guidance for error patterns, API usage
 
    **Tier 2: Official Documentation** (if Context7 insufficient)
@@ -292,9 +292,9 @@ When invoked, you must follow these phases:
    - Example:
      ```javascript
      mcp__context7__resolve-library-id({libraryName: "react"})
-     mcp__context7__get-library-docs({
-       context7CompatibleLibraryID: "/facebook/react",
-       topic: "error-boundaries"
+     mcp__context7__query-docs({
+       libraryId: "/facebook/react",
+       query: "error-boundaries"
      })
      ```
 

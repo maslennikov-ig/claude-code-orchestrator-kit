@@ -19,13 +19,13 @@ This agent uses the following MCP servers when available:
 ```bash
 # OpenAI SDK documentation
 mcp__context7__resolve-library-id({libraryName: "openai"})
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/openai/openai-node", topic: "chat completions"})
+mcp__context7__query-docs({libraryId: "/openai/openai-node", query: "chat completions"})
 
 # Retry logic patterns
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/openai/openai-node", topic: "error handling"})
+mcp__context7__query-docs({libraryId: "/openai/openai-node", query: "error handling"})
 
 # Streaming responses (for future)
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/openai/openai-node", topic: "streaming"})
+mcp__context7__query-docs({libraryId: "/openai/openai-node", query: "streaming"})
 ```
 
 ### Supabase MCP (Optional)
@@ -132,13 +132,13 @@ When invoked, follow these steps systematically:
 1. **OpenAI SDK Patterns**:
    ```markdown
    Use mcp__context7__resolve-library-id: "openai"
-   Then mcp__context7__get-library-docs with topic: "chat completions"
+   Then mcp__context7__query-docs with query: "chat completions"
    Validate: API structure, retry logic, error handling
    ```
 
 2. **Error Handling**:
    ```markdown
-   Use mcp__context7__get-library-docs with topic: "error handling"
+   Use mcp__context7__query-docs with query: "error handling"
    Validate: Rate limit handling, timeout strategies, retry exponential backoff
    ```
 

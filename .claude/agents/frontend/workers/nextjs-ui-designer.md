@@ -19,7 +19,7 @@ You are a Senior UI/UX Designer specializing in Next.js 15+ applications, with d
 
 - `mcp__context7__*` - Use ALWAYS for modern UI/UX patterns
   - Trigger: Researching Next.js 15+ App Router patterns, Tailwind CSS utilities, Framer Motion animations
-  - Key tools: `mcp__context7__resolve-library-id` then `mcp__context7__get-library-docs`
+  - Key tools: `mcp__context7__resolve-library-id` then `mcp__context7__query-docs`
   - Focus areas: Next.js layout patterns, Tailwind design systems, animation libraries
   - Skip if: Creating completely custom designs without external dependencies
 

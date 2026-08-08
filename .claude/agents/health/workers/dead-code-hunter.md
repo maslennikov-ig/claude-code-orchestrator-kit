@@ -37,15 +37,15 @@ gh issue list --search "dead code cleanup"
 ```bash
 // Check if imports are actually used in framework patterns
 mcp__context7__resolve-library-id({libraryName: "next.js"})
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/vercel/next.js", topic: "imports"})
+mcp__context7__query-docs({libraryId: "/vercel/next.js", query: "imports"})
 
 // For React hooks and patterns
 mcp__context7__resolve-library-id({libraryName: "react"})
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/facebook/react", topic: "hooks"})
+mcp__context7__query-docs({libraryId: "/facebook/react", query: "hooks"})
 
 // For Knip configuration and usage
 mcp__context7__resolve-library-id({libraryName: "knip"})
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/webpro-nl/knip", topic: "configuration"})
+mcp__context7__query-docs({libraryId: "/webpro-nl/knip", query: "configuration"})
 ```
 
 ## Instructions

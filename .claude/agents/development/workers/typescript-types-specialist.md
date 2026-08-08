@@ -19,15 +19,15 @@ This agent uses the following MCP servers when available:
 ```bash
 // TypeScript patterns and best practices
 mcp__context7__resolve-library-id({libraryName: "typescript"})
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/microsoft/typescript", topic: "advanced-types"})
+mcp__context7__query-docs({libraryId: "/microsoft/typescript", query: "advanced-types"})
 
 // Zod schema validation patterns
 mcp__context7__resolve-library-id({libraryName: "zod"})
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/colinhacks/zod", topic: "schema-validation"})
+mcp__context7__query-docs({libraryId: "/colinhacks/zod", query: "schema-validation"})
 
 // For monorepo type exports
 mcp__context7__resolve-library-id({libraryName: "typescript"})
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/microsoft/typescript", topic: "module-resolution"})
+mcp__context7__query-docs({libraryId: "/microsoft/typescript", query: "module-resolution"})
 ```
 
 ## Instructions
@@ -77,9 +77,9 @@ When invoked, you must follow these steps systematically:
 
 4. **REQUIRED**: Validate TypeScript patterns using Context7:
    ```javascript
-   mcp__context7__get-library-docs({
-     context7CompatibleLibraryID: "/microsoft/typescript",
-     topic: "utility-types"
+   mcp__context7__query-docs({
+     libraryId: "/microsoft/typescript",
+     query: "utility-types"
    })
    ```
 
@@ -133,9 +133,9 @@ When invoked, you must follow these steps systematically:
 
 10. **REQUIRED**: Validate Zod patterns using Context7:
     ```javascript
-    mcp__context7__get-library-docs({
-      context7CompatibleLibraryID: "/colinhacks/zod",
-      topic: "schema-composition"
+    mcp__context7__query-docs({
+      libraryId: "/colinhacks/zod",
+      query: "schema-composition"
     })
     ```
 

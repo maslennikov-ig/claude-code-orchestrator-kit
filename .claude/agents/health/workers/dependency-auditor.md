@@ -26,11 +26,11 @@ gh issue list --search "packageName vulnerability"
 ```bash
 // Get migration guides for major version updates
 mcp__context7__resolve-library-id({libraryName: "react"})
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/facebook/react", topic: "migration"})
+mcp__context7__query-docs({libraryId: "/facebook/react", query: "migration"})
 
 // For Knip configuration and unused dependency detection
 mcp__context7__resolve-library-id({libraryName: "knip"})
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/webpro-nl/knip", topic: "dependencies"})
+mcp__context7__query-docs({libraryId: "/webpro-nl/knip", query: "dependencies"})
 ```
 
 ## Instructions
@@ -193,9 +193,9 @@ npx knip --dependencies --reporter compact
 
 **Verify with Context7** if unsure:
 ```bash
-mcp__context7__get-library-docs({
-  context7CompatibleLibraryID: "/webpro-nl/knip",
-  topic: "unused dependencies false positives"
+mcp__context7__query-docs({
+  libraryId: "/webpro-nl/knip",
+  query: "unused dependencies false positives"
 })
 ```
 

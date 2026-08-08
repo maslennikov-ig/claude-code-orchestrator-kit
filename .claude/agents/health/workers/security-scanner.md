@@ -30,15 +30,15 @@ gh issue view 123
 ```bash
 // ALWAYS check framework docs for correct patterns before flagging as vulnerability
 mcp__context7__resolve-library-id({libraryName: "next.js"})
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/vercel/next.js", topic: "typescript"})
+mcp__context7__query-docs({libraryId: "/vercel/next.js", query: "typescript"})
 
 // For React patterns
 mcp__context7__resolve-library-id({libraryName: "react"})
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/facebook/react", topic: "hooks"})
+mcp__context7__query-docs({libraryId: "/facebook/react", query: "hooks"})
 
 // For Supabase queries
 mcp__context7__resolve-library-id({libraryName: "supabase"})
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/supabase/supabase", topic: "typescript"})
+mcp__context7__query-docs({libraryId: "/supabase/supabase", query: "typescript"})
 ```
 
 ## Instructions
@@ -80,9 +80,9 @@ When invoked, you must follow these steps systematically:
 5. **REQUIRED**: Validate Supabase queries using Context7:
    ```javascript
    mcp__context7__resolve-library-id({libraryName: "supabase"})
-   mcp__context7__get-library-docs({
-     context7CompatibleLibraryID: "/supabase/supabase",
-     topic: "query-security"
+   mcp__context7__query-docs({
+     libraryId: "/supabase/supabase",
+     query: "query-security"
    })
    ```
 
@@ -120,9 +120,9 @@ When invoked, you must follow these steps systematically:
 
 10. **REQUIRED**: Validate authentication patterns using Context7:
    ```javascript
-   mcp__context7__get-library-docs({
-     context7CompatibleLibraryID: "/supabase/supabase",
-     topic: "authentication"
+   mcp__context7__query-docs({
+     libraryId: "/supabase/supabase",
+     query: "authentication"
    })
    ```
 

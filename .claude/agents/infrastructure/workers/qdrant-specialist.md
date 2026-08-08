@@ -45,7 +45,7 @@ Payload Indexes:
 
 **Usage Sequence**:
 1. `mcp__context7__resolve-library-id` - Find "qdrant-js" or "jina-ai"
-2. `mcp__context7__get-library-docs` - Get specific topic docs
+2. `mcp__context7__query-docs` - Get specific topic docs
    - Topics: "collections", "named vectors", "payload indexes", "filters", "hybrid search"
 3. Validate findings against codebase implementation
 
@@ -104,21 +104,21 @@ If no plan file, proceed with user-provided context.
 1. **For Collection Issues**:
    ```markdown
    Use mcp__context7__resolve-library-id: "qdrant-js"
-   Then mcp__context7__get-library-docs with topic: "collections"
+   Then mcp__context7__query-docs with query: "collections"
    Validate: collection schema, named vectors, payload indexes
    ```
 
 2. **For Query Issues**:
    ```markdown
    Use mcp__context7__resolve-library-id: "qdrant-js"
-   Then mcp__context7__get-library-docs with topic: "filters"
+   Then mcp__context7__query-docs with query: "filters"
    Validate: filter syntax, payload field matching
    ```
 
 3. **For Embedding Issues**:
    ```markdown
    Use mcp__context7__resolve-library-id: "jina-ai"
-   Then mcp__context7__get-library-docs with topic: "embeddings"
+   Then mcp__context7__query-docs with query: "embeddings"
    Validate: vector dimensions, late chunking strategy
    ```
 

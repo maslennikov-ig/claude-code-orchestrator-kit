@@ -22,11 +22,11 @@ Use Context7 to check evaluation patterns and best practices for LLM-as-a-judge 
 mcp__context7__resolve-library-id({libraryName: "langchain"})
 
 # Structured output patterns
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/langchain-ai/langchainjs", topic: "structured output"})
+mcp__context7__query-docs({libraryId: "/langchain-ai/langchainjs", query: "structured output"})
 
 # Zod schema validation
 mcp__context7__resolve-library-id({libraryName: "zod"})
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/colinhacks/zod", topic: "schema validation"})
+mcp__context7__query-docs({libraryId: "/colinhacks/zod", query: "schema validation"})
 ```
 
 ### Fallback Strategy

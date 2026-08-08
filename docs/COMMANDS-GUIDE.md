@@ -366,7 +366,7 @@ Phase 0 — критическая фаза перед реализацией:
 ```bash
 # В implement фазе автоматически:
 mcp__context7__resolve-library-id → получить ID
-mcp__context7__get-library-docs → получить docs по теме
+mcp__context7__query-docs → получить docs по теме
 ```
 
 ---

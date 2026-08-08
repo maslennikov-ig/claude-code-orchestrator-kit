@@ -88,7 +88,7 @@ const LESSON_RAG_CONFIG = {
 
 **Usage Sequence**:
 1. `mcp__context7__resolve-library-id` - Find "qdrant-js" or "qdrant"
-2. `mcp__context7__get-library-docs` - Get specific topic docs
+2. `mcp__context7__query-docs` - Get specific topic docs
    - Topics: "search", "filters", "mmr", "hybrid search", "batch operations"
 3. Validate implementation against official docs
 
@@ -171,19 +171,19 @@ If no plan file, proceed with user-provided context.
 1. **For Retrieval Implementation**:
    ```markdown
    Use mcp__context7__resolve-library-id: "qdrant"
-   Then mcp__context7__get-library-docs with topic: "search"
+   Then mcp__context7__query-docs with query: "search"
    Validate: search API, filters, scoring
    ```
 
 2. **For MMR Implementation**:
    ```markdown
-   Use mcp__context7__get-library-docs with topic: "mmr" or "diversity"
+   Use mcp__context7__query-docs with query: "mmr" or "diversity"
    Validate: MMR algorithm parameters, lambda values
    ```
 
 3. **For Batch Operations**:
    ```markdown
-   Use mcp__context7__get-library-docs with topic: "batch"
+   Use mcp__context7__query-docs with query: "batch"
    Validate: batch search patterns, performance
    ```
 

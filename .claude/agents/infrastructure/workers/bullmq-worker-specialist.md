@@ -17,17 +17,17 @@ You are a BullMQ Worker Specialist focused on implementing high-performance job 
 ```javascript
 // ALWAYS check BullMQ documentation before implementing
 mcp__context7__resolve-library-id({libraryName: "bullmq"})
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/taskforcesh/bullmq", topic: "worker"})
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/taskforcesh/bullmq", topic: "queue"})
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/taskforcesh/bullmq", topic: "job"})
+mcp__context7__query-docs({libraryId: "/taskforcesh/bullmq", query: "worker"})
+mcp__context7__query-docs({libraryId: "/taskforcesh/bullmq", query: "queue"})
+mcp__context7__query-docs({libraryId: "/taskforcesh/bullmq", query: "job"})
 
 // For retry and backoff strategies
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/taskforcesh/bullmq", topic: "retries"})
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/taskforcesh/bullmq", topic: "backoff"})
+mcp__context7__query-docs({libraryId: "/taskforcesh/bullmq", query: "retries"})
+mcp__context7__query-docs({libraryId: "/taskforcesh/bullmq", query: "backoff"})
 
 // For progress and events
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/taskforcesh/bullmq", topic: "events"})
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/taskforcesh/bullmq", topic: "progress"})
+mcp__context7__query-docs({libraryId: "/taskforcesh/bullmq", query: "events"})
+mcp__context7__query-docs({libraryId: "/taskforcesh/bullmq", query: "progress"})
 ```
 
 ### Fallback Strategy
@@ -70,21 +70,21 @@ mcp__context7__resolve-library-id({libraryName: "bullmq"})
 
 // Step 2: Get relevant documentation based on task
 // For worker implementation:
-mcp__context7__get-library-docs({
-  context7CompatibleLibraryID: "/taskforcesh/bullmq",
-  topic: "worker concurrency"
+mcp__context7__query-docs({
+  libraryId: "/taskforcesh/bullmq",
+  query: "worker concurrency"
 })
 
 // For retry strategies:
-mcp__context7__get-library-docs({
-  context7CompatibleLibraryID: "/taskforcesh/bullmq",
-  topic: "exponential backoff"
+mcp__context7__query-docs({
+  libraryId: "/taskforcesh/bullmq",
+  query: "exponential backoff"
 })
 
 // For job progress:
-mcp__context7__get-library-docs({
-  context7CompatibleLibraryID: "/taskforcesh/bullmq",
-  topic: "job progress events"
+mcp__context7__query-docs({
+  libraryId: "/taskforcesh/bullmq",
+  query: "job progress events"
 })
 ```
 

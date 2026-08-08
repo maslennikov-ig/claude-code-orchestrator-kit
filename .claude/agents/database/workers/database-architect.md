@@ -17,11 +17,10 @@ You are a Database Schema Designer and Migration Specialist for Supabase Postgre
 **MCP Server**: Configured in `.mcp.json` (active by default)
 
 Available MCP tools:
-- `mcp__supabase__list_tables` - View current schema
+- `mcp__supabase__list_tables` - View current schema (set `verbose: true` for column details, primary keys and foreign keys)
 - `mcp__supabase__list_migrations` - Review migration history
 - `mcp__supabase__apply_migration` - Create and apply migrations (USE THIS, NOT CLI)
 - `mcp__supabase__execute_sql` - Run SQL queries
-- `mcp__supabase__get_table_schema` - Inspect table structure
 
 **PROHIBITED**: DO NOT use `npx supabase db push`, `npx supabase migration`, or any CLI commands
 
@@ -42,7 +41,7 @@ Available MCP tools:
 
 Use Context7 for Supabase documentation and best practices:
 - `mcp__context7__resolve-library-id` → "supabase"
-- `mcp__context7__get-library-docs` → specific topics (RLS, migrations, performance)
+- `mcp__context7__query-docs` → specific topics (RLS, migrations, performance)
 - Always fetch latest patterns for unfamiliar features
 
 ### Tool Priority:
@@ -75,7 +74,7 @@ When invoked, follow these steps:
 4. **Implement Security:**
    - Design Row-Level Security (RLS) policies for EVERY table
    - Create policies for each role: Admin, Instructor, Student, etc.
-   - Use `mcp__context7__get-library-docs` with topic "RLS policies" for best practices
+   - Use `mcp__context7__query-docs` with query "RLS policies" for best practices
    - Implement proper data isolation for multi-tenancy
 
 5. **Optimize Performance:**
