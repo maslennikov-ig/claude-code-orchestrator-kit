@@ -18,15 +18,15 @@ This agent uses the following MCP servers when available:
 ```bash
 // Check TypeScript patterns for type sharing
 mcp__context7__resolve-library-id({libraryName: "typescript"})
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/microsoft/typescript", topic: "module exports"})
+mcp__context7__query-docs({libraryId: "/microsoft/typescript", query: "module exports"})
 
 // Check Zod patterns
 mcp__context7__resolve-library-id({libraryName: "zod"})
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/colinhacks/zod", topic: "schema reuse"})
+mcp__context7__query-docs({libraryId: "/colinhacks/zod", query: "schema reuse"})
 
 // Check monorepo patterns
 mcp__context7__resolve-library-id({libraryName: "turborepo"})
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/vercel/turborepo", topic: "shared packages"})
+mcp__context7__query-docs({libraryId: "/vercel/turborepo", query: "shared packages"})
 ```
 
 ## Instructions

@@ -19,19 +19,19 @@ This agent uses the following MCP servers when available:
 ```bash
 // Open edX API patterns
 mcp__context7__resolve-library-id({libraryName: "axios"})
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/axios/axios", topic: "retry-logic"})
+mcp__context7__query-docs({libraryId: "/axios/axios", query: "retry-logic"})
 
 // Archiver for tar.gz generation
 mcp__context7__resolve-library-id({libraryName: "archiver"})
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/archiverjs/node-archiver", topic: "tar-gzip"})
+mcp__context7__query-docs({libraryId: "/archiverjs/node-archiver", query: "tar-gzip"})
 
 // Transliteration patterns
 mcp__context7__resolve-library-id({libraryName: "any-ascii"})
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/anyascii/anyascii", topic: "usage"})
+mcp__context7__query-docs({libraryId: "/anyascii/anyascii", query: "usage"})
 
 // Form data for multipart uploads
 mcp__context7__resolve-library-id({libraryName: "form-data"})
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/form-data/form-data", topic: "multipart-uploads"})
+mcp__context7__query-docs({libraryId: "/form-data/form-data", query: "multipart-uploads"})
 ```
 
 ## Instructions
@@ -91,21 +91,21 @@ When invoked, you must follow these phases systematically:
 
 ```javascript
 // Archiver for tar.gz packaging
-mcp__context7__get-library-docs({
-  context7CompatibleLibraryID: "/archiverjs/node-archiver",
-  topic: "tar-gzip-streams"
+mcp__context7__query-docs({
+  libraryId: "/archiverjs/node-archiver",
+  query: "tar-gzip-streams"
 })
 
 // Axios retry/backoff
-mcp__context7__get-library-docs({
-  context7CompatibleLibraryID: "/axios/axios",
-  topic: "interceptors-retry"
+mcp__context7__query-docs({
+  libraryId: "/axios/axios",
+  query: "interceptors-retry"
 })
 
 // any-ascii transliteration
-mcp__context7__get-library-docs({
-  context7CompatibleLibraryID: "/anyascii/anyascii",
-  topic: "unicode-to-ascii"
+mcp__context7__query-docs({
+  libraryId: "/anyascii/anyascii",
+  query: "unicode-to-ascii"
 })
 ```
 
@@ -251,9 +251,9 @@ Return `ValidationResult` with errors and warnings.
 **REQUIRED**: Check Context7 for archiver usage before implementing:
 
 ```javascript
-mcp__context7__get-library-docs({
-  context7CompatibleLibraryID: "/archiverjs/node-archiver",
-  topic: "tar-gzip-compression"
+mcp__context7__query-docs({
+  libraryId: "/archiverjs/node-archiver",
+  query: "tar-gzip-compression"
 })
 ```
 
@@ -289,9 +289,9 @@ export async function packageOlx(
 **REQUIRED**: Check Context7 for axios patterns:
 
 ```javascript
-mcp__context7__get-library-docs({
-  context7CompatibleLibraryID: "/axios/axios",
-  topic: "interceptors-retry-backoff"
+mcp__context7__query-docs({
+  libraryId: "/axios/axios",
+  query: "interceptors-retry-backoff"
 })
 ```
 

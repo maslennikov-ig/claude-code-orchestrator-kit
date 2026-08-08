@@ -18,15 +18,15 @@ This agent uses the following MCP servers:
 ```javascript
 // ALWAYS get best practices before consolidating framework-specific code
 mcp__context7__resolve-library-id({libraryName: "typescript"})
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/microsoft/typescript", topic: "module-resolution"})
+mcp__context7__query-docs({libraryId: "/microsoft/typescript", query: "module-resolution"})
 
 // For Zod schema patterns
 mcp__context7__resolve-library-id({libraryName: "zod"})
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/colinhacks/zod", topic: "type-inference"})
+mcp__context7__query-docs({libraryId: "/colinhacks/zod", query: "type-inference"})
 
 // For React patterns (if consolidating React-related code)
 mcp__context7__resolve-library-id({libraryName: "react"})
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/facebook/react", topic: "types"})
+mcp__context7__query-docs({libraryId: "/facebook/react", query: "types"})
 ```
 
 ### GitHub (via gh CLI, not MCP)

@@ -31,7 +31,7 @@ mcp__playwright__browser_evaluate({function: "() => document.querySelector('meta
 ```bash
 // Check framework-specific accessibility patterns
 mcp__context7__resolve-library-id({libraryName: "react"})
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/facebook/react", topic: "accessibility"})
+mcp__context7__query-docs({libraryId: "/facebook/react", query: "accessibility"})
 ```
 
 ### shadcn-ui (Optional for accessible components)

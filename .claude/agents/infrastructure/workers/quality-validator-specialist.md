@@ -54,7 +54,7 @@ Hybrid Escalation Retry (3-stage):
 
 **Usage Sequence**:
 1. `mcp__context7__resolve-library-id` - Find "jina-ai" or "jina-embeddings"
-2. `mcp__context7__get-library-docs` - Get specific topic docs
+2. `mcp__context7__query-docs` - Get specific topic docs
    - Topics: "embeddings", "semantic similarity", "cosine similarity", "quality metrics"
 3. Validate implementation against official patterns
 4. Document Context7 findings in code comments
@@ -130,20 +130,20 @@ When invoked, follow these steps:
 1. **For Jina-v3 Embeddings**:
    ```markdown
    Use mcp__context7__resolve-library-id: "jina-ai"
-   Then mcp__context7__get-library-docs with topic: "embeddings"
+   Then mcp__context7__query-docs with query: "embeddings"
    Validate: Jina-v3 API patterns, vector dimensions (768D), best practices
    ```
 
 2. **For Semantic Similarity**:
    ```markdown
    Use mcp__context7__resolve-library-id: "jina-ai"
-   Then mcp__context7__get-library-docs with topic: "semantic similarity"
+   Then mcp__context7__query-docs with query: "semantic similarity"
    Validate: Cosine similarity computation, quality thresholds, industry standards
    ```
 
 3. **For Quality Metrics**:
    ```markdown
-   Use mcp__context7__get-library-docs with topic: "quality metrics"
+   Use mcp__context7__query-docs with query: "quality metrics"
    Validate: Quality threshold selection (>0.75), validation best practices
    ```
 

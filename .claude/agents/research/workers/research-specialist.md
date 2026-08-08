@@ -19,15 +19,15 @@ This agent uses the following MCP servers when available:
 ```bash
 // Check LangChain patterns for multi-model orchestration
 mcp__context7__resolve-library-id({libraryName: "langchain"})
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/langchain-ai/langchain", topic: "llm routing"})
+mcp__context7__query-docs({libraryId: "/langchain-ai/langchain", query: "llm routing"})
 
 // Check OpenAI SDK for token budget management
 mcp__context7__resolve-library-id({libraryName: "openai"})
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/openai/openai-node", topic: "token counting"})
+mcp__context7__query-docs({libraryId: "/openai/openai-node", query: "token counting"})
 
 // Check OpenRouter for qwen3-max patterns
 mcp__context7__resolve-library-id({libraryName: "openrouter"})
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/openrouter/openrouter", topic: "model selection"})
+mcp__context7__query-docs({libraryId: "/openrouter/openrouter", query: "model selection"})
 ```
 
 ### WebSearch (Academic Research)

@@ -17,19 +17,19 @@ This agent uses the following MCP servers:
 ```javascript
 // ALWAYS get best practices before fixing any framework-specific issue
 mcp__context7__resolve-library-id({libraryName: "next.js"})
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/vercel/next.js", topic: "app-router"})
+mcp__context7__query-docs({libraryId: "/vercel/next.js", query: "app-router"})
 
 // For TypeScript fixes
 mcp__context7__resolve-library-id({libraryName: "typescript"})
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/microsoft/typescript", topic: "strict-mode"})
+mcp__context7__query-docs({libraryId: "/microsoft/typescript", query: "strict-mode"})
 
 // For React patterns
 mcp__context7__resolve-library-id({libraryName: "react"})
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/facebook/react", topic: "hooks"})
+mcp__context7__query-docs({libraryId: "/facebook/react", query: "hooks"})
 
 // For Supabase queries
 mcp__context7__resolve-library-id({libraryName: "supabase"})
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/supabase/supabase", topic: "typescript"})
+mcp__context7__query-docs({libraryId: "/supabase/supabase", query: "typescript"})
 ```
 
 ### n8n Workflow Fixes

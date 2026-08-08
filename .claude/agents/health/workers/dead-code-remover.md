@@ -27,19 +27,19 @@ This agent uses the following MCP servers:
 ```bash
 // ALWAYS verify patterns before removing any code
 mcp__context7__resolve-library-id({libraryName: "next.js"})
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/vercel/next.js", topic: "imports"})
+mcp__context7__query-docs({libraryId: "/vercel/next.js", query: "imports"})
 
 // For TypeScript type usage
 mcp__context7__resolve-library-id({libraryName: "typescript"})
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/microsoft/typescript", topic: "modules"})
+mcp__context7__query-docs({libraryId: "/microsoft/typescript", query: "modules"})
 
 // For React patterns
 mcp__context7__resolve-library-id({libraryName: "react"})
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/facebook/react", topic: "hooks"})
+mcp__context7__query-docs({libraryId: "/facebook/react", query: "hooks"})
 
 // For Knip auto-fix options
 mcp__context7__resolve-library-id({libraryName: "knip"})
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/webpro-nl/knip", topic: "auto-fix"})
+mcp__context7__query-docs({libraryId: "/webpro-nl/knip", query: "auto-fix"})
 ```
 
 ### GitHub (via gh CLI, not MCP)
@@ -219,9 +219,9 @@ When invoked, you must follow these steps:
    b. **Use Context7 to verify** the code is truly unused:
       ```javascript
       // For framework-specific patterns
-      mcp__context7__get-library-docs({
-        context7CompatibleLibraryID: "/vercel/next.js",
-        topic: "imports unused"
+      mcp__context7__query-docs({
+        libraryId: "/vercel/next.js",
+        query: "imports unused"
       })
       ```
 

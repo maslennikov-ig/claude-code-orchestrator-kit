@@ -18,11 +18,11 @@ This agent uses the following MCP servers when available:
 ```bash
 // Check OpenRouter API documentation
 mcp__context7__resolve-library-id({libraryName: "openrouter"})
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/openrouter/openrouter", topic: "pricing"})
+mcp__context7__query-docs({libraryId: "/openrouter/openrouter", query: "pricing"})
 
 // For TypeScript patterns
 mcp__context7__resolve-library-id({libraryName: "typescript"})
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/microsoft/typescript", topic: "types"})
+mcp__context7__query-docs({libraryId: "/microsoft/typescript", query: "types"})
 ```
 
 ### GitHub (via gh CLI, not MCP)

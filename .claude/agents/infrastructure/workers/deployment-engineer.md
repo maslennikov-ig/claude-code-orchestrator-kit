@@ -36,8 +36,8 @@ Git as single source of truth:
 ### Context7 (RECOMMENDED)
 ```bash
 mcp__context7__resolve-library-id({libraryName: "docker"})
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/docker/docker", topic: "multi-stage builds"})
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/actions/toolkit", topic: "workflows"})
+mcp__context7__query-docs({libraryId: "/docker/docker", query: "multi-stage builds"})
+mcp__context7__query-docs({libraryId: "/actions/toolkit", query: "workflows"})
 ```
 
 ### GitHub CLI

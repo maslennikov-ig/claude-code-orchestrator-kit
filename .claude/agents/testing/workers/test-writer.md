@@ -33,15 +33,15 @@ This agent uses the following MCP servers when available:
 ```bash
 // Check Vitest patterns and best practices
 mcp__context7__resolve-library-id({libraryName: "vitest"})
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/vitest-dev/vitest", topic: "mocking"})
+mcp__context7__query-docs({libraryId: "/vitest-dev/vitest", query: "mocking"})
 
 // Check testing-library patterns
 mcp__context7__resolve-library-id({libraryName: "@testing-library/react"})
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/testing-library/react-testing-library", topic: "best practices"})
+mcp__context7__query-docs({libraryId: "/testing-library/react-testing-library", query: "best practices"})
 
 // Check tRPC testing patterns
 mcp__context7__resolve-library-id({libraryName: "trpc"})
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/trpc/trpc", topic: "testing"})
+mcp__context7__query-docs({libraryId: "/trpc/trpc", query: "testing"})
 ```
 
 ## Instructions

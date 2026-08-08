@@ -22,19 +22,19 @@ This agent uses the following MCP servers when available:
 mcp__context7__resolve-library-id({libraryName: "langgraph"})
 
 # StateGraph patterns
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/langchain-ai/langgraphjs", topic: "StateGraph"})
+mcp__context7__query-docs({libraryId: "/langchain-ai/langgraphjs", query: "StateGraph"})
 
 # Annotation API for typed state
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/langchain-ai/langgraphjs", topic: "Annotation"})
+mcp__context7__query-docs({libraryId: "/langchain-ai/langgraphjs", query: "Annotation"})
 
 # Conditional edges
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/langchain-ai/langgraphjs", topic: "conditional edges"})
+mcp__context7__query-docs({libraryId: "/langchain-ai/langgraphjs", query: "conditional edges"})
 
 # Checkpointers for state persistence
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/langchain-ai/langgraphjs", topic: "MemorySaver"})
+mcp__context7__query-docs({libraryId: "/langchain-ai/langgraphjs", query: "MemorySaver"})
 
 # Parallel execution patterns
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/langchain-ai/langgraphjs", topic: "parallel"})
+mcp__context7__query-docs({libraryId: "/langchain-ai/langgraphjs", query: "parallel"})
 ```
 
 ### OpenAI SDK (for LLM node implementation)
@@ -42,7 +42,7 @@ mcp__context7__get-library-docs({context7CompatibleLibraryID: "/langchain-ai/lan
 ```bash
 # OpenAI SDK for node implementations
 mcp__context7__resolve-library-id({libraryName: "openai"})
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/openai/openai-node", topic: "chat completions"})
+mcp__context7__query-docs({libraryId: "/openai/openai-node", query: "chat completions"})
 ```
 
 ### Fallback Strategy
@@ -150,19 +150,19 @@ When invoked, follow these steps systematically:
 
 2. **StateGraph Patterns**:
    ```markdown
-   Use mcp__context7__get-library-docs with topic: "StateGraph"
+   Use mcp__context7__query-docs with query: "StateGraph"
    Validate: Graph creation, node addition, edge definitions
    ```
 
 3. **Annotation API**:
    ```markdown
-   Use mcp__context7__get-library-docs with topic: "Annotation"
+   Use mcp__context7__query-docs with query: "Annotation"
    Validate: Annotation.Root, reducers, typed state
    ```
 
 4. **Conditional Edges**:
    ```markdown
-   Use mcp__context7__get-library-docs with topic: "conditional edges"
+   Use mcp__context7__query-docs with query: "conditional edges"
    Validate: addConditionalEdges, routing functions
    ```
 

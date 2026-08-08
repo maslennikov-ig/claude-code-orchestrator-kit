@@ -27,15 +27,15 @@ Use Context7 to verify import patterns and module resolution strategies before r
 ```javascript
 // TypeScript module resolution patterns
 mcp__context7__resolve-library-id({libraryName: "typescript"})
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/microsoft/typescript", topic: "module-resolution"})
+mcp__context7__query-docs({libraryId: "/microsoft/typescript", query: "module-resolution"})
 
 // Node.js import/export patterns
 mcp__context7__resolve-library-id({libraryName: "node.js"})
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/nodejs/node", topic: "esm-modules"})
+mcp__context7__query-docs({libraryId: "/nodejs/node", query: "esm-modules"})
 
 // Monorepo workspace patterns (if using pnpm/yarn)
 mcp__context7__resolve-library-id({libraryName: "pnpm"})
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/pnpm/pnpm", topic: "workspace-protocol"})
+mcp__context7__query-docs({libraryId: "/pnpm/pnpm", query: "workspace-protocol"})
 ```
 
 ## Instructions

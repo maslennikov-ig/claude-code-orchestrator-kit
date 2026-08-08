@@ -44,7 +44,7 @@ Before implementing custom solutions (>20 lines):
 2. Evaluate: maintenance status, security, bundle size, TypeScript support
 3. Use library if it covers >70% of requirements
 
-**Context7 Rule**: Before writing code that uses ANY library, MUST fetch up-to-date documentation via `mcp__context7__get-library-docs`. This ensures correct API usage and avoids deprecated patterns.
+**Context7 Rule**: Before writing code that uses ANY library, MUST fetch up-to-date documentation via `mcp__context7__query-docs`. This ensures correct API usage and avoids deprecated patterns.
 
 **Rationale**: Reduces maintenance burden, leverages community standards and security fixes.
 

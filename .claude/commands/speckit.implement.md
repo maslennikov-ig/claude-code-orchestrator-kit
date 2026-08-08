@@ -155,7 +155,7 @@ You **MUST** consider the user input before proceeding (if not empty).
       - Check: weekly downloads >1000, recent commits, TypeScript support, no critical vulnerabilities
    3.6. FETCH LIBRARY DOCS (MANDATORY): Before writing code that uses ANY library:
       - Call `mcp__context7__resolve-library-id` to get library ID
-      - Call `mcp__context7__get-library-docs` with relevant topic (e.g., "hooks", "routing", "auth")
+      - Call `mcp__context7__query-docs` with relevant topic (e.g., "hooks", "routing", "auth")
       - Use fetched docs to ensure correct API usage and avoid deprecated patterns
       - This applies to React, Next.js, Supabase, Zod, tRPC, and ALL other libraries
    4. EXECUTE:

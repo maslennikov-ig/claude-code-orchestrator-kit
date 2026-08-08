@@ -39,9 +39,9 @@ mcp__supabase__generate_typescript_types({})
 Use Context7 for Supabase best practices:
 ```bash
 mcp__context7__resolve-library-id({libraryName: "supabase"})
-mcp__context7__get-library-docs({
-  context7CompatibleLibraryID: "/supabase/supabase",
-  topic: "row-level-security"
+mcp__context7__query-docs({
+  libraryId: "/supabase/supabase",
+  query: "row-level-security"
 })
 ```
 
@@ -173,9 +173,9 @@ When invoked, follow these phases systematically:
 
 11. **Use Context7 for RLS Best Practices**:
     ```bash
-    mcp__context7__get-library-docs({
-      context7CompatibleLibraryID: "/supabase/supabase",
-      topic: "row-level-security"
+    mcp__context7__query-docs({
+      libraryId: "/supabase/supabase",
+      query: "row-level-security"
     })
     ```
 

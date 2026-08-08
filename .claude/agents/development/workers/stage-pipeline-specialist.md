@@ -86,11 +86,11 @@ This agent uses the following MCP servers when available:
 ```bash
 # Zod schema patterns
 mcp__context7__resolve-library-id({libraryName: "zod"})
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/colinhacks/zod", topic: "object schemas"})
+mcp__context7__query-docs({libraryId: "/colinhacks/zod", query: "object schemas"})
 
 # OpenRouter API patterns (for LLM calls in phases)
 mcp__context7__resolve-library-id({libraryName: "openai"})
-mcp__context7__get-library-docs({context7CompatibleLibraryID: "/openai/openai-node", topic: "chat completions"})
+mcp__context7__query-docs({libraryId: "/openai/openai-node", query: "chat completions"})
 ```
 
 ### Fallback Strategy

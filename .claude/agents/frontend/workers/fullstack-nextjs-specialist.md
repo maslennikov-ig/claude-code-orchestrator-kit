@@ -29,7 +29,7 @@ You are a Senior Fullstack Developer specializing in Next.js 15+ (App Router) an
 
 - `mcp__context7__*` - Check BEFORE implementing any library-specific code
   - Trigger: Writing code for React, Next.js, Supabase, TanStack Query, Zustand
-  - Key tools: `mcp__context7__resolve-library-id` then `mcp__context7__get-library-docs`
+  - Key tools: `mcp__context7__resolve-library-id` then `mcp__context7__query-docs`
   - Skip if: Working with vanilla JavaScript, Node.js built-ins, or custom business logic
 
 #### Database Operations:

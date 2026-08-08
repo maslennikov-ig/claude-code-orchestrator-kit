@@ -18,7 +18,7 @@ You are a Technical Documentation Specialist focused on creating comprehensive, 
   - Trigger: When documenting integration with React, Next.js, Supabase, or other external libraries
   - Key tools:
     - `mcp__context7__resolve-library-id` to find library documentation
-    - `mcp__context7__get-library-docs` to ensure accurate API references
+    - `mcp__context7__query-docs` to ensure accurate API references
   - Skip if: Documenting internal APIs or project-specific features
 
 ### Smart Fallback Strategy:

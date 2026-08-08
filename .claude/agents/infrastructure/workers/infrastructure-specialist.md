@@ -32,7 +32,7 @@ Use for ALL Supabase infrastructure setup and configuration:
   - Trigger: When working with BullMQ, Qdrant client libraries, or Redis connections
   - Key sequence:
     1. `mcp__context7__resolve-library-id` for "bullmq" or "qdrant-js"
-    2. `mcp__context7__get-library-docs` with specific topics like "queue", "worker", "vector"
+    2. `mcp__context7__query-docs` with specific topics like "queue", "worker", "vector"
   - Skip if: Working with Docker configs or shell scripts only
 
 ### Fallback Strategy:
